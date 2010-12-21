@@ -95,4 +95,28 @@ foreach my $line_idx (1 .. 7)
 }
 close($in_fh);
 
-print $layout_string;
+# For debugging:
+# print $layout_string;
+
+my $letter_re = qr{[A-Y]};
+my $letter_and_space_re = qr{[ A-Y]};
+my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
+my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
+
+if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
+{
+    die "Invalid format. Should be Letter{7}\n(Letter{spaces or one letter}{5}Letter){5}\nLetter{7}";
+}
+
+{
+    my %count_letters = (map { $_ => 0 } @letters);
+    foreach my $letter ($layout_string =~ m{($letter_re)}g)
+    {
+        if ($count_letters{$letter}++)
+        {
+            die "Letter '$letter' encountered twice in the layout.";
+        }
+    }
+}
+
+
