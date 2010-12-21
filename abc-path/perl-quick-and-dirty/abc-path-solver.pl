@@ -136,23 +136,16 @@ sub get_letter_numeric
 
 # Now let's process the layout string and populate the verdicts table.
 
+sub set_verdicts_for_letter_sets
 {
-    my @major_diagonal_letters;
+    my ($letter_list, $maybe_list) = @_;
 
-    $layout_string =~ m{\A(.)};
+    my %cell_is_maybe =
+        (map {; sprintf("%d,%d", @$maybe_list) => 1; } @$maybe_list);
 
-    push @major_diagonal_letters, $1;
-
-    $layout_string =~ m{(.)\n\z};
-
-    push @major_diagonal_letters, $1;
-
-    foreach my $letter_ascii (@major_diagonal_letters)
+    foreach my $letter_ascii (@$letter_list)
     {
         my $letter = get_letter_numeric($letter_ascii);
-
-        my %cell_is_maybe = (map {; "$_,$_" => 1; } (0 .. 4));
-
         foreach my $y (0 .. 4)
         {
             foreach my $x (0 .. 4)
@@ -169,6 +162,23 @@ sub get_letter_numeric
 }
 
 {
+    my @major_diagonal_letters;
+
+    $layout_string =~ m{\A(.)};
+
+    push @major_diagonal_letters, $1;
+
+    $layout_string =~ m{(.)\n\z};
+
+    push @major_diagonal_letters, $1;
+
+    set_verdicts_for_letter_sets(
+        \@major_diagonal_letters, 
+        [map { [$_,$_] } (0 .. 4)],
+    )
+}
+
+{
     my @minor_diagonal_letters;
 
     $layout_string =~ m/\A${letter_re}*($letter_re)\n/ms;
@@ -179,25 +189,8 @@ sub get_letter_numeric
 
     push @minor_diagonal_letters, substr($1,0,1);
 
-    foreach my $letter_ascii (@minor_diagonal_letters)
-    {
-        my $letter = get_letter_numeric($letter_ascii);
-
-        my %cell_is_maybe = 
-            (map {; sprintf("%d,%d", $_ , 4-$_) => 1; } (0 .. 4))
-            ;
-
-        foreach my $y (0 .. 4)
-        {
-            foreach my $x (0 .. 4)
-            {
-                set_verdict($letter, $x, $y,
-                    ((exists $cell_is_maybe{"$x,$y"})
-                        ? $ABCP_VERDICT_MAYBE
-                        : $ABCP_VERDICT_NO
-                    )
-                );
-            }
-        }
-    }
+    set_verdicts_for_letter_sets(
+        \@minor_diagonal_letters,
+        [map { [$_, 4-$_] } (0 .. 4)]
+    );
 }
