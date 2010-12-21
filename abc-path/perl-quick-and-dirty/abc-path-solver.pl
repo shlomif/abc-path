@@ -141,7 +141,7 @@ sub set_verdicts_for_letter_sets
     my ($letter_list, $maybe_list) = @_;
 
     my %cell_is_maybe =
-        (map {; sprintf("%d,%d", @$maybe_list) => 1; } @$maybe_list);
+        (map {; sprintf("%d,%d", @$_) => 1; } @$maybe_list);
 
     foreach my $letter_ascii (@$letter_list)
     {
@@ -157,6 +157,38 @@ sub set_verdicts_for_letter_sets
                     )
                 );
             }
+        }
+    }
+}
+
+sub set_conclusive_verdict_for_letter
+{
+    my ($letter_ascii, $xy) = @_;
+
+    my ($l_x, $l_y) = @$xy;
+
+    {
+        my $letter = get_letter_numeric($letter_ascii);
+        foreach my $y (0 .. 4)
+        {
+            foreach my $x (0 .. 4)
+            {
+                set_verdict($letter, $x, $y,
+                    ((($l_x == $x) && ($l_y == $y))
+                        ? $ABCP_VERDICT_YES
+                        : $ABCP_VERDICT_NO
+                    )
+                );
+            }
+        }
+        OTHER_LETTER:
+        foreach my $other_letter (0 .. $#letters)
+        {
+            if ($other_letter == $letter)
+            {
+                next OTHER_LETTER;
+            }
+            set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
         }
     }
 }
@@ -211,6 +243,7 @@ sub set_verdicts_for_letter_sets
 {
     my @rows = split(/\n/, $layout_string);
 
+    my ($clue_x, $clue_y, $clue_letter);
     foreach my $y (0 .. 4)
     {
         my $row = $rows[$y+1];
@@ -218,5 +251,26 @@ sub set_verdicts_for_letter_sets
             [substr($row, 0, 1), substr($row, -1),],
             [map { [$_,$y] } (0 .. 4)],
         );
+
+        my $s = substr($row, 1, -1);
+        if ($s =~ m{($letter_re)}g)
+        {
+            my ($l, $x_plus_1) = ($1, pos($s));
+            if (defined($clue_letter))
+            {
+                confess "Found more than one clue letter in the layout!";
+            }
+            ($clue_x, $clue_y, $clue_letter) = ($x_plus_1-1, $y, $l);
+        }
     }
+
+    if (!defined ($clue_letter))
+    {
+        confess "Did not find any clue letters inside the layout.";
+    }
+    
+    set_conclusive_verdict_for_letter(
+        $clue_letter,
+        [$clue_x, $clue_y],
+    );
 }
