@@ -56,9 +56,9 @@ sub set_verdict
     }
 
     if (not
-        ($verdict == $ABCP_VERDICT_NO)
+        (($verdict == $ABCP_VERDICT_NO)
         || ($verdict == $ABCP_VERDICT_MAYBE)
-        || ($verdict == $ABCP_VERDICT_YES)
+        || ($verdict == $ABCP_VERDICT_YES))
     )
     {
         confess "Invalid verdict $verdict .";
@@ -119,4 +119,51 @@ if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
     }
 }
 
+my %letters_map = (map { $letters[$_] => $_ } (0 .. $#letters));
+sub get_letter_numeric
+{
+    my $letter_ascii = shift;
 
+    my $index = $letters_map{$letter_ascii};
+
+    if (!defined ($index))
+    {
+        confess "Unknown letter '$letter_ascii'";
+    }
+
+    return $index;
+}
+
+# Now let's process the layout string and populate the verdicts table.
+
+{
+    my @major_diagonal_letters;
+
+    $layout_string =~ m{\A(.)};
+
+    push @major_diagonal_letters, $1;
+
+    $layout_string =~ m{(.)\n\z};
+
+    push @major_diagonal_letters, $1;
+
+    foreach my $letter_ascii (@major_diagonal_letters)
+    {
+        my $letter = get_letter_numeric($letter_ascii);
+
+        my %cell_is_maybe = (map {; "$_,$_" => 1; } (0 .. 4));
+
+        foreach my $y (0 .. 4)
+        {
+            foreach my $x (0 .. 4)
+            {
+                set_verdict($letter, $x, $y,
+                    ((exists $cell_is_maybe{"$x,$y"})
+                        ? $ABCP_VERDICT_MAYBE
+                        : $ABCP_VERDICT_NO
+                    )
+                );
+            }
+        }
+    }
+}
