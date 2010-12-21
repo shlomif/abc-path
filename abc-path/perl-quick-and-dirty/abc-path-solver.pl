@@ -194,3 +194,16 @@ sub set_verdicts_for_letter_sets
         [map { [$_, 4-$_] } (0 .. 4)]
     );
 }
+
+{
+    my ($top_row) = ($layout_string =~ m/\A(${letter_re}*)\n/ms);
+    my ($bottom_row) = ($layout_string =~ m/(${letter_re}*)\n\z/ms);
+
+    foreach my $x (0 .. 4)
+    {
+        set_verdicts_for_letter_sets(
+            [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
+            [map { [$x,$_] } (0 .. 4)],
+        );
+    }
+}
