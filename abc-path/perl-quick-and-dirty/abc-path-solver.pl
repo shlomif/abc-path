@@ -55,7 +55,7 @@ sub set_verdict
         confess "X $y out of range.";
     }
 
-    if (not 
+    if (not
         ($verdict == $ABCP_VERDICT_NO)
         || ($verdict == $ABCP_VERDICT_MAYBE)
         || ($verdict == $ABCP_VERDICT_YES)
@@ -69,4 +69,30 @@ sub set_verdict
     return;
 }
 
+my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
+# Input the board.
+
+my $board_fn = shift(@ARGV);
+
+open my $in_fh, "<", $board_fn
+    or die "Cannot open '$board_fn' - $!";
+
+my $first_line = <$in_fh>;
+chomp($first_line);
+
+my $magic = 'ABC Path Solver Layout Version 1:';
+if ($first_line !~ m{\A\Q$magic\E\s*\z})
+{
+    die "Can only process files whose first line is '$magic'!";
+}
+
+my $layout_string = '';
+foreach my $line_idx (1 .. 7)
+{
+    chomp(my $line = <$in_fh>);
+    $layout_string .= "$line\n";
+}
+close($in_fh);
+
+print $layout_string;
