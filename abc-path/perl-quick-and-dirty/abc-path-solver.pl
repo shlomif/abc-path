@@ -207,3 +207,16 @@ sub set_verdicts_for_letter_sets
         );
     }
 }
+
+{
+    my @rows = split(/\n/, $layout_string);
+
+    foreach my $y (0 .. 4)
+    {
+        my $row = $rows[$y+1];
+        set_verdicts_for_letter_sets(
+            [substr($row, 0, 1), substr($row, -1),],
+            [map { [$_,$y] } (0 .. 4)],
+        );
+    }
+}
