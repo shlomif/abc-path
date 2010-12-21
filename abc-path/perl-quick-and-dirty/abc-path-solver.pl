@@ -167,3 +167,37 @@ sub get_letter_numeric
         }
     }
 }
+
+{
+    my @minor_diagonal_letters;
+
+    $layout_string =~ m/\A${letter_re}*($letter_re)\n/ms;
+
+    push @minor_diagonal_letters, $1;
+
+    $layout_string =~ m{($letter_re*)\n\z}ms;
+
+    push @minor_diagonal_letters, substr($1,0,1);
+
+    foreach my $letter_ascii (@minor_diagonal_letters)
+    {
+        my $letter = get_letter_numeric($letter_ascii);
+
+        my %cell_is_maybe = 
+            (map {; sprintf("%d,%d", $_ , 4-$_) => 1; } (0 .. 4))
+            ;
+
+        foreach my $y (0 .. 4)
+        {
+            foreach my $x (0 .. 4)
+            {
+                set_verdict($letter, $x, $y,
+                    ((exists $cell_is_maybe{"$x,$y"})
+                        ? $ABCP_VERDICT_MAYBE
+                        : $ABCP_VERDICT_NO
+                    )
+                );
+            }
+        }
+    }
+}
