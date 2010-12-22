@@ -9,6 +9,9 @@ my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
 
+my $BOARD_LEN = 5;
+my $BOARD_LEN_LIM = $BOARD_LEN - 1;
+
 # This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
 # verdicts above.
 my $verdicts_matrix = '';
@@ -17,14 +20,14 @@ sub xy_to_idx
 {
     my ($x, $y) = @_;
 
-    if (($x < 0) or ($x >= 5))
+    if (($x < 0) or ($x > $BOARD_LEN_LIM))
     {
         confess "X $x out of range.";
     }
 
-    if (($y < 0) or ($y >= 5))
+    if (($y < 0) or ($y > $BOARD_LEN_LIM))
     {
-        confess "X $y out of range.";
+        confess "Y $y out of range.";
     }
 
 
@@ -40,17 +43,6 @@ sub get_verdict
         confess "Letter $letter out of range.";
     }
 
-    if (($x < 0) or ($x >= 5))
-    {
-        confess "X $x out of range.";
-    }
-
-    if (($y < 0) or ($y >= 5))
-    {
-        confess "X $y out of range.";
-    }
-
-
     return vec($verdicts_matrix, $letter*25+xy_to_idx($x,$y), 2);
 }
 
@@ -61,16 +53,6 @@ sub set_verdict
     if (($letter < 0) or ($letter >= 25))
     {
         confess "Letter $letter out of range.";
-    }
-
-    if (($x < 0) or ($x >= 5))
-    {
-        confess "X $x out of range.";
-    }
-
-    if (($y < 0) or ($y >= 5))
-    {
-        confess "X $y out of range.";
     }
 
     if (not
@@ -164,9 +146,9 @@ sub set_verdicts_for_letter_sets
     foreach my $letter_ascii (@$letter_list)
     {
         my $letter = get_letter_numeric($letter_ascii);
-        foreach my $y (0 .. 4)
+        foreach my $y (0 .. $BOARD_LEN_LIM)
         {
-            foreach my $x (0 .. 4)
+            foreach my $x (0 .. $BOARD_LEN_LIM)
             {
                 set_verdict($letter, $x, $y,
                     ((exists $cell_is_maybe{"$x,$y"})
@@ -187,9 +169,9 @@ sub set_conclusive_verdict_for_letter
 
     {
         my $letter = get_letter_numeric($letter_ascii);
-        foreach my $y (0 .. 4)
+        foreach my $y (0 .. $BOARD_LEN_LIM)
         {
-            foreach my $x (0 .. 4)
+            foreach my $x (0 .. $BOARD_LEN_LIM)
             {
                 set_verdict($letter, $x, $y,
                     ((($l_x == $x) && ($l_y == $y))
@@ -241,7 +223,7 @@ sub set_conclusive_verdict_for_letter
 
     set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
-        [map { [$_, 4-$_] } (0 .. 4)]
+        [map { [$_, 4-$_] } (0 .. $BOARD_LEN_LIM)]
     );
 }
 
@@ -249,7 +231,7 @@ sub set_conclusive_verdict_for_letter
     my ($top_row) = ($layout_string =~ m/\A(${letter_re}*)\n/ms);
     my ($bottom_row) = ($layout_string =~ m/(${letter_re}*)\n\z/ms);
 
-    foreach my $x (0 .. 4)
+    foreach my $x (0 .. $BOARD_LEN_LIM)
     {
         set_verdicts_for_letter_sets(
             [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
@@ -262,12 +244,12 @@ sub set_conclusive_verdict_for_letter
     my @rows = split(/\n/, $layout_string);
 
     my ($clue_x, $clue_y, $clue_letter);
-    foreach my $y (0 .. 4)
+    foreach my $y (0 .. $BOARD_LEN_LIM)
     {
         my $row = $rows[$y+1];
         set_verdicts_for_letter_sets(
             [substr($row, 0, 1), substr($row, -1),],
-            [map { [$_,$y] } (0 .. 4)],
+            [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
         );
 
         my $s = substr($row, 1, -1);
@@ -306,9 +288,9 @@ sub set_conclusive_verdict_for_letter
         {
             my @true_cells;
 
-            foreach my $y (0 .. 4)
+            foreach my $y (0 .. $BOARD_LEN_LIM)
             {
-                foreach my $x (0 .. 4)
+                foreach my $x (0 .. $BOARD_LEN_LIM)
                 {
                     my $ver = get_verdict($letter, $x, $y);
                     if (    ($ver == $ABCP_VERDICT_YES) 
@@ -319,14 +301,14 @@ sub set_conclusive_verdict_for_letter
                 }
             }
 
-            my @neighbourhood = (map { [(0) x 5] } (0 .. 4));
+            my @neighbourhood = (map { [(0) x $BOARD_LEN] } (0 .. $BOARD_LEN_LIM));
             
             foreach my $true (@true_cells)
             {
                 foreach my $coords
                 (
-                    grep { $_->[0] >= 0 and $_->[0] < 5 and $_->[1] >= 0 and
-                    $_->[1] < 5 }
+                    grep { $_->[0] >= 0 and $_->[0] < $BOARD_LEN and $_->[1] >= 0 and
+                    $_->[1] < $BOARD_LEN }
                     map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
                     map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
                     (-1 .. 1)
@@ -341,10 +323,10 @@ sub set_conclusive_verdict_for_letter
                 (($letter < $#letters) ? ($letter+1) : ()),
             )
             {
-                foreach my $y (0 .. 4)
+                foreach my $y (0 .. $BOARD_LEN_LIM)
                 {
                     X_LOOP:
-                    foreach my $x (0 .. 4)
+                    foreach my $x (0 .. $BOARD_LEN_LIM)
                     {
                         if ($neighbourhood[$y][$x])
                         {
