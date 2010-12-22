@@ -5,6 +5,8 @@ use warnings;
 
 use Carp;
 
+use Text::Table;
+
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
@@ -370,3 +372,34 @@ sub set_conclusive_verdict_for_letter
         }
     }
 }
+
+
+my $tb = 
+    Text::Table->new(
+        \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
+);
+
+sub get_possible_letters
+{
+    my ($x, $y) = @_;
+
+    return 
+    [
+        grep { get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        (0 .. $#letters)
+    ];
+}
+
+sub get_possible_letters_string
+{
+    my ($x, $y) = @_;
+
+    return join(',', @letters[@{get_possible_letters($x,$y)}]);
+}
+
+foreach my $y (0 .. $BOARD_LEN_LIM)
+{
+    $tb->add(map { get_possible_letters_string($_, $y) } (0 .. $y));
+}
+
+print $tb;
