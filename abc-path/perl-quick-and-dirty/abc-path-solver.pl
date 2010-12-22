@@ -69,6 +69,20 @@ sub set_verdict
     return;
 }
 
+sub xy_loop
+{
+    my ($sub_ref) = (@_);
+
+    foreach my $y (0 .. $BOARD_LEN_LIM)
+    {
+        foreach my $x (0 .. $BOARD_LEN_LIM)
+        {
+            $sub_ref->($x,$y);
+        }
+    }
+    return;
+}
+
 my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
 # Input the board.
@@ -145,11 +159,11 @@ sub set_verdicts_for_letter_sets
 
     foreach my $letter_ascii (@$letter_list)
     {
-        my $letter = get_letter_numeric($letter_ascii);
-        foreach my $y (0 .. $BOARD_LEN_LIM)
-        {
-            foreach my $x (0 .. $BOARD_LEN_LIM)
-            {
+        xy_loop(
+            sub {
+                my ($x, $y) = @_;
+
+                my $letter = get_letter_numeric($letter_ascii);
                 set_verdict($letter, $x, $y,
                     ((exists $cell_is_maybe{"$x,$y"})
                         ? $ABCP_VERDICT_MAYBE
@@ -157,7 +171,7 @@ sub set_verdicts_for_letter_sets
                     )
                 );
             }
-        }
+        );
     }
 }
 
@@ -169,10 +183,9 @@ sub set_conclusive_verdict_for_letter
 
     {
         my $letter = get_letter_numeric($letter_ascii);
-        foreach my $y (0 .. $BOARD_LEN_LIM)
-        {
-            foreach my $x (0 .. $BOARD_LEN_LIM)
-            {
+        xy_loop(sub {
+                my ($x, $y) = @_;
+
                 set_verdict($letter, $x, $y,
                     ((($l_x == $x) && ($l_y == $y))
                         ? $ABCP_VERDICT_YES
@@ -180,7 +193,7 @@ sub set_conclusive_verdict_for_letter
                     )
                 );
             }
-        }
+        );
         OTHER_LETTER:
         foreach my $other_letter (0 .. $#letters)
         {
@@ -288,18 +301,16 @@ sub set_conclusive_verdict_for_letter
         {
             my @true_cells;
 
-            foreach my $y (0 .. $BOARD_LEN_LIM)
-            {
-                foreach my $x (0 .. $BOARD_LEN_LIM)
+            xy_loop(sub {
+                my @c = @_;
+
+                my $ver = get_verdict($letter, @c);
+                if (    ($ver == $ABCP_VERDICT_YES) 
+                    || ($ver == $ABCP_VERDICT_MAYBE))
                 {
-                    my $ver = get_verdict($letter, $x, $y);
-                    if (    ($ver == $ABCP_VERDICT_YES) 
-                        || ($ver == $ABCP_VERDICT_MAYBE))
-                    {
-                        push @true_cells, [$x,$y]; 
-                    }
+                    push @true_cells, [@c]; 
                 }
-            }
+            });
 
             my @neighbourhood = (map { [(0) x $BOARD_LEN] } (0 .. $BOARD_LEN_LIM));
             
@@ -323,32 +334,29 @@ sub set_conclusive_verdict_for_letter
                 (($letter < $#letters) ? ($letter+1) : ()),
             )
             {
-                foreach my $y (0 .. $BOARD_LEN_LIM)
-                {
-                    X_LOOP:
-                    foreach my $x (0 .. $BOARD_LEN_LIM)
+                xy_loop(sub {
+                    my ($x, $y) = @_;
+
+                    if ($neighbourhood[$y][$x])
                     {
-                        if ($neighbourhood[$y][$x])
-                        {
-                            next X_LOOP;
-                        }
-
-                        my $existing_verdict =
-                            get_verdict($neighbour_letter, $x, $y);
-
-                        if ($existing_verdict == $ABCP_VERDICT_YES)
-                        {
-                            die "Mismatched verdict: Should be set to no, but already yes.";
-                        }
-
-                        if ($existing_verdict == $ABCP_VERDICT_MAYBE)
-                        {
-                            set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
-                            print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
-                            $num_changed++;
-                        }
+                        return;
                     }
-                }
+
+                    my $existing_verdict =
+                        get_verdict($neighbour_letter, $x, $y);
+
+                    if ($existing_verdict == $ABCP_VERDICT_YES)
+                    {
+                        die "Mismatched verdict: Should be set to no, but already yes.";
+                    }
+
+                    if ($existing_verdict == $ABCP_VERDICT_MAYBE)
+                    {
+                        set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                        print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
+                        $num_changed++;
+                    }
+                });
             }
         }
     }
