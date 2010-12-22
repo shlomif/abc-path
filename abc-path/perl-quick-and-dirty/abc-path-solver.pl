@@ -177,32 +177,29 @@ sub set_verdicts_for_letter_sets
 
 sub set_conclusive_verdict_for_letter
 {
-    my ($letter_ascii, $xy) = @_;
+    my ($letter, $xy) = @_;
 
     my ($l_x, $l_y) = @$xy;
 
-    {
-        my $letter = get_letter_numeric($letter_ascii);
-        xy_loop(sub {
-                my ($x, $y) = @_;
+    xy_loop(sub {
+            my ($x, $y) = @_;
 
-                set_verdict($letter, $x, $y,
-                    ((($l_x == $x) && ($l_y == $y))
-                        ? $ABCP_VERDICT_YES
-                        : $ABCP_VERDICT_NO
-                    )
-                );
-            }
-        );
-        OTHER_LETTER:
-        foreach my $other_letter (0 .. $#letters)
-        {
-            if ($other_letter == $letter)
-            {
-                next OTHER_LETTER;
-            }
-            set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+            set_verdict($letter, $x, $y,
+                ((($l_x == $x) && ($l_y == $y))
+                    ? $ABCP_VERDICT_YES
+                    : $ABCP_VERDICT_NO
+                )
+            );
         }
+    );
+    OTHER_LETTER:
+    foreach my $other_letter (0 .. $#letters)
+    {
+        if ($other_letter == $letter)
+        {
+            next OTHER_LETTER;
+        }
+        set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
     }
 }
 
@@ -283,7 +280,7 @@ sub set_conclusive_verdict_for_letter
     }
     
     set_conclusive_verdict_for_letter(
-        $clue_letter,
+        get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
 }
@@ -311,6 +308,18 @@ sub set_conclusive_verdict_for_letter
                     push @true_cells, [@c]; 
                 }
             });
+
+            if (@true_cells == 1)
+            {
+                my $xy = $true_cells[0];
+                if (get_verdict($letter, @$xy) ==
+                    $ABCP_VERDICT_MAYBE)
+                {
+                    $num_changed++;
+                    set_conclusive_verdict_for_letter($letter, $xy);
+                    print "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.\n";
+                }
+            }
 
             my @neighbourhood = (map { [(0) x $BOARD_LEN] } (0 .. $BOARD_LEN_LIM));
             
