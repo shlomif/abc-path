@@ -399,7 +399,7 @@ sub get_possible_letters_string
 
 foreach my $y (0 .. $BOARD_LEN_LIM)
 {
-    $tb->add(map { get_possible_letters_string($_, $y) } (0 .. $y));
+    $tb->add(map { get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
 }
 
 print $tb;
