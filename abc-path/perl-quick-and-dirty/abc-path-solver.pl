@@ -13,6 +13,24 @@ my $ABCP_VERDICT_YES = 2;
 # verdicts above.
 my $verdicts_matrix = '';
 
+sub xy_to_idx
+{
+    my ($x, $y) = @_;
+
+    if (($x < 0) or ($x >= 5))
+    {
+        confess "X $x out of range.";
+    }
+
+    if (($y < 0) or ($y >= 5))
+    {
+        confess "X $y out of range.";
+    }
+
+
+    return $y*5+$x;
+}
+
 sub get_verdict
 {
     my ($letter, $x, $y) = @_;
@@ -33,7 +51,7 @@ sub get_verdict
     }
 
 
-    return vec($verdicts_matrix, $letter*25+$y*5+$x, 2);
+    return vec($verdicts_matrix, $letter*25+xy_to_idx($x,$y), 2);
 }
 
 sub set_verdict
@@ -64,7 +82,7 @@ sub set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec($verdicts_matrix, $letter*25+$y*5+$x, 2) = $verdict;
+    vec($verdicts_matrix, $letter*25+xy_to_idx($x,$y), 2) = $verdict;
 
     return;
 }
@@ -273,4 +291,83 @@ sub set_conclusive_verdict_for_letter
         $clue_letter,
         [$clue_x, $clue_y],
     );
+}
+
+# Now let's do a neighbourhood infering of the board.
+
+{
+    my $num_changed = 1;
+
+    while ($num_changed)
+    {
+        $num_changed = 0;
+
+        foreach my $letter (0 .. $#letters)
+        {
+            my @true_cells;
+
+            foreach my $y (0 .. 4)
+            {
+                foreach my $x (0 .. 4)
+                {
+                    my $ver = get_verdict($letter, $x, $y);
+                    if (    ($ver == $ABCP_VERDICT_YES) 
+                        || ($ver == $ABCP_VERDICT_MAYBE))
+                    {
+                        push @true_cells, [$x,$y]; 
+                    }
+                }
+            }
+
+            my @neighbourhood = (map { [(0) x 5] } (0 .. 4));
+            
+            foreach my $true (@true_cells)
+            {
+                foreach my $coords
+                (
+                    grep { $_->[0] >= 0 and $_->[0] < 5 and $_->[1] >= 0 and
+                    $_->[1] < 5 }
+                    map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
+                    map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
+                    (-1 .. 1)
+                )
+                {
+                    $neighbourhood[$coords->[1]][$coords->[0]] = 1;
+                }
+            }
+
+            foreach my $neighbour_letter (
+                (($letter > 0) ? ($letter-1) : ()),
+                (($letter < $#letters) ? ($letter+1) : ()),
+            )
+            {
+                foreach my $y (0 .. 4)
+                {
+                    X_LOOP:
+                    foreach my $x (0 .. 4)
+                    {
+                        if ($neighbourhood[$y][$x])
+                        {
+                            next X_LOOP;
+                        }
+
+                        my $existing_verdict =
+                            get_verdict($neighbour_letter, $x, $y);
+
+                        if ($existing_verdict == $ABCP_VERDICT_YES)
+                        {
+                            die "Mismatched verdict: Should be set to no, but already yes.";
+                        }
+
+                        if ($existing_verdict == $ABCP_VERDICT_MAYBE)
+                        {
+                            set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                            print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
+                            $num_changed++;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
