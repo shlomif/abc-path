@@ -370,6 +370,24 @@ sub set_conclusive_verdict_for_letter
                 });
             }
         }
+
+        xy_loop(sub {
+            my ($x, $y) = @_;
+
+            my $letters_aref = get_possible_letters($x, $y);
+
+            if (@$letters_aref == 1)
+            {
+                my $letter = $letters_aref->[0];
+
+                if (get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+                {
+                    $num_changed++;
+                    set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                    print "The only letter that can be at ($x,$y) is $letters[$letter]. Invaladiting it for all other cells.\n";
+                }
+            }
+        });
     }
 }
 
