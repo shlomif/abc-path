@@ -384,7 +384,7 @@ sub set_conclusive_verdict_for_letter
                 {
                     $num_changed++;
                     set_conclusive_verdict_for_letter($letter, [$x, $y]);
-                    print "The only letter that can be at ($x,$y) is $letters[$letter]. Invaladiting it for all other cells.\n";
+                    print "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells.\n";
                 }
             }
         });
