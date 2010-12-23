@@ -446,10 +446,24 @@ sub input
     return;
 }
 
-package main;
+sub get_results_text_table
+{
+    my ($solver) = @_;
 
-# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
-# verdicts above.
+    my $tb =
+        Text::Table->new(
+            \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
+        );
+
+    foreach my $y (0 .. $BOARD_LEN_LIM)
+    {
+        $tb->add(map { $solver->get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
+    }
+
+    return $tb;
+}
+
+package main;
 
 my $solver = Games::ABC_Path::Solver::Board->new;
 
@@ -483,17 +497,7 @@ $solver->input({ layout => $layout_string, version => 1});
 
 $solver->neighbourhood_and_individuality_inferring;
 
-my $tb =
-    Text::Table->new(
-        \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
-    );
-
-foreach my $y (0 .. $BOARD_LEN_LIM)
-{
-    $tb->add(map { $solver->get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
-}
-
-print $tb;
+print $solver->get_results_text_table;
 
 =head1 COPYRIGHT AND LICENSE
 
