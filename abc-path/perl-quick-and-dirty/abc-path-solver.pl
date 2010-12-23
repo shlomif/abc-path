@@ -104,18 +104,9 @@ sub set_verdict
     return;
 }
 
-
-package main;
-
-# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
-# verdicts above.
-
-my $verdicts_matrix = '';
-
-my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
 sub xy_loop
 {
-    my ($sub_ref) = (@_);
+    my ($solver, $sub_ref) = (@_);
 
     foreach my $y (0 .. $BOARD_LEN_LIM)
     {
@@ -126,6 +117,16 @@ sub xy_loop
     }
     return;
 }
+
+
+package main;
+
+# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
+# verdicts above.
+
+my $verdicts_matrix = '';
+
+my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
 
 my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
@@ -203,7 +204,7 @@ sub set_verdicts_for_letter_sets
 
     foreach my $letter_ascii (@$letter_list)
     {
-        xy_loop(
+        $solver->xy_loop(
             sub {
                 my ($x, $y) = @_;
 
@@ -225,7 +226,7 @@ sub set_conclusive_verdict_for_letter
 
     my ($l_x, $l_y) = @$xy;
 
-    xy_loop(sub {
+    $solver->xy_loop(sub {
             my ($x, $y) = @_;
 
             $solver->set_verdict($letter, $x, $y,
@@ -342,7 +343,7 @@ sub set_conclusive_verdict_for_letter
         {
             my @true_cells;
 
-            xy_loop(sub {
+            $solver->xy_loop(sub {
                 my @c = @_;
 
                 my $ver = $solver->get_verdict($letter, @c);
@@ -387,7 +388,7 @@ sub set_conclusive_verdict_for_letter
                 (($letter < $#letters) ? ($letter+1) : ()),
             )
             {
-                xy_loop(sub {
+                $solver->xy_loop(sub {
                     my ($x, $y) = @_;
 
                     if ($neighbourhood[$y][$x])
@@ -413,7 +414,7 @@ sub set_conclusive_verdict_for_letter
             }
         }
 
-        xy_loop(sub {
+        $solver->xy_loop(sub {
             my ($x, $y) = @_;
 
             my $letters_aref = get_possible_letters($x, $y);
