@@ -235,111 +235,120 @@ sub _get_possible_letters_string
     return join(',', @{$solver->get_possible_letters_for_cell($x,$y)});
 }
 
+sub _inference_iteration
+{
+    my ($solver) = @_;
+
+    my $num_changed = 0;
+
+    foreach my $letter (0 .. $#letters)
+    {
+        my @true_cells;
+
+        $solver->xy_loop(sub {
+            my @c = @_;
+
+            my $ver = $solver->get_verdict($letter, @c);
+            if (    ($ver == $ABCP_VERDICT_YES) 
+                || ($ver == $ABCP_VERDICT_MAYBE))
+            {
+                push @true_cells, [@c]; 
+            }
+        });
+
+        if (@true_cells == 1)
+        {
+            my $xy = $true_cells[0];
+            if ($solver->get_verdict($letter, @$xy) ==
+                $ABCP_VERDICT_MAYBE)
+            {
+                $num_changed++;
+                $solver->set_conclusive_verdict_for_letter($letter, $xy);
+                print "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.\n";
+            }
+        }
+
+        my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($solver->_y_indexes));
+        
+        foreach my $true (@true_cells)
+        {
+            foreach my $coords
+            (
+                grep { $_->[0] >= 0 and $_->[0] < $BOARD_LEN and $_->[1] >= 0 and
+                $_->[1] < $BOARD_LEN }
+                map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
+                map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
+                (-1 .. 1)
+            )
+            {
+                $neighbourhood[$coords->[1]][$coords->[0]] = 1;
+            }
+        }
+
+        foreach my $neighbour_letter (
+            (($letter > 0) ? ($letter-1) : ()),
+            (($letter < $#letters) ? ($letter+1) : ()),
+        )
+        {
+            $solver->xy_loop(sub {
+                my ($x, $y) = @_;
+
+                if ($neighbourhood[$y][$x])
+                {
+                    return;
+                }
+
+                my $existing_verdict =
+                    $solver->get_verdict($neighbour_letter, $x, $y);
+
+                if ($existing_verdict == $ABCP_VERDICT_YES)
+                {
+                    die "Mismatched verdict: Should be set to no, but already yes.";
+                }
+
+                if ($existing_verdict == $ABCP_VERDICT_MAYBE)
+                {
+                    $solver->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                    print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
+                    $num_changed++;
+                }
+            });
+        }
+    }
+
+    $solver->xy_loop(sub {
+        my ($x, $y) = @_;
+
+        my $letters_aref = $solver->_get_possible_letter_indexes($x, $y);
+
+        if (@$letters_aref == 1)
+        {
+            my $letter = $letters_aref->[0];
+
+            if ($solver->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+            {
+                $num_changed++;
+                $solver->set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                print "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells.\n";
+            }
+        }
+    });
+
+    return $num_changed;
+}
+
 sub neighbourhood_and_individuality_inferring
 {
     my ($solver) = @_;
 
-    my $num_changed = 1;
+    my $num_changed = 0;
 
-    while ($num_changed)
+    while (my $iter_changed = $solver->_inference_iteration())
     {
-        $num_changed = 0;
-
-        foreach my $letter (0 .. $#letters)
-        {
-            my @true_cells;
-
-            $solver->xy_loop(sub {
-                my @c = @_;
-
-                my $ver = $solver->get_verdict($letter, @c);
-                if (    ($ver == $ABCP_VERDICT_YES) 
-                    || ($ver == $ABCP_VERDICT_MAYBE))
-                {
-                    push @true_cells, [@c]; 
-                }
-            });
-
-            if (@true_cells == 1)
-            {
-                my $xy = $true_cells[0];
-                if ($solver->get_verdict($letter, @$xy) ==
-                    $ABCP_VERDICT_MAYBE)
-                {
-                    $num_changed++;
-                    $solver->set_conclusive_verdict_for_letter($letter, $xy);
-                    print "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.\n";
-                }
-            }
-
-            my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($solver->_y_indexes));
-            
-            foreach my $true (@true_cells)
-            {
-                foreach my $coords
-                (
-                    grep { $_->[0] >= 0 and $_->[0] < $BOARD_LEN and $_->[1] >= 0 and
-                    $_->[1] < $BOARD_LEN }
-                    map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
-                    map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
-                    (-1 .. 1)
-                )
-                {
-                    $neighbourhood[$coords->[1]][$coords->[0]] = 1;
-                }
-            }
-
-            foreach my $neighbour_letter (
-                (($letter > 0) ? ($letter-1) : ()),
-                (($letter < $#letters) ? ($letter+1) : ()),
-            )
-            {
-                $solver->xy_loop(sub {
-                    my ($x, $y) = @_;
-
-                    if ($neighbourhood[$y][$x])
-                    {
-                        return;
-                    }
-
-                    my $existing_verdict =
-                        $solver->get_verdict($neighbour_letter, $x, $y);
-
-                    if ($existing_verdict == $ABCP_VERDICT_YES)
-                    {
-                        die "Mismatched verdict: Should be set to no, but already yes.";
-                    }
-
-                    if ($existing_verdict == $ABCP_VERDICT_MAYBE)
-                    {
-                        $solver->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
-                        print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
-                        $num_changed++;
-                    }
-                });
-            }
-        }
-
-        $solver->xy_loop(sub {
-            my ($x, $y) = @_;
-
-            my $letters_aref = $solver->_get_possible_letter_indexes($x, $y);
-
-            if (@$letters_aref == 1)
-            {
-                my $letter = $letters_aref->[0];
-
-                if ($solver->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
-                {
-                    $num_changed++;
-                    $solver->set_conclusive_verdict_for_letter($letter, [$x, $y]);
-                    print "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells.\n";
-                }
-            }
-        });
+        $num_changed += $iter_changed;
     }
 
-    return;
+    return $num_changed;
 }
 
 sub input
