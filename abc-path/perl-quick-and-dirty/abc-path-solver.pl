@@ -358,6 +358,9 @@ sub input
 
     my @rows = split(/\n/, $layout_string);
 
+    my $top_row = shift(@rows);;
+    my $bottom_row = pop(@rows);
+
     {
         my %count_letters = (map { $_ => 0 } @letters);
         foreach my $letter ($layout_string =~ m{($letter_re)}g)
@@ -373,11 +376,11 @@ sub input
     {
         my @major_diagonal_letters;
 
-        $rows[0] =~ m{\A($letter_re)};
+        $top_row =~ m{\A($letter_re)};
 
         push @major_diagonal_letters, $1;
 
-        $rows[-1] =~ m{($letter_re)\z};
+        $bottom_row =~ m{($letter_re)\z};
 
         push @major_diagonal_letters, $1;
 
@@ -390,11 +393,11 @@ sub input
     {
         my @minor_diagonal_letters;
 
-        $rows[0] =~ m{($letter_re)\z};
+        $top_row =~ m{($letter_re)\z};
 
         push @minor_diagonal_letters, $1;
 
-        $rows[-1] =~ m{\A($letter_re)};
+        $bottom_row =~ m{\A($letter_re)};
 
         push @minor_diagonal_letters, $1;
 
@@ -405,8 +408,6 @@ sub input
     }
 
     {
-        my $top_row = $rows[0];
-        my $bottom_row = $rows[-1];
 
         foreach my $x (0 .. $BOARD_LEN_LIM)
         {
@@ -422,7 +423,7 @@ sub input
         my ($clue_x, $clue_y, $clue_letter);
         foreach my $y (0 .. $BOARD_LEN_LIM)
         {
-            my $row = $rows[$y+1];
+            my $row = $rows[$y];
             $solver->set_verdicts_for_letter_sets(
                 [substr($row, 0, 1), substr($row, -1),],
                 [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
