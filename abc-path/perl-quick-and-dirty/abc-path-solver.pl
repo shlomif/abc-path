@@ -48,7 +48,7 @@ sub _init
     return;
 }
 
-sub xy_to_idx
+sub _xy_to_idx
 {
     my ($self, $x, $y) = @_;
 
@@ -63,10 +63,10 @@ sub xy_to_idx
     }
 
 
-    return $y*5+$x;
+    return $y * $BOARD_LEN +$x;
 }
 
-sub get_verdict
+sub _calc_offset
 {
     my ($solver, $letter, $x, $y) = @_;
 
@@ -75,19 +75,19 @@ sub get_verdict
         confess "Letter $letter out of range.";
     }
 
-    return vec(${$solver->_layout}, 
-        $letter * 25 + $solver->xy_to_idx($x,$y), 2
-    );
+    return $letter * ($BOARD_LEN * $BOARD_LEN) + $solver->_xy_to_idx($x,$y);
+}
+
+sub get_verdict
+{
+    my ($solver, $letter, $x, $y) = @_;
+
+    return vec(${$solver->_layout}, $solver->_calc_offset($letter, $x, $y), 2);
 }
 
 sub set_verdict
 {
     my ($solver, $letter, $x, $y, $verdict) = @_;
-
-    if (($letter < 0) or ($letter >= 25))
-    {
-        confess "Letter $letter out of range.";
-    }
 
     if (not
         (($verdict == $ABCP_VERDICT_NO)
@@ -98,7 +98,7 @@ sub set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec(${$solver->_layout}, $letter * 25 + $solver->xy_to_idx($x,$y), 2)
+    vec(${$solver->_layout}, $solver->_calc_offset($letter,$x,$y), 2)
         = $verdict;
 
     return;
