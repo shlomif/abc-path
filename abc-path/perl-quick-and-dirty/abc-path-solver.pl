@@ -161,8 +161,39 @@ sub set_verdicts_for_letter_sets
             }
         );
     }
+
+    return;
 }
 
+sub set_conclusive_verdict_for_letter
+{
+    my ($solver, $letter, $xy) = @_;
+
+    my ($l_x, $l_y) = @$xy;
+
+    $solver->xy_loop(sub {
+            my ($x, $y) = @_;
+
+            $solver->set_verdict($letter, $x, $y,
+                ((($l_x == $x) && ($l_y == $y))
+                    ? $ABCP_VERDICT_YES
+                    : $ABCP_VERDICT_NO
+                )
+            );
+        }
+    );
+    OTHER_LETTER:
+    foreach my $other_letter (0 .. $#letters)
+    {
+        if ($other_letter == $letter)
+        {
+            next OTHER_LETTER;
+        }
+        $solver->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+    }
+
+    return;
+}
 
 package main;
 
@@ -172,8 +203,6 @@ package main;
 my $verdicts_matrix = '';
 
 my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
-
-my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
 # Input the board.
 
@@ -223,34 +252,6 @@ if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
     }
 }
 # Now let's process the layout string and populate the verdicts table.
-
-sub set_conclusive_verdict_for_letter
-{
-    my ($letter, $xy) = @_;
-
-    my ($l_x, $l_y) = @$xy;
-
-    $solver->xy_loop(sub {
-            my ($x, $y) = @_;
-
-            $solver->set_verdict($letter, $x, $y,
-                ((($l_x == $x) && ($l_y == $y))
-                    ? $ABCP_VERDICT_YES
-                    : $ABCP_VERDICT_NO
-                )
-            );
-        }
-    );
-    OTHER_LETTER:
-    foreach my $other_letter (0 .. $#letters)
-    {
-        if ($other_letter == $letter)
-        {
-            next OTHER_LETTER;
-        }
-        $solver->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
-    }
-}
 
 {
     my @major_diagonal_letters;
@@ -328,7 +329,7 @@ sub set_conclusive_verdict_for_letter
         confess "Did not find any clue letters inside the layout.";
     }
     
-    set_conclusive_verdict_for_letter(
+    $solver->set_conclusive_verdict_for_letter(
         $solver->get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
@@ -365,7 +366,7 @@ sub set_conclusive_verdict_for_letter
                     $ABCP_VERDICT_MAYBE)
                 {
                     $num_changed++;
-                    set_conclusive_verdict_for_letter($letter, $xy);
+                    $solver->set_conclusive_verdict_for_letter($letter, $xy);
                     print "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.\n";
                 }
             }
@@ -430,7 +431,7 @@ sub set_conclusive_verdict_for_letter
                 if ($solver->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
                 {
                     $num_changed++;
-                    set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                    $solver->set_conclusive_verdict_for_letter($letter, [$x, $y]);
                     print "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells.\n";
                 }
             }
