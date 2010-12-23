@@ -60,6 +60,11 @@ sub _y_indexes
     return (0 .. $BOARD_LEN_LIM);
 }
 
+sub _x_indexes
+{
+    return (0 .. $BOARD_LEN_LIM);
+}
+
 sub _init
 {
     my ($self, $args) = @_;
@@ -138,7 +143,7 @@ sub xy_loop
 
     foreach my $y ($solver->_y_indexes)
     {
-        foreach my $x (0 .. $BOARD_LEN_LIM)
+        foreach my $x ($solver->_x_indexes)
         {
             $sub_ref->($x,$y);
         }
@@ -267,7 +272,7 @@ sub neighbourhood_and_individuality_inferring
                 }
             }
 
-            my @neighbourhood = (map { [(0) x $BOARD_LEN] } (0 .. $BOARD_LEN_LIM));
+            my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($solver->_y_indexes));
             
             foreach my $true (@true_cells)
             {
@@ -406,13 +411,13 @@ sub input
 
         $solver->set_verdicts_for_letter_sets(
             \@minor_diagonal_letters,
-            [map { [$_, 4-$_] } (0 .. $BOARD_LEN_LIM)]
+            [map { [$_, 4-$_] } ($solver->_y_indexes)]
         );
     }
 
     {
 
-        foreach my $x (0 .. $BOARD_LEN_LIM)
+        foreach my $x ($solver->_x_indexes)
         {
             $solver->set_verdicts_for_letter_sets(
                 [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
@@ -429,7 +434,7 @@ sub input
             my $row = $rows[$y];
             $solver->set_verdicts_for_letter_sets(
                 [substr($row, 0, 1), substr($row, -1),],
-                [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
+                [map { [$_,$y] } $solver->_x_indexes],
             );
 
             my $s = substr($row, 1, -1);
@@ -466,7 +471,7 @@ sub get_results_text_table
 
     my $tb =
         Text::Table->new(
-            \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
+            \" | ", (map {; "X = $_", (\' | '); } $solver->_x_indexes)
         );
 
     foreach my $y ($solver->_y_indexes)
@@ -474,7 +479,7 @@ sub get_results_text_table
         $tb->add(
             map 
             { $solver->_get_possible_letters_string($_, $y) } 
-            (0 .. $BOARD_LEN_LIM)
+            $solver->_x_indexes
         );
     }
 
