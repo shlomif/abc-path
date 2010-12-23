@@ -61,7 +61,14 @@ sub _init
 {
     my ($self, $args) = @_;
 
-    $self->_layout($args->{layout});
+    my $layout_string = $args->{layout};
+
+    if (!defined($layout_string))
+    {
+        $layout_string = '';
+    }
+
+    $self->_layout(\$layout_string);
 
     return;
 }
@@ -444,9 +451,7 @@ package main;
 # This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
 # verdicts above.
 
-my $verdicts_matrix = '';
-
-my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
+my $solver = Games::ABC_Path::Solver::Board->new;
 
 # Input the board.
 
