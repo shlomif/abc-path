@@ -195,6 +195,25 @@ sub set_conclusive_verdict_for_letter
     return;
 }
 
+sub get_possible_letters
+{
+    my ($solver, $x, $y) = @_;
+
+    return 
+    [
+        grep { $solver->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        (0 .. $#letters)
+    ];
+}
+
+sub get_possible_letters_string
+{
+    my ($solver, $x, $y) = @_;
+
+    return join(',', @letters[@{$solver->get_possible_letters($x,$y)}]);
+}
+
+
 package main;
 
 # This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
@@ -422,7 +441,7 @@ if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
         $solver->xy_loop(sub {
             my ($x, $y) = @_;
 
-            my $letters_aref = get_possible_letters($x, $y);
+            my $letters_aref = $solver->get_possible_letters($x, $y);
 
             if (@$letters_aref == 1)
             {
@@ -444,28 +463,9 @@ my $tb =
     Text::Table->new(
         \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
 );
-
-sub get_possible_letters
-{
-    my ($x, $y) = @_;
-
-    return 
-    [
-        grep { $solver->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
-        (0 .. $#letters)
-    ];
-}
-
-sub get_possible_letters_string
-{
-    my ($x, $y) = @_;
-
-    return join(',', @letters[@{get_possible_letters($x,$y)}]);
-}
-
 foreach my $y (0 .. $BOARD_LEN_LIM)
 {
-    $tb->add(map { get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
+    $tb->add(map { $solver->get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
 }
 
 print $tb;
