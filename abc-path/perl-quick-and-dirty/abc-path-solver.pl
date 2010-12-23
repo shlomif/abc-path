@@ -474,36 +474,51 @@ sub get_results_text_table
     return $tb;
 }
 
+# Input the board.
+
+sub input_from_file
+{
+    my ($class, $board_fn) = @_;
+
+    my $solver = $class->new;
+
+    open my $in_fh, "<", $board_fn
+        or die "Cannot open '$board_fn' - $!";
+
+    my $first_line = <$in_fh>;
+    chomp($first_line);
+
+    my $magic = 'ABC Path Solver Layout Version 1:';
+    if ($first_line !~ m{\A\Q$magic\E\s*\z})
+    {
+        die "Can only process files whose first line is '$magic'!";
+    }
+
+    my $layout_string = '';
+    foreach my $line_idx (1 .. 7)
+    {
+        chomp(my $line = <$in_fh>);
+        $layout_string .= "$line\n";
+    }
+    close($in_fh);
+
+    $solver->input({ layout => $layout_string, version => 1});
+
+    return $solver;
+}
+
 package main;
 
-my $solver = Games::ABC_Path::Solver::Board->new;
-
-# Input the board.
+# my $solver = Games::ABC_Path::Solver::Board->new;
 
 my $board_fn = shift(@ARGV);
 
-open my $in_fh, "<", $board_fn
-    or die "Cannot open '$board_fn' - $!";
-
-my $first_line = <$in_fh>;
-chomp($first_line);
-
-my $magic = 'ABC Path Solver Layout Version 1:';
-if ($first_line !~ m{\A\Q$magic\E\s*\z})
+if (!defined ($board_fn))
 {
-    die "Can only process files whose first line is '$magic'!";
+    die "Filename not specified - usage: abc-path-solver.pl [filename]!";
 }
 
-my $layout_string = '';
-foreach my $line_idx (1 .. 7)
-{
-    chomp(my $line = <$in_fh>);
-    $layout_string .= "$line\n";
-}
-close($in_fh);
-
-$solver->input({ layout => $layout_string, version => 1});
-
+my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
 # Now let's do a neighbourhood inferring of the board.
 
 $solver->neighbourhood_and_individuality_inferring;
