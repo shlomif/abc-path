@@ -5,8 +5,6 @@ use warnings;
 
 use Carp;
 
-use Text::Table;
-
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
@@ -458,6 +456,8 @@ sub input
 sub get_results_text_table
 {
     my ($solver) = @_;
+
+    require Text::Table;
 
     my $tb =
         Text::Table->new(
