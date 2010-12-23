@@ -214,149 +214,10 @@ sub get_possible_letters_string
 }
 
 
-package main;
-
-# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
-# verdicts above.
-
-my $verdicts_matrix = '';
-
-my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
-
-# Input the board.
-
-my $board_fn = shift(@ARGV);
-
-open my $in_fh, "<", $board_fn
-    or die "Cannot open '$board_fn' - $!";
-
-my $first_line = <$in_fh>;
-chomp($first_line);
-
-my $magic = 'ABC Path Solver Layout Version 1:';
-if ($first_line !~ m{\A\Q$magic\E\s*\z})
+sub neighbourhood_and_individuality_infering
 {
-    die "Can only process files whose first line is '$magic'!";
-}
+    my ($solver) = @_;
 
-my $layout_string = '';
-foreach my $line_idx (1 .. 7)
-{
-    chomp(my $line = <$in_fh>);
-    $layout_string .= "$line\n";
-}
-close($in_fh);
-
-# For debugging:
-# print $layout_string;
-
-my $letter_re = qr{[A-Y]};
-my $letter_and_space_re = qr{[ A-Y]};
-my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
-my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
-
-if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
-{
-    die "Invalid format. Should be Letter{7}\n(Letter{spaces or one letter}{5}Letter){5}\nLetter{7}";
-}
-
-{
-    my %count_letters = (map { $_ => 0 } @letters);
-    foreach my $letter ($layout_string =~ m{($letter_re)}g)
-    {
-        if ($count_letters{$letter}++)
-        {
-            die "Letter '$letter' encountered twice in the layout.";
-        }
-    }
-}
-# Now let's process the layout string and populate the verdicts table.
-
-{
-    my @major_diagonal_letters;
-
-    $layout_string =~ m{\A(.)};
-
-    push @major_diagonal_letters, $1;
-
-    $layout_string =~ m{(.)\n\z};
-
-    push @major_diagonal_letters, $1;
-
-    $solver->set_verdicts_for_letter_sets(
-        \@major_diagonal_letters, 
-        [map { [$_,$_] } (0 .. 4)],
-    )
-}
-
-{
-    my @minor_diagonal_letters;
-
-    $layout_string =~ m/\A${letter_re}*($letter_re)\n/ms;
-
-    push @minor_diagonal_letters, $1;
-
-    $layout_string =~ m{($letter_re*)\n\z}ms;
-
-    push @minor_diagonal_letters, substr($1,0,1);
-
-    $solver->set_verdicts_for_letter_sets(
-        \@minor_diagonal_letters,
-        [map { [$_, 4-$_] } (0 .. $BOARD_LEN_LIM)]
-    );
-}
-
-{
-    my ($top_row) = ($layout_string =~ m/\A(${letter_re}*)\n/ms);
-    my ($bottom_row) = ($layout_string =~ m/(${letter_re}*)\n\z/ms);
-
-    foreach my $x (0 .. $BOARD_LEN_LIM)
-    {
-        $solver->set_verdicts_for_letter_sets(
-            [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
-            [map { [$x,$_] } (0 .. 4)],
-        );
-    }
-}
-
-{
-    my @rows = split(/\n/, $layout_string);
-
-    my ($clue_x, $clue_y, $clue_letter);
-    foreach my $y (0 .. $BOARD_LEN_LIM)
-    {
-        my $row = $rows[$y+1];
-        $solver->set_verdicts_for_letter_sets(
-            [substr($row, 0, 1), substr($row, -1),],
-            [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
-        );
-
-        my $s = substr($row, 1, -1);
-        if ($s =~ m{($letter_re)}g)
-        {
-            my ($l, $x_plus_1) = ($1, pos($s));
-            if (defined($clue_letter))
-            {
-                confess "Found more than one clue letter in the layout!";
-            }
-            ($clue_x, $clue_y, $clue_letter) = ($x_plus_1-1, $y, $l);
-        }
-    }
-
-    if (!defined ($clue_letter))
-    {
-        confess "Did not find any clue letters inside the layout.";
-    }
-    
-    $solver->set_conclusive_verdict_for_letter(
-        $solver->get_letter_numeric($clue_letter),
-        [$clue_x, $clue_y],
-    );
-}
-
-# Now let's do a neighbourhood infering of the board.
-
-{
     my $num_changed = 1;
 
     while ($num_changed)
@@ -456,8 +317,165 @@ if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
             }
         });
     }
+
+    return;
 }
 
+sub input
+{
+    my ($solver, $args) = @_;
+
+    if ($args->{version} ne 1)
+    {
+        die "Can only handle version 1";
+    }
+
+    my $layout_string = $args->{layout};
+
+    my $letter_re = qr{[A-Y]};
+    my $letter_and_space_re = qr{[ A-Y]};
+    my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
+    my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
+
+    if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
+    {
+        die "Invalid format. Should be Letter{7}\n(Letter{spaces or one letter}{5}Letter){5}\nLetter{7}";
+    }
+
+    {
+        my %count_letters = (map { $_ => 0 } @letters);
+        foreach my $letter ($layout_string =~ m{($letter_re)}g)
+        {
+            if ($count_letters{$letter}++)
+            {
+                die "Letter '$letter' encountered twice in the layout.";
+            }
+        }
+    }
+# Now let's process the layout string and populate the verdicts table.
+
+    {
+        my @major_diagonal_letters;
+
+        $layout_string =~ m{\A(.)};
+
+        push @major_diagonal_letters, $1;
+
+        $layout_string =~ m{(.)\n\z};
+
+        push @major_diagonal_letters, $1;
+
+        $solver->set_verdicts_for_letter_sets(
+            \@major_diagonal_letters, 
+            [map { [$_,$_] } (0 .. 4)],
+        );
+    }
+
+    {
+        my @minor_diagonal_letters;
+
+        $layout_string =~ m/\A${letter_re}*($letter_re)\n/ms;
+
+        push @minor_diagonal_letters, $1;
+
+        $layout_string =~ m{($letter_re*)\n\z}ms;
+
+        push @minor_diagonal_letters, substr($1,0,1);
+
+        $solver->set_verdicts_for_letter_sets(
+            \@minor_diagonal_letters,
+            [map { [$_, 4-$_] } (0 .. $BOARD_LEN_LIM)]
+        );
+    }
+
+    {
+        my ($top_row) = ($layout_string =~ m/\A(${letter_re}*)\n/ms);
+        my ($bottom_row) = ($layout_string =~ m/(${letter_re}*)\n\z/ms);
+
+        foreach my $x (0 .. $BOARD_LEN_LIM)
+        {
+            $solver->set_verdicts_for_letter_sets(
+                [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
+                [map { [$x,$_] } (0 .. 4)],
+            );
+        }
+    }
+
+    {
+        my @rows = split(/\n/, $layout_string);
+
+        my ($clue_x, $clue_y, $clue_letter);
+        foreach my $y (0 .. $BOARD_LEN_LIM)
+        {
+            my $row = $rows[$y+1];
+            $solver->set_verdicts_for_letter_sets(
+                [substr($row, 0, 1), substr($row, -1),],
+                [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
+            );
+
+            my $s = substr($row, 1, -1);
+            if ($s =~ m{($letter_re)}g)
+            {
+                my ($l, $x_plus_1) = ($1, pos($s));
+                if (defined($clue_letter))
+                {
+                    confess "Found more than one clue letter in the layout!";
+                }
+                ($clue_x, $clue_y, $clue_letter) = ($x_plus_1-1, $y, $l);
+            }
+        }
+
+        if (!defined ($clue_letter))
+        {
+            confess "Did not find any clue letters inside the layout.";
+        }
+
+        $solver->set_conclusive_verdict_for_letter(
+            $solver->get_letter_numeric($clue_letter),
+            [$clue_x, $clue_y],
+        );
+    }
+
+    return;
+}
+
+package main;
+
+# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
+# verdicts above.
+
+my $verdicts_matrix = '';
+
+my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
+
+# Input the board.
+
+my $board_fn = shift(@ARGV);
+
+open my $in_fh, "<", $board_fn
+    or die "Cannot open '$board_fn' - $!";
+
+my $first_line = <$in_fh>;
+chomp($first_line);
+
+my $magic = 'ABC Path Solver Layout Version 1:';
+if ($first_line !~ m{\A\Q$magic\E\s*\z})
+{
+    die "Can only process files whose first line is '$magic'!";
+}
+
+my $layout_string = '';
+foreach my $line_idx (1 .. 7)
+{
+    chomp(my $line = <$in_fh>);
+    $layout_string .= "$line\n";
+}
+close($in_fh);
+
+$solver->input({ layout => $layout_string, version => 1});
+# Now let's do a neighbourhood infering of the board.
+
+$solver->neighbourhood_and_individuality_infering;
 
 my $tb = 
     Text::Table->new(
