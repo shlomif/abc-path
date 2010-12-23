@@ -221,7 +221,7 @@ sub get_possible_letters_string
 }
 
 
-sub neighbourhood_and_individuality_infering
+sub neighbourhood_and_individuality_inferring
 {
     my ($solver) = @_;
 
@@ -478,14 +478,15 @@ foreach my $line_idx (1 .. 7)
 close($in_fh);
 
 $solver->input({ layout => $layout_string, version => 1});
-# Now let's do a neighbourhood infering of the board.
 
-$solver->neighbourhood_and_individuality_infering;
+# Now let's do a neighbourhood inferring of the board.
 
-my $tb = 
+$solver->neighbourhood_and_individuality_inferring;
+
+my $tb =
     Text::Table->new(
         \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
-);
+    );
 
 foreach my $y (0 .. $BOARD_LEN_LIM)
 {
