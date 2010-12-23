@@ -227,7 +227,6 @@ sub _get_possible_letters_string
     return join(',', @{$solver->get_possible_letters_for_cell($x,$y)});
 }
 
-
 sub neighbourhood_and_individuality_inferring
 {
     my ($solver) = @_;
@@ -346,8 +345,9 @@ sub input
 
     my $layout_string = $args->{layout};
 
-    my $letter_re = qr{[A-Y]};
-    my $letter_and_space_re = qr{[ A-Y]};
+    my $letter_re_s = join('', map { quotemeta($_) } @letters);
+    my $letter_re = qr{[$letter_re_s]};
+    my $letter_and_space_re = qr{[ $letter_re_s]};
     my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
     my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
 
@@ -355,6 +355,8 @@ sub input
     {
         die "Invalid format. Should be Letter{7}\n(Letter{spaces or one letter}{5}Letter){5}\nLetter{7}";
     }
+
+    my @rows = split(/\n/, $layout_string);
 
     {
         my %count_letters = (map { $_ => 0 } @letters);
@@ -366,16 +368,16 @@ sub input
             }
         }
     }
-# Now let's process the layout string and populate the verdicts table.
+    # Now let's process the layout string and populate the verdicts table.
 
     {
         my @major_diagonal_letters;
 
-        $layout_string =~ m{\A(.)};
+        $rows[0] =~ m{\A($letter_re)};
 
         push @major_diagonal_letters, $1;
 
-        $layout_string =~ m{(.)\n\z};
+        $rows[-1] =~ m{($letter_re)\z};
 
         push @major_diagonal_letters, $1;
 
@@ -388,13 +390,13 @@ sub input
     {
         my @minor_diagonal_letters;
 
-        $layout_string =~ m/\A${letter_re}*($letter_re)\n/ms;
+        $rows[0] =~ m{($letter_re)\z};
 
         push @minor_diagonal_letters, $1;
 
-        $layout_string =~ m{($letter_re*)\n\z}ms;
+        $rows[-1] =~ m{\A($letter_re)};
 
-        push @minor_diagonal_letters, substr($1,0,1);
+        push @minor_diagonal_letters, $1;
 
         $solver->set_verdicts_for_letter_sets(
             \@minor_diagonal_letters,
@@ -403,8 +405,8 @@ sub input
     }
 
     {
-        my ($top_row) = ($layout_string =~ m/\A(${letter_re}*)\n/ms);
-        my ($bottom_row) = ($layout_string =~ m/(${letter_re}*)\n\z/ms);
+        my $top_row = $rows[0];
+        my $bottom_row = $rows[-1];
 
         foreach my $x (0 .. $BOARD_LEN_LIM)
         {
@@ -416,7 +418,6 @@ sub input
     }
 
     {
-        my @rows = split(/\n/, $layout_string);
 
         my ($clue_x, $clue_y, $clue_letter);
         foreach my $y (0 .. $BOARD_LEN_LIM)
