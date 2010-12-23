@@ -202,7 +202,7 @@ sub set_conclusive_verdict_for_letter
     return;
 }
 
-sub _get_possible_letters
+sub _get_possible_letter_indexes
 {
     my ($solver, $x, $y) = @_;
 
@@ -217,7 +217,7 @@ sub get_possible_letters_for_cell
 {
     my ($solver, $x, $y) = @_;
 
-    return [@letters[@{$solver->_get_possible_letters($x,$y)}]];
+    return [@letters[@{$solver->_get_possible_letter_indexes($x,$y)}]];
 }
 
 sub _get_possible_letters_string
@@ -316,7 +316,7 @@ sub neighbourhood_and_individuality_inferring
         $solver->xy_loop(sub {
             my ($x, $y) = @_;
 
-            my $letters_aref = $solver->_get_possible_letters($x, $y);
+            my $letters_aref = $solver->_get_possible_letter_indexes($x, $y);
 
             if (@$letters_aref == 1)
             {
