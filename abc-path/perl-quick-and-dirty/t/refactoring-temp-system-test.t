@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 4;
 use Test::Differences;
 
 sub _slurp
@@ -19,6 +19,25 @@ sub _slurp
     close($in);
 
     return $contents;
+}
+
+{
+    my $got_results =
+        `perl abc-path-solver.pl layouts/brain-bashers.2010-12-21.abc-path`
+        ;
+
+    # TEST
+    ok ((!$?), "Process ended successfully.");
+
+    my $exp_results =
+        _slurp('./t/results/brain-bashers.2010-12-21.abc-path-sol');
+
+    # TEST
+    eq_or_diff(
+        $got_results,
+        $exp_results,
+        "Output is OK.",
+    );
 }
 
 {
@@ -39,7 +58,6 @@ sub _slurp
         "Output is OK.",
     );
 }
-
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (c) 2010 Shlomi Fish
