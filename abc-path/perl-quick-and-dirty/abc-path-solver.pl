@@ -202,7 +202,7 @@ sub set_conclusive_verdict_for_letter
     return;
 }
 
-sub get_possible_letters
+sub _get_possible_letters
 {
     my ($solver, $x, $y) = @_;
 
@@ -213,11 +213,18 @@ sub get_possible_letters
     ];
 }
 
-sub get_possible_letters_string
+sub get_possible_letters_for_cell
 {
     my ($solver, $x, $y) = @_;
 
-    return join(',', @letters[@{$solver->get_possible_letters($x,$y)}]);
+    return [@letters[@{$solver->_get_possible_letters($x,$y)}]];
+}
+
+sub _get_possible_letters_string
+{
+    my ($solver, $x, $y) = @_;
+
+    return join(',', @{$solver->get_possible_letters_for_cell($x,$y)});
 }
 
 
@@ -309,7 +316,7 @@ sub neighbourhood_and_individuality_inferring
         $solver->xy_loop(sub {
             my ($x, $y) = @_;
 
-            my $letters_aref = $solver->get_possible_letters($x, $y);
+            my $letters_aref = $solver->_get_possible_letters($x, $y);
 
             if (@$letters_aref == 1)
             {
@@ -457,7 +464,11 @@ sub get_results_text_table
 
     foreach my $y (0 .. $BOARD_LEN_LIM)
     {
-        $tb->add(map { $solver->get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
+        $tb->add(
+            map 
+            { $solver->_get_possible_letters_string($_, $y) } 
+            (0 .. $BOARD_LEN_LIM)
+        );
     }
 
     return $tb;
