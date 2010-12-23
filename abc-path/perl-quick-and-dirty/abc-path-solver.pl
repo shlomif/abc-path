@@ -14,13 +14,43 @@ my $ABCP_VERDICT_YES = 2;
 my $BOARD_LEN = 5;
 my $BOARD_LEN_LIM = $BOARD_LEN - 1;
 
-# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
-# verdicts above.
-my $verdicts_matrix = '';
+package Games::ABC_Path::Solver::Board;
+
+use Carp;
+
+sub new
+{
+    my $class = shift;
+
+    my $self = bless {}, $class;
+
+    $self->_init(@_);
+
+    return $self;
+}
+
+sub _layout {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_layout} = shift;
+    }
+
+    return $self->{_layout};
+}
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->_layout($args->{layout});
+
+    return;
+}
 
 sub xy_to_idx
 {
-    my ($x, $y) = @_;
+    my ($self, $x, $y) = @_;
 
     if (($x < 0) or ($x > $BOARD_LEN_LIM))
     {
@@ -36,6 +66,15 @@ sub xy_to_idx
     return $y*5+$x;
 }
 
+package main;
+
+# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
+# verdicts above.
+
+my $verdicts_matrix = '';
+
+my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
+
 sub get_verdict
 {
     my ($letter, $x, $y) = @_;
@@ -45,7 +84,7 @@ sub get_verdict
         confess "Letter $letter out of range.";
     }
 
-    return vec($verdicts_matrix, $letter*25+xy_to_idx($x,$y), 2);
+    return vec($verdicts_matrix, $letter * 25 + $solver->xy_to_idx($x,$y), 2);
 }
 
 sub set_verdict
@@ -66,7 +105,7 @@ sub set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec($verdicts_matrix, $letter*25+xy_to_idx($x,$y), 2) = $verdict;
+    vec($verdicts_matrix, $letter * 25 + $solver->xy_to_idx($x,$y), 2) = $verdict;
 
     return;
 }
