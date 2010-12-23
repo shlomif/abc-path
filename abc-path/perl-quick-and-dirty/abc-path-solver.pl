@@ -66,30 +66,23 @@ sub xy_to_idx
     return $y*5+$x;
 }
 
-package main;
-
-# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
-# verdicts above.
-
-my $verdicts_matrix = '';
-
-my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
-
 sub get_verdict
 {
-    my ($letter, $x, $y) = @_;
+    my ($solver, $letter, $x, $y) = @_;
 
     if (($letter < 0) or ($letter >= 25))
     {
         confess "Letter $letter out of range.";
     }
 
-    return vec($verdicts_matrix, $letter * 25 + $solver->xy_to_idx($x,$y), 2);
+    return vec(${$solver->_layout}, 
+        $letter * 25 + $solver->xy_to_idx($x,$y), 2
+    );
 }
 
 sub set_verdict
 {
-    my ($letter, $x, $y, $verdict) = @_;
+    my ($solver, $letter, $x, $y, $verdict) = @_;
 
     if (($letter < 0) or ($letter >= 25))
     {
@@ -105,11 +98,21 @@ sub set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec($verdicts_matrix, $letter * 25 + $solver->xy_to_idx($x,$y), 2) = $verdict;
+    vec(${$solver->_layout}, $letter * 25 + $solver->xy_to_idx($x,$y), 2)
+        = $verdict;
 
     return;
 }
 
+
+package main;
+
+# This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
+# verdicts above.
+
+my $verdicts_matrix = '';
+
+my $solver = Games::ABC_Path::Solver::Board->new({layout => \$verdicts_matrix});
 sub xy_loop
 {
     my ($sub_ref) = (@_);
@@ -205,7 +208,7 @@ sub set_verdicts_for_letter_sets
                 my ($x, $y) = @_;
 
                 my $letter = get_letter_numeric($letter_ascii);
-                set_verdict($letter, $x, $y,
+                $solver->set_verdict($letter, $x, $y,
                     ((exists $cell_is_maybe{"$x,$y"})
                         ? $ABCP_VERDICT_MAYBE
                         : $ABCP_VERDICT_NO
@@ -225,7 +228,7 @@ sub set_conclusive_verdict_for_letter
     xy_loop(sub {
             my ($x, $y) = @_;
 
-            set_verdict($letter, $x, $y,
+            $solver->set_verdict($letter, $x, $y,
                 ((($l_x == $x) && ($l_y == $y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
@@ -240,7 +243,7 @@ sub set_conclusive_verdict_for_letter
         {
             next OTHER_LETTER;
         }
-        set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+        $solver->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
     }
 }
 
@@ -342,7 +345,7 @@ sub set_conclusive_verdict_for_letter
             xy_loop(sub {
                 my @c = @_;
 
-                my $ver = get_verdict($letter, @c);
+                my $ver = $solver->get_verdict($letter, @c);
                 if (    ($ver == $ABCP_VERDICT_YES) 
                     || ($ver == $ABCP_VERDICT_MAYBE))
                 {
@@ -353,7 +356,7 @@ sub set_conclusive_verdict_for_letter
             if (@true_cells == 1)
             {
                 my $xy = $true_cells[0];
-                if (get_verdict($letter, @$xy) ==
+                if ($solver->get_verdict($letter, @$xy) ==
                     $ABCP_VERDICT_MAYBE)
                 {
                     $num_changed++;
@@ -393,7 +396,7 @@ sub set_conclusive_verdict_for_letter
                     }
 
                     my $existing_verdict =
-                        get_verdict($neighbour_letter, $x, $y);
+                        $solver->get_verdict($neighbour_letter, $x, $y);
 
                     if ($existing_verdict == $ABCP_VERDICT_YES)
                     {
@@ -402,7 +405,7 @@ sub set_conclusive_verdict_for_letter
 
                     if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                     {
-                        set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                        $solver->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
                         print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
                         $num_changed++;
                     }
@@ -419,7 +422,7 @@ sub set_conclusive_verdict_for_letter
             {
                 my $letter = $letters_aref->[0];
 
-                if (get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+                if ($solver->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
                 {
                     $num_changed++;
                     set_conclusive_verdict_for_letter($letter, [$x, $y]);
@@ -442,7 +445,7 @@ sub get_possible_letters
 
     return 
     [
-        grep { get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        grep { $solver->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
         (0 .. $#letters)
     ];
 }
