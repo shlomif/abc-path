@@ -486,6 +486,7 @@ my $tb =
     Text::Table->new(
         \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
 );
+
 foreach my $y (0 .. $BOARD_LEN_LIM)
 {
     $tb->add(map { $solver->get_possible_letters_string($_, $y) } (0 .. $BOARD_LEN_LIM));
