@@ -55,6 +55,11 @@ sub _layout {
     return $self->{_layout};
 }
 
+sub _y_indexes
+{
+    return (0 .. $BOARD_LEN_LIM);
+}
+
 sub _init
 {
     my ($self, $args) = @_;
@@ -131,7 +136,7 @@ sub xy_loop
 {
     my ($solver, $sub_ref) = (@_);
 
-    foreach my $y (0 .. $BOARD_LEN_LIM)
+    foreach my $y ($solver->_y_indexes)
     {
         foreach my $x (0 .. $BOARD_LEN_LIM)
         {
@@ -384,7 +389,7 @@ sub input
 
         $solver->set_verdicts_for_letter_sets(
             \@major_diagonal_letters, 
-            [map { [$_,$_] } (0 .. 4)],
+            [map { [$_,$_] } $solver->_y_indexes],
         );
     }
 
@@ -411,7 +416,7 @@ sub input
         {
             $solver->set_verdicts_for_letter_sets(
                 [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
-                [map { [$x,$_] } (0 .. 4)],
+                [map { [$x,$_] } $solver->_y_indexes],
             );
         }
     }
@@ -419,7 +424,7 @@ sub input
     {
 
         my ($clue_x, $clue_y, $clue_letter);
-        foreach my $y (0 .. $BOARD_LEN_LIM)
+        foreach my $y ($solver->_y_indexes)
         {
             my $row = $rows[$y];
             $solver->set_verdicts_for_letter_sets(
@@ -464,7 +469,7 @@ sub get_results_text_table
             \" | ", map {; "X = $_", (\' | '); } (0 .. $BOARD_LEN_LIM)
         );
 
-    foreach my $y (0 .. $BOARD_LEN_LIM)
+    foreach my $y ($solver->_y_indexes)
     {
         $tb->add(
             map 
