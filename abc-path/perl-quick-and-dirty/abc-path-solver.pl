@@ -18,6 +18,24 @@ package Games::ABC_Path::Solver::Board;
 
 use Carp;
 
+my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
+
+my %letters_map = (map { $letters[$_] => $_ } (0 .. $#letters));
+
+sub get_letter_numeric
+{
+    my ($self, $letter_ascii) = @_;
+
+    my $index = $letters_map{$letter_ascii};
+
+    if (!defined ($index))
+    {
+        confess "Unknown letter '$letter_ascii'";
+    }
+
+    return $index;
+}
+
 sub new
 {
     my $class = shift;
@@ -119,6 +137,33 @@ sub xy_loop
 }
 
 
+sub set_verdicts_for_letter_sets
+{
+    my ($solver, $letter_list, $maybe_list) = @_;
+
+    my %cell_is_maybe =
+        (map {; sprintf("%d,%d", @$_) => 1; } @$maybe_list);
+
+    foreach my $letter_ascii (@$letter_list)
+    {
+        my $letter = $solver->get_letter_numeric($letter_ascii);
+
+        $solver->xy_loop(
+            sub {
+                my ($x, $y) = @_;
+
+                $solver->set_verdict($letter, $x, $y,
+                    ((exists $cell_is_maybe{"$x,$y"})
+                        ? $ABCP_VERDICT_MAYBE
+                        : $ABCP_VERDICT_NO
+                    )
+                );
+            }
+        );
+    }
+}
+
+
 package main;
 
 # This will handle 25*25 2-bit cells and the $ABCP_VERDICT_MAYBE / etc.
@@ -177,48 +222,7 @@ if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
         }
     }
 }
-
-my %letters_map = (map { $letters[$_] => $_ } (0 .. $#letters));
-sub get_letter_numeric
-{
-    my $letter_ascii = shift;
-
-    my $index = $letters_map{$letter_ascii};
-
-    if (!defined ($index))
-    {
-        confess "Unknown letter '$letter_ascii'";
-    }
-
-    return $index;
-}
-
 # Now let's process the layout string and populate the verdicts table.
-
-sub set_verdicts_for_letter_sets
-{
-    my ($letter_list, $maybe_list) = @_;
-
-    my %cell_is_maybe =
-        (map {; sprintf("%d,%d", @$_) => 1; } @$maybe_list);
-
-    foreach my $letter_ascii (@$letter_list)
-    {
-        $solver->xy_loop(
-            sub {
-                my ($x, $y) = @_;
-
-                my $letter = get_letter_numeric($letter_ascii);
-                $solver->set_verdict($letter, $x, $y,
-                    ((exists $cell_is_maybe{"$x,$y"})
-                        ? $ABCP_VERDICT_MAYBE
-                        : $ABCP_VERDICT_NO
-                    )
-                );
-            }
-        );
-    }
-}
 
 sub set_conclusive_verdict_for_letter
 {
@@ -259,7 +263,7 @@ sub set_conclusive_verdict_for_letter
 
     push @major_diagonal_letters, $1;
 
-    set_verdicts_for_letter_sets(
+    $solver->set_verdicts_for_letter_sets(
         \@major_diagonal_letters, 
         [map { [$_,$_] } (0 .. 4)],
     )
@@ -276,7 +280,7 @@ sub set_conclusive_verdict_for_letter
 
     push @minor_diagonal_letters, substr($1,0,1);
 
-    set_verdicts_for_letter_sets(
+    $solver->set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
         [map { [$_, 4-$_] } (0 .. $BOARD_LEN_LIM)]
     );
@@ -288,7 +292,7 @@ sub set_conclusive_verdict_for_letter
 
     foreach my $x (0 .. $BOARD_LEN_LIM)
     {
-        set_verdicts_for_letter_sets(
+        $solver->set_verdicts_for_letter_sets(
             [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
             [map { [$x,$_] } (0 .. 4)],
         );
@@ -302,7 +306,7 @@ sub set_conclusive_verdict_for_letter
     foreach my $y (0 .. $BOARD_LEN_LIM)
     {
         my $row = $rows[$y+1];
-        set_verdicts_for_letter_sets(
+        $solver->set_verdicts_for_letter_sets(
             [substr($row, 0, 1), substr($row, -1),],
             [map { [$_,$y] } (0 .. $BOARD_LEN_LIM)],
         );
@@ -325,7 +329,7 @@ sub set_conclusive_verdict_for_letter
     }
     
     set_conclusive_verdict_for_letter(
-        get_letter_numeric($clue_letter),
+        $solver->get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
 }
