@@ -379,6 +379,28 @@ sub _assert_letters_appear_once
     return;
 }
 
+sub _process_major_diagonal
+{
+    my ($solver, $args) = @_;
+
+    my @major_diagonal_letters;
+
+    $args->{top} =~ m{\A($letter_re)};
+
+    push @major_diagonal_letters, $1;
+
+    $args->{bottom} =~ m{($letter_re)\z};
+
+    push @major_diagonal_letters, $1;
+
+    $solver->set_verdicts_for_letter_sets(
+        \@major_diagonal_letters, 
+        [map { [$_,$_] } $solver->_y_indexes],
+    );
+
+    return;
+}
+
 sub input
 {
     my ($solver, $args) = @_;
@@ -396,28 +418,17 @@ sub input
 
     my @rows = split(/\n/, $layout_string);
 
-    my $top_row = shift(@rows);;
+    my $top_row = shift(@rows);
     my $bottom_row = pop(@rows);
 
     # Now let's process the layout string and populate the verdicts table.
     $solver->_assert_letters_appear_once($layout_string);
 
-    {
-        my @major_diagonal_letters;
+    my $parse_context =
+        { top => $top_row, bottom => $bottom_row, rows => \@rows, }
+        ;
 
-        $top_row =~ m{\A($letter_re)};
-
-        push @major_diagonal_letters, $1;
-
-        $bottom_row =~ m{($letter_re)\z};
-
-        push @major_diagonal_letters, $1;
-
-        $solver->set_verdicts_for_letter_sets(
-            \@major_diagonal_letters, 
-            [map { [$_,$_] } $solver->_y_indexes],
-        );
-    }
+    $solver->_process_major_diagonal($parse_context);
 
     {
         my @minor_diagonal_letters;
