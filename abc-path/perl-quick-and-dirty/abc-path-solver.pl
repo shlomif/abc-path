@@ -113,6 +113,17 @@ sub _moves {
     return $self->{_moves};
 }
 
+sub _error {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_error} = shift;
+    }
+
+    return $self->{_error};
+}
+
+
 sub _inc_changed {
     my ($self) = @_;
 
@@ -249,8 +260,16 @@ sub xy_loop
 
     foreach my $y ($self->_y_indexes)
     {
+        if ($self->_error())
+        {
+            return;
+        }
         foreach my $x ($self->_x_indexes)
         {
+            if ($self->_error())
+            {
+                return;
+            }
             $sub_ref->($x,$y);
         }
     }
@@ -361,7 +380,12 @@ sub _infer_letters
             }
         });
 
-        if (@true_cells == 1)
+        if (! @true_cells)
+        {
+            $self->_error(['letter', $letter]);
+            return;
+        }
+        elsif (@true_cells == 1)
         {
             my $xy = $true_cells[0];
             if ($self->get_verdict($letter, @$xy) ==
@@ -443,7 +467,12 @@ sub _infer_cells
 
         my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
 
-        if (@$letters_aref == 1)
+        if (! @$letters_aref)
+        {
+            $self->_error(['cell', [$x, $y]]);
+            return;
+        }
+        elsif (@$letters_aref == 1)
         {
             my $letter = $letters_aref->[0];
 
@@ -484,6 +513,10 @@ sub _neighbourhood_and_individuality_inferring
 
     while (my $iter_changed = $self->_inference_iteration())
     {
+        if ($self->_error())
+        {
+            return;
+        }
         $num_changed += $iter_changed;
     }
 
@@ -495,6 +528,45 @@ sub solve
     my ($self) = @_;
 
     $self->_neighbourhood_and_individuality_inferring;
+
+    if ($self->_error)
+    {
+        return $self->_error;
+    }
+
+    my @min_coords;
+    my @min_options;
+
+    $self->xy_loop(sub {
+        my ($x, $y) = @_;
+
+        my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
+
+        if (! @$letters_aref)
+        {
+            $self->_error(['cell', [$x, $y]]);
+        }
+        elsif (@$letters_aref > 1)
+        {
+            if ((!@min_coords) or (@$letters_aref < @min_options))
+            {
+                @min_options = @$letters_aref;
+                @min_coords = ($x,$y);
+            }
+        }
+
+        return;
+    });
+
+    if ($self->_error)
+    {
+        return $self->_error;
+    }
+
+    if (@min_coords)
+    {
+        # We have at least one multiple rank cell. Let's recurse there:
+    }
 
     return;
 }
