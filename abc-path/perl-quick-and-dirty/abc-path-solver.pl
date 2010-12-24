@@ -407,13 +407,11 @@ sub _infer_letters
     return $num_changed;
 }
 
-sub _inference_iteration
+sub _infer_cells
 {
     my ($self) = @_;
 
     my $num_changed = 0;
-
-    $num_changed += $self->_infer_letters;
 
     $self->xy_loop(sub {
         my ($x, $y) = @_;
@@ -438,6 +436,20 @@ sub _inference_iteration
             }
         }
     });
+
+    return $num_changed;
+}
+
+
+sub _inference_iteration
+{
+    my ($self) = @_;
+
+    my $num_changed = 0;
+
+    $num_changed += $self->_infer_letters;
+
+    $num_changed += $self->_infer_cells;
 
     return $num_changed;
 }
