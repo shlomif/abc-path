@@ -309,7 +309,8 @@ sub _get_possible_letters_string
     return join(',', @{$self->get_possible_letters_for_cell($x,$y)});
 }
 
-sub _inference_iteration
+
+sub _infer_letters
 {
     my ($self) = @_;
 
@@ -402,6 +403,17 @@ sub _inference_iteration
             });
         }
     }
+
+    return $num_changed;
+}
+
+sub _inference_iteration
+{
+    my ($self) = @_;
+
+    my $num_changed = 0;
+
+    $num_changed += $self->_infer_letters;
 
     $self->xy_loop(sub {
         my ($x, $y) = @_;
