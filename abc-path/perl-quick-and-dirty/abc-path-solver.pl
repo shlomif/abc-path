@@ -93,6 +93,16 @@ sub get_letter_numeric
     return $index;
 }
 
+sub _iter_changed {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_iter_changed} = shift;
+    }
+
+    return $self->{_iter_changed};
+}
+
 sub _moves {
     my $self = shift;
 
@@ -103,10 +113,30 @@ sub _moves {
     return $self->{_moves};
 }
 
+sub _inc_changed {
+    my ($self) = @_;
+
+    $self->_iter_changed($self->_iter_changed+1);
+
+    return;
+}
+
+sub _flush_changed {
+    my ($self) = @_;
+
+    my $ret = $self->_iter_changed;
+
+    $self->_iter_changed(0);
+
+    return $ret;
+}
+
 sub _add_move {
     my ($self, $move) = @_;
 
     push @{$self->_moves()}, $move;
+
+    $self->_inc_changed;
 
     return;
 }
@@ -138,6 +168,7 @@ sub _l_indexes
     return (0 .. $ABCP_MAX_LETTER);
 }
 
+
 sub _init
 {
     my ($self, $args) = @_;
@@ -151,6 +182,7 @@ sub _init
 
     $self->_layout(\$layout_string);
     $self->_moves([]);
+    $self->_iter_changed(0);
 
     return;
 }
@@ -314,8 +346,6 @@ sub _infer_letters
 {
     my ($self) = @_;
 
-    my $num_changed = 0;
-
     foreach my $letter ($self->_l_indexes)
     {
         my @true_cells;
@@ -337,7 +367,6 @@ sub _infer_letters
             if ($self->get_verdict($letter, @$xy) ==
                 $ABCP_VERDICT_MAYBE)
             {
-                $num_changed++;
                 $self->set_conclusive_verdict_for_letter($letter, $xy);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
@@ -397,21 +426,17 @@ sub _infer_letters
                             }
                         )
                     );
-
-                    $num_changed++;
                 }
             });
         }
     }
 
-    return $num_changed;
+    return;
 }
 
 sub _infer_cells
 {
     my ($self) = @_;
-
-    my $num_changed = 0;
 
     $self->xy_loop(sub {
         my ($x, $y) = @_;
@@ -424,7 +449,6 @@ sub _infer_cells
 
             if ($self->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
             {
-                $num_changed++;
                 $self->set_conclusive_verdict_for_letter($letter, [$x, $y]);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
@@ -437,7 +461,7 @@ sub _infer_cells
         }
     });
 
-    return $num_changed;
+    return;
 }
 
 
@@ -445,13 +469,11 @@ sub _inference_iteration
 {
     my ($self) = @_;
 
-    my $num_changed = 0;
+    $self->_infer_letters;
 
-    $num_changed += $self->_infer_letters;
+    $self->_infer_cells;
 
-    $num_changed += $self->_infer_cells;
-
-    return $num_changed;
+    return $self->_flush_changed;
 }
 
 sub neighbourhood_and_individuality_inferring
