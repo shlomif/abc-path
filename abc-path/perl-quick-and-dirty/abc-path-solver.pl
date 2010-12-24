@@ -1,11 +1,70 @@
 #!/usr/bin/perl
 
+package Games::ABC_Path::Solver::Base;
+
+use strict;
+use warnings;
+
+sub new
+{
+    my $class = shift;
+
+    my $self = bless {}, $class;
+
+    $self->_init(@_);
+
+    return $self;
+}
+
+package Games::ABC_Path::Solver::Move;
+
+use strict;
+use warnings;
+
+our @ISA = qw(Games::ABC_Path::Solver::Base);
+
+sub get_text
+{
+    my ($self) = @_;
+    
+    return $self->{_text};
+}
+
+sub _depth {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_depth} = shift;
+    }
+
+    return $self->{_depth};
+}
+
+sub get_depth
+{
+    my ($self) = @_;
+
+    return $self->_depth();
+}
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->{_text} = $args->{text};
+    $self->_depth($args->{depth} || 0);
+
+    return;
+}
+
 package Games::ABC_Path::Solver::Board;
 
 use strict;
 use warnings;
 
 use Carp;
+
+our @ISA = qw(Games::ABC_Path::Solver::Base);
 
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
@@ -34,16 +93,24 @@ sub get_letter_numeric
     return $index;
 }
 
-sub new
-{
-    my $class = shift;
+sub _moves {
+    my $self = shift;
 
-    my $self = bless {}, $class;
+    if (@_) {
+        $self->{_moves} = shift;
+    }
 
-    $self->_init(@_);
-
-    return $self;
+    return $self->{_moves};
 }
+
+sub _add_move {
+    my ($self, $move) = @_;
+
+    push @{$self->_moves()}, $move;
+
+    return;
+}
+
 
 sub _layout {
     my $self = shift;
@@ -83,6 +150,7 @@ sub _init
     }
 
     $self->_layout(\$layout_string);
+    $self->_moves([]);
 
     return;
 }
@@ -270,7 +338,13 @@ sub _inference_iteration
             {
                 $num_changed++;
                 $solver->set_conclusive_verdict_for_letter($letter, $xy);
-                print "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.\n";
+                $solver->_add_move(
+                    Games::ABC_Path::Solver::Move->new(
+                        {
+                            text =>  "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.",
+                        }
+                    )
+                );
             }
         }
 
@@ -315,7 +389,14 @@ sub _inference_iteration
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                 {
                     $solver->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
-                    print "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].\n";
+                    $solver->_add_move(
+                        Games::ABC_Path::Solver::Move->new(
+                            {
+                                text => "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].",
+                            }
+                        )
+                    );
+
                     $num_changed++;
                 }
             });
@@ -335,7 +416,13 @@ sub _inference_iteration
             {
                 $num_changed++;
                 $solver->set_conclusive_verdict_for_letter($letter, [$x, $y]);
-                print "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells.\n";
+                $solver->_add_move(
+                    Games::ABC_Path::Solver::Move->new(
+                        {
+                            text => "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells."
+                        }
+                    )
+                );
             }
         }
     });
@@ -577,6 +664,13 @@ sub input_from_file
     return $solver;
 }
 
+sub get_moves
+{
+    my ($solver) = @_;
+
+    return [@{ $solver->_moves }];
+}
+
 package main;
 
 use strict;
@@ -595,6 +689,11 @@ my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
 # Now let's do a neighbourhood inferring of the board.
 
 $solver->neighbourhood_and_individuality_inferring;
+
+foreach my $move (@{$solver->get_moves})
+{
+    print $move->get_text(), "\n";
+}
 
 print $solver->get_results_text_table;
 
