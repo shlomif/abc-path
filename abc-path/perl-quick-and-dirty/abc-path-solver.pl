@@ -14,10 +14,11 @@ my $ABCP_VERDICT_YES = 2;
 my $BOARD_LEN = 5;
 my $BOARD_LEN_LIM = $BOARD_LEN - 1;
 
-
 my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
-my %letters_map = (map { $letters[$_] => $_ } (0 .. $#letters));
+my $ABCP_MAX_LETTER = $#letters;
+
+my %letters_map = (map { $letters[$_] => $_ } (0 .. $ABCP_MAX_LETTER));
 
 sub get_letter_numeric
 {
@@ -62,6 +63,12 @@ sub _y_indexes
 sub _x_indexes
 {
     return (0 .. $BOARD_LEN_LIM);
+}
+
+# The letter indexes.
+sub _l_indexes
+{
+    return (0 .. $ABCP_MAX_LETTER);
 }
 
 sub _init
@@ -197,7 +204,7 @@ sub set_conclusive_verdict_for_letter
         }
     );
     OTHER_LETTER:
-    foreach my $other_letter (0 .. $#letters)
+    foreach my $other_letter ($solver->_l_indexes)
     {
         if ($other_letter == $letter)
         {
@@ -216,7 +223,7 @@ sub _get_possible_letter_indexes
     return 
     [
         grep { $solver->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
-        (0 .. $#letters)
+        $solver->_l_indexes()
     ];
 }
 
@@ -240,7 +247,7 @@ sub _inference_iteration
 
     my $num_changed = 0;
 
-    foreach my $letter (0 .. $#letters)
+    foreach my $letter ($solver->_l_indexes)
     {
         my @true_cells;
 
@@ -286,7 +293,7 @@ sub _inference_iteration
 
         foreach my $neighbour_letter (
             (($letter > 0) ? ($letter-1) : ()),
-            (($letter < $#letters) ? ($letter+1) : ()),
+            (($letter < $ABCP_MAX_LETTER) ? ($letter+1) : ()),
         )
         {
             $solver->xy_loop(sub {
