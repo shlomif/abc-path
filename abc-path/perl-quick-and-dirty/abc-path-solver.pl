@@ -401,6 +401,28 @@ sub _process_major_diagonal
     return;
 }
 
+sub _process_minor_diagonal
+{
+    my ($solver, $args) = @_;
+
+    my @minor_diagonal_letters;
+
+    $args->{top} =~ m{($letter_re)\z};
+
+    push @minor_diagonal_letters, $1;
+
+    $args->{bottom} =~ m{\A($letter_re)};
+
+    push @minor_diagonal_letters, $1;
+
+    $solver->set_verdicts_for_letter_sets(
+        \@minor_diagonal_letters,
+        [map { [$_, 4-$_] } ($solver->_y_indexes)]
+    );
+
+    return;
+}
+
 sub input
 {
     my ($solver, $args) = @_;
@@ -430,25 +452,9 @@ sub input
 
     $solver->_process_major_diagonal($parse_context);
 
-    {
-        my @minor_diagonal_letters;
-
-        $top_row =~ m{($letter_re)\z};
-
-        push @minor_diagonal_letters, $1;
-
-        $bottom_row =~ m{\A($letter_re)};
-
-        push @minor_diagonal_letters, $1;
-
-        $solver->set_verdicts_for_letter_sets(
-            \@minor_diagonal_letters,
-            [map { [$_, 4-$_] } ($solver->_y_indexes)]
-        );
-    }
+    $solver->_process_minor_diagonal($parse_context);
 
     {
-
         foreach my $x ($solver->_x_indexes)
         {
             $solver->set_verdicts_for_letter_sets(
