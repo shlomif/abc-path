@@ -175,26 +175,26 @@ sub _xy_to_idx
 
 sub _calc_offset
 {
-    my ($solver, $letter, $x, $y) = @_;
+    my ($self, $letter, $x, $y) = @_;
 
     if (($letter < 0) or ($letter >= 25))
     {
         confess "Letter $letter out of range.";
     }
 
-    return $letter * ($BOARD_LEN * $BOARD_LEN) + $solver->_xy_to_idx($x,$y);
+    return $letter * ($BOARD_LEN * $BOARD_LEN) + $self->_xy_to_idx($x,$y);
 }
 
 sub get_verdict
 {
-    my ($solver, $letter, $x, $y) = @_;
+    my ($self, $letter, $x, $y) = @_;
 
-    return vec(${$solver->_layout}, $solver->_calc_offset($letter, $x, $y), 2);
+    return vec(${$self->_layout}, $self->_calc_offset($letter, $x, $y), 2);
 }
 
 sub set_verdict
 {
-    my ($solver, $letter, $x, $y, $verdict) = @_;
+    my ($self, $letter, $x, $y, $verdict) = @_;
 
     if (not
         (($verdict == $ABCP_VERDICT_NO)
@@ -205,7 +205,7 @@ sub set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec(${$solver->_layout}, $solver->_calc_offset($letter,$x,$y), 2)
+    vec(${$self->_layout}, $self->_calc_offset($letter,$x,$y), 2)
         = $verdict;
 
     return;
@@ -213,11 +213,11 @@ sub set_verdict
 
 sub xy_loop
 {
-    my ($solver, $sub_ref) = (@_);
+    my ($self, $sub_ref) = (@_);
 
-    foreach my $y ($solver->_y_indexes)
+    foreach my $y ($self->_y_indexes)
     {
-        foreach my $x ($solver->_x_indexes)
+        foreach my $x ($self->_x_indexes)
         {
             $sub_ref->($x,$y);
         }
@@ -228,20 +228,20 @@ sub xy_loop
 
 sub set_verdicts_for_letter_sets
 {
-    my ($solver, $letter_list, $maybe_list) = @_;
+    my ($self, $letter_list, $maybe_list) = @_;
 
     my %cell_is_maybe =
         (map {; sprintf("%d,%d", @$_) => 1; } @$maybe_list);
 
     foreach my $letter_ascii (@$letter_list)
     {
-        my $letter = $solver->get_letter_numeric($letter_ascii);
+        my $letter = $self->get_letter_numeric($letter_ascii);
 
-        $solver->xy_loop(
+        $self->xy_loop(
             sub {
                 my ($x, $y) = @_;
 
-                $solver->set_verdict($letter, $x, $y,
+                $self->set_verdict($letter, $x, $y,
                     ((exists $cell_is_maybe{"$x,$y"})
                         ? $ABCP_VERDICT_MAYBE
                         : $ABCP_VERDICT_NO
@@ -256,14 +256,14 @@ sub set_verdicts_for_letter_sets
 
 sub set_conclusive_verdict_for_letter
 {
-    my ($solver, $letter, $xy) = @_;
+    my ($self, $letter, $xy) = @_;
 
     my ($l_x, $l_y) = @$xy;
 
-    $solver->xy_loop(sub {
+    $self->xy_loop(sub {
             my ($x, $y) = @_;
 
-            $solver->set_verdict($letter, $x, $y,
+            $self->set_verdict($letter, $x, $y,
                 ((($l_x == $x) && ($l_y == $y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
@@ -272,13 +272,13 @@ sub set_conclusive_verdict_for_letter
         }
     );
     OTHER_LETTER:
-    foreach my $other_letter ($solver->_l_indexes)
+    foreach my $other_letter ($self->_l_indexes)
     {
         if ($other_letter == $letter)
         {
             next OTHER_LETTER;
         }
-        $solver->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+        $self->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
     }
 
     return;
@@ -286,43 +286,43 @@ sub set_conclusive_verdict_for_letter
 
 sub _get_possible_letter_indexes
 {
-    my ($solver, $x, $y) = @_;
+    my ($self, $x, $y) = @_;
 
     return 
     [
-        grep { $solver->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
-        $solver->_l_indexes()
+        grep { $self->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        $self->_l_indexes()
     ];
 }
 
 sub get_possible_letters_for_cell
 {
-    my ($solver, $x, $y) = @_;
+    my ($self, $x, $y) = @_;
 
-    return [@letters[@{$solver->_get_possible_letter_indexes($x,$y)}]];
+    return [@letters[@{$self->_get_possible_letter_indexes($x,$y)}]];
 }
 
 sub _get_possible_letters_string
 {
-    my ($solver, $x, $y) = @_;
+    my ($self, $x, $y) = @_;
 
-    return join(',', @{$solver->get_possible_letters_for_cell($x,$y)});
+    return join(',', @{$self->get_possible_letters_for_cell($x,$y)});
 }
 
 sub _inference_iteration
 {
-    my ($solver) = @_;
+    my ($self) = @_;
 
     my $num_changed = 0;
 
-    foreach my $letter ($solver->_l_indexes)
+    foreach my $letter ($self->_l_indexes)
     {
         my @true_cells;
 
-        $solver->xy_loop(sub {
+        $self->xy_loop(sub {
             my @c = @_;
 
-            my $ver = $solver->get_verdict($letter, @c);
+            my $ver = $self->get_verdict($letter, @c);
             if (    ($ver == $ABCP_VERDICT_YES) 
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
@@ -333,12 +333,12 @@ sub _inference_iteration
         if (@true_cells == 1)
         {
             my $xy = $true_cells[0];
-            if ($solver->get_verdict($letter, @$xy) ==
+            if ($self->get_verdict($letter, @$xy) ==
                 $ABCP_VERDICT_MAYBE)
             {
                 $num_changed++;
-                $solver->set_conclusive_verdict_for_letter($letter, $xy);
-                $solver->_add_move(
+                $self->set_conclusive_verdict_for_letter($letter, $xy);
+                $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
                             text =>  "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.",
@@ -348,7 +348,7 @@ sub _inference_iteration
             }
         }
 
-        my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($solver->_y_indexes));
+        my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($self->_y_indexes));
         
         foreach my $true (@true_cells)
         {
@@ -370,7 +370,7 @@ sub _inference_iteration
             (($letter < $ABCP_MAX_LETTER) ? ($letter+1) : ()),
         )
         {
-            $solver->xy_loop(sub {
+            $self->xy_loop(sub {
                 my ($x, $y) = @_;
 
                 if ($neighbourhood[$y][$x])
@@ -379,7 +379,7 @@ sub _inference_iteration
                 }
 
                 my $existing_verdict =
-                    $solver->get_verdict($neighbour_letter, $x, $y);
+                    $self->get_verdict($neighbour_letter, $x, $y);
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
@@ -388,8 +388,8 @@ sub _inference_iteration
 
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                 {
-                    $solver->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
-                    $solver->_add_move(
+                    $self->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                    $self->_add_move(
                         Games::ABC_Path::Solver::Move->new(
                             {
                                 text => "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].",
@@ -403,20 +403,20 @@ sub _inference_iteration
         }
     }
 
-    $solver->xy_loop(sub {
+    $self->xy_loop(sub {
         my ($x, $y) = @_;
 
-        my $letters_aref = $solver->_get_possible_letter_indexes($x, $y);
+        my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
 
         if (@$letters_aref == 1)
         {
             my $letter = $letters_aref->[0];
 
-            if ($solver->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+            if ($self->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
             {
                 $num_changed++;
-                $solver->set_conclusive_verdict_for_letter($letter, [$x, $y]);
-                $solver->_add_move(
+                $self->set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
                             text => "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells."
@@ -432,11 +432,11 @@ sub _inference_iteration
 
 sub neighbourhood_and_individuality_inferring
 {
-    my ($solver) = @_;
+    my ($self) = @_;
 
     my $num_changed = 0;
 
-    while (my $iter_changed = $solver->_inference_iteration())
+    while (my $iter_changed = $self->_inference_iteration())
     {
         $num_changed += $iter_changed;
     }
@@ -452,7 +452,7 @@ my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
 
 sub _assert_letters_appear_once
 {
-    my ($solver, $layout_string) = @_;
+    my ($self, $layout_string) = @_;
 
     my %count_letters = (map { $_ => 0 } @letters);
     foreach my $letter ($layout_string =~ m{($letter_re)}g)
@@ -468,7 +468,7 @@ sub _assert_letters_appear_once
 
 sub _process_major_diagonal
 {
-    my ($solver, $args) = @_;
+    my ($self, $args) = @_;
 
     my @major_diagonal_letters;
 
@@ -480,9 +480,9 @@ sub _process_major_diagonal
 
     push @major_diagonal_letters, $1;
 
-    $solver->set_verdicts_for_letter_sets(
+    $self->set_verdicts_for_letter_sets(
         \@major_diagonal_letters, 
-        [map { [$_,$_] } $solver->_y_indexes],
+        [map { [$_,$_] } $self->_y_indexes],
     );
 
     return;
@@ -490,7 +490,7 @@ sub _process_major_diagonal
 
 sub _process_minor_diagonal
 {
-    my ($solver, $args) = @_;
+    my ($self, $args) = @_;
 
     my @minor_diagonal_letters;
 
@@ -502,9 +502,9 @@ sub _process_minor_diagonal
 
     push @minor_diagonal_letters, $1;
 
-    $solver->set_verdicts_for_letter_sets(
+    $self->set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
-        [map { [$_, 4-$_] } ($solver->_y_indexes)]
+        [map { [$_, 4-$_] } ($self->_y_indexes)]
     );
 
     return;
@@ -512,16 +512,16 @@ sub _process_minor_diagonal
 
 sub _process_input_columns
 {
-    my ($solver, $args) = @_;
+    my ($self, $args) = @_;
 
     my $top_row = $args->{top};
     my $bottom_row = $args->{bottom};
 
-    foreach my $x ($solver->_x_indexes)
+    foreach my $x ($self->_x_indexes)
     {
-        $solver->set_verdicts_for_letter_sets(
+        $self->set_verdicts_for_letter_sets(
             [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
-            [map { [$x,$_] } $solver->_y_indexes],
+            [map { [$x,$_] } $self->_y_indexes],
         );
     }
 
@@ -530,18 +530,18 @@ sub _process_input_columns
 
 sub _process_input_rows_and_initial_letter_clue
 {
-    my ($solver, $args) = @_;
+    my ($self, $args) = @_;
 
     my $rows = $args->{rows};
 
     my ($clue_x, $clue_y, $clue_letter);
 
-    foreach my $y ($solver->_y_indexes)
+    foreach my $y ($self->_y_indexes)
     {
         my $row = $rows->[$y];
-        $solver->set_verdicts_for_letter_sets(
+        $self->set_verdicts_for_letter_sets(
             [substr($row, 0, 1), substr($row, -1),],
-            [map { [$_,$y] } $solver->_x_indexes],
+            [map { [$_,$y] } $self->_x_indexes],
         );
 
         my $s = substr($row, 1, -1);
@@ -561,8 +561,8 @@ sub _process_input_rows_and_initial_letter_clue
         confess "Did not find any clue letters inside the layout.";
     }
 
-    $solver->set_conclusive_verdict_for_letter(
-        $solver->get_letter_numeric($clue_letter),
+    $self->set_conclusive_verdict_for_letter(
+        $self->get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
 
@@ -571,7 +571,7 @@ sub _process_input_rows_and_initial_letter_clue
 
 sub input
 {
-    my ($solver, $args) = @_;
+    my ($self, $args) = @_;
 
     if ($args->{version} ne 1)
     {
@@ -590,19 +590,19 @@ sub input
     my $bottom_row = pop(@rows);
 
     # Now let's process the layout string and populate the verdicts table.
-    $solver->_assert_letters_appear_once($layout_string);
+    $self->_assert_letters_appear_once($layout_string);
 
     my $parse_context =
         { top => $top_row, bottom => $bottom_row, rows => \@rows, }
         ;
 
-    $solver->_process_major_diagonal($parse_context);
+    $self->_process_major_diagonal($parse_context);
 
-    $solver->_process_minor_diagonal($parse_context);
+    $self->_process_minor_diagonal($parse_context);
 
-    $solver->_process_input_columns($parse_context);
+    $self->_process_input_columns($parse_context);
 
-    $solver->_process_input_rows_and_initial_letter_clue($parse_context);
+    $self->_process_input_rows_and_initial_letter_clue($parse_context);
 
 
     return;
@@ -610,21 +610,21 @@ sub input
 
 sub get_results_text_table
 {
-    my ($solver) = @_;
+    my ($self) = @_;
 
     require Text::Table;
 
     my $tb =
         Text::Table->new(
-            \" | ", (map {; "X = $_", (\' | '); } $solver->_x_indexes)
+            \" | ", (map {; "X = $_", (\' | '); } $self->_x_indexes)
         );
 
-    foreach my $y ($solver->_y_indexes)
+    foreach my $y ($self->_y_indexes)
     {
         $tb->add(
             map 
-            { $solver->_get_possible_letters_string($_, $y) } 
-            $solver->_x_indexes
+            { $self->_get_possible_letters_string($_, $y) } 
+            $self->_x_indexes
         );
     }
 
@@ -637,7 +637,7 @@ sub input_from_file
 {
     my ($class, $board_fn) = @_;
 
-    my $solver = $class->new;
+    my $self = $class->new;
 
     open my $in_fh, "<", $board_fn
         or die "Cannot open '$board_fn' - $!";
@@ -659,16 +659,16 @@ sub input_from_file
     }
     close($in_fh);
 
-    $solver->input({ layout => $layout_string, version => 1});
+    $self->input({ layout => $layout_string, version => 1});
 
-    return $solver;
+    return $self;
 }
 
 sub get_moves
 {
-    my ($solver) = @_;
+    my ($self) = @_;
 
-    return [@{ $solver->_moves }];
+    return [@{ $self->_moves }];
 }
 
 package main;
