@@ -357,6 +357,28 @@ sub neighbourhood_and_individuality_inferring
     return $num_changed;
 }
 
+my $letter_re_s = join('', map { quotemeta($_) } @letters);
+my $letter_re = qr{[$letter_re_s]};
+my $letter_and_space_re = qr{[ $letter_re_s]};
+my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
+my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
+
+sub _assert_letters_appear_once
+{
+    my ($solver, $layout_string) = @_;
+
+    my %count_letters = (map { $_ => 0 } @letters);
+    foreach my $letter ($layout_string =~ m{($letter_re)}g)
+    {
+        if ($count_letters{$letter}++)
+        {
+            confess "Letter '$letter' encountered twice in the layout.";
+        }
+    }
+
+    return;
+}
+
 sub input
 {
     my ($solver, $args) = @_;
@@ -367,13 +389,6 @@ sub input
     }
 
     my $layout_string = $args->{layout};
-
-    my $letter_re_s = join('', map { quotemeta($_) } @letters);
-    my $letter_re = qr{[$letter_re_s]};
-    my $letter_and_space_re = qr{[ $letter_re_s]};
-    my $top_bottom_re = qr/^${letter_re}{7}\n/ms;
-    my $inner_re = qr/^${letter_re}${letter_and_space_re}{5}${letter_re}\n/ms;
-
     if ($layout_string !~ m/\A${top_bottom_re}${inner_re}{5}${top_bottom_re}\z/ms)
     {
         die "Invalid format. Should be Letter{7}\n(Letter{spaces or one letter}{5}Letter){5}\nLetter{7}";
@@ -384,17 +399,8 @@ sub input
     my $top_row = shift(@rows);;
     my $bottom_row = pop(@rows);
 
-    {
-        my %count_letters = (map { $_ => 0 } @letters);
-        foreach my $letter ($layout_string =~ m{($letter_re)}g)
-        {
-            if ($count_letters{$letter}++)
-            {
-                die "Letter '$letter' encountered twice in the layout.";
-            }
-        }
-    }
     # Now let's process the layout string and populate the verdicts table.
+    $solver->_assert_letters_appear_once($layout_string);
 
     {
         my @major_diagonal_letters;
