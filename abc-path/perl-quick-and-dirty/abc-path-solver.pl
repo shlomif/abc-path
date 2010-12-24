@@ -441,6 +441,47 @@ sub _process_input_columns
     return;
 }
 
+sub _process_input_rows_and_initial_letter_clue
+{
+    my ($solver, $args) = @_;
+
+    my $rows = $args->{rows};
+
+    my ($clue_x, $clue_y, $clue_letter);
+
+    foreach my $y ($solver->_y_indexes)
+    {
+        my $row = $rows->[$y];
+        $solver->set_verdicts_for_letter_sets(
+            [substr($row, 0, 1), substr($row, -1),],
+            [map { [$_,$y] } $solver->_x_indexes],
+        );
+
+        my $s = substr($row, 1, -1);
+        if ($s =~ m{($letter_re)}g)
+        {
+            my ($l, $x_plus_1) = ($1, pos($s));
+            if (defined($clue_letter))
+            {
+                confess "Found more than one clue letter in the layout!";
+            }
+            ($clue_x, $clue_y, $clue_letter) = ($x_plus_1-1, $y, $l);
+        }
+    }
+
+    if (!defined ($clue_letter))
+    {
+        confess "Did not find any clue letters inside the layout.";
+    }
+
+    $solver->set_conclusive_verdict_for_letter(
+        $solver->get_letter_numeric($clue_letter),
+        [$clue_x, $clue_y],
+    );
+
+    return;
+}
+
 sub input
 {
     my ($solver, $args) = @_;
@@ -474,39 +515,8 @@ sub input
 
     $solver->_process_input_columns($parse_context);
 
-    {
+    $solver->_process_input_rows_and_initial_letter_clue($parse_context);
 
-        my ($clue_x, $clue_y, $clue_letter);
-        foreach my $y ($solver->_y_indexes)
-        {
-            my $row = $rows[$y];
-            $solver->set_verdicts_for_letter_sets(
-                [substr($row, 0, 1), substr($row, -1),],
-                [map { [$_,$y] } $solver->_x_indexes],
-            );
-
-            my $s = substr($row, 1, -1);
-            if ($s =~ m{($letter_re)}g)
-            {
-                my ($l, $x_plus_1) = ($1, pos($s));
-                if (defined($clue_letter))
-                {
-                    confess "Found more than one clue letter in the layout!";
-                }
-                ($clue_x, $clue_y, $clue_letter) = ($x_plus_1-1, $y, $l);
-            }
-        }
-
-        if (!defined ($clue_letter))
-        {
-            confess "Did not find any clue letters inside the layout.";
-        }
-
-        $solver->set_conclusive_verdict_for_letter(
-            $solver->get_letter_numeric($clue_letter),
-            [$clue_x, $clue_y],
-        );
-    }
 
     return;
 }
