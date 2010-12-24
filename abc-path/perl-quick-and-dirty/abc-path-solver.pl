@@ -423,6 +423,24 @@ sub _process_minor_diagonal
     return;
 }
 
+sub _process_input_columns
+{
+    my ($solver, $args) = @_;
+
+    my $top_row = $args->{top};
+    my $bottom_row = $args->{bottom};
+
+    foreach my $x ($solver->_x_indexes)
+    {
+        $solver->set_verdicts_for_letter_sets(
+            [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
+            [map { [$x,$_] } $solver->_y_indexes],
+        );
+    }
+
+    return;
+}
+
 sub input
 {
     my ($solver, $args) = @_;
@@ -454,15 +472,7 @@ sub input
 
     $solver->_process_minor_diagonal($parse_context);
 
-    {
-        foreach my $x ($solver->_x_indexes)
-        {
-            $solver->set_verdicts_for_letter_sets(
-                [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
-                [map { [$x,$_] } $solver->_y_indexes],
-            );
-        }
-    }
+    $solver->_process_input_columns($parse_context);
 
     {
 
