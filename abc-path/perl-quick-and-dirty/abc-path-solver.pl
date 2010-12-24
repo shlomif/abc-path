@@ -57,6 +57,18 @@ sub _init
     return;
 }
 
+sub bump
+{
+    my ($self) = @_;
+
+    return ref($self)->new(
+        { 
+            text => $self->get_text(), 
+            depth => ($self->get_depth+1),
+        }
+    );
+}
+
 package Games::ABC_Path::Solver::Board;
 
 use strict;
@@ -152,6 +164,22 @@ sub _add_move {
     return;
 }
 
+sub get_successful_layouts {
+    my ($self) = @_;
+
+    return [@{$self->_successful_layouts}];
+}
+
+sub _successful_layouts {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_successful_layouts} = shift;
+    }
+
+    return $self->{_successful_layouts};
+}
+
 
 sub _layout {
     my $self = shift;
@@ -192,6 +220,7 @@ sub _init
     }
 
     $self->_layout(\$layout_string);
+    $self->_successful_layouts([]);
     $self->_moves([]);
     $self->_iter_changed(0);
 
@@ -437,7 +466,8 @@ sub _infer_letters
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
-                    die "Mismatched verdict: Should be set to no, but already yes.";
+                    $self->_error(['mismatched_verdict', $x, $y]);
+                    return;
                 }
 
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
@@ -523,6 +553,18 @@ sub _neighbourhood_and_individuality_inferring
     return $num_changed;
 }
 
+sub _clone
+{
+    my ($self) = @_;
+
+    return
+        ref($self)->new(
+            {
+                layout => ${$self->_layout()},
+            }
+        );
+}
+
 sub solve
 {
     my ($self) = @_;
@@ -565,10 +607,74 @@ sub solve
 
     if (@min_coords)
     {
+        my ($x, $y) = @min_coords;
         # We have at least one multiple rank cell. Let's recurse there:
-    }
+        foreach my $letter (@min_options)
+        {
+            my $recurse_solver = $self->_clone;
 
-    return;
+            $self->_add_move(
+                Games::ABC_Path::Solver::Move->new(
+                {
+                    text => "We have non-conclusive cells. Trying $letters[$letter] for ($x,$y)",
+                }
+            ),
+            );
+
+            $recurse_solver->set_conclusive_verdict_for_letter(
+                $letter, [$x,$y]
+            );
+
+            $recurse_solver->solve;
+
+            foreach my $move (@{ $recurse_solver->get_moves })
+            {
+                $self->_add_move($move->bump());
+            }
+
+            if ($recurse_solver->_error())
+            {
+                $self->_add_move(
+                    Games::ABC_Path::Solver::Move->new(
+                    {
+                        text => "Trying $letters[$letter] for ($x,$y) results in an error.",
+                    }
+                    )
+                );
+            }
+            else
+            {
+                $self->_add_move(
+                    Games::ABC_Path::Solver::Move->new(
+                        {
+                            text => "Trying $letters[$letter] for ($x,$y) returns a success."
+                        }
+                    )
+                );
+                push @{$self->_successful_layouts}, 
+                    @{$recurse_solver->get_successful_layouts()};
+            }
+        }
+
+        my $count = @{$self->_successful_layouts()};
+        if (! $count)
+        {
+            return ['all_options_bad'];
+        }
+        elsif ($count == 1)
+        {
+            return ['success'];
+        }
+        else
+        {
+            return ['success_multiple'];
+        }
+    }
+    else
+    {
+        $self->_successful_layouts([$self->_clone()]);
+        return ['success'];
+    }
 }
 
 my $letter_re_s = join('', map { quotemeta($_) } @letters);
@@ -735,7 +841,7 @@ sub input
     return;
 }
 
-sub get_results_text_table
+sub _get_results_text_table
 {
     my ($self) = @_;
 
@@ -756,6 +862,13 @@ sub get_results_text_table
     }
 
     return $tb;
+}
+
+sub get_successes_text_tables
+{
+    my ($self) = @_;
+
+    return [map { $_->_get_results_text_table() } @{$self->get_successful_layouts()}];
 }
 
 # Input the board.
@@ -819,10 +932,10 @@ $solver->solve;
 
 foreach my $move (@{$solver->get_moves})
 {
-    print $move->get_text(), "\n";
+    print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
 }
 
-print $solver->get_results_text_table;
+print @{$solver->get_successes_text_tables};
 
 =head1 COPYRIGHT AND LICENSE
 
