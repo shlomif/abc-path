@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+package Games::ABC_Path::Solver::Board;
+
 use strict;
 use warnings;
 
@@ -12,9 +14,6 @@ my $ABCP_VERDICT_YES = 2;
 my $BOARD_LEN = 5;
 my $BOARD_LEN_LIM = $BOARD_LEN - 1;
 
-package Games::ABC_Path::Solver::Board;
-
-use Carp;
 
 my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
@@ -529,6 +528,9 @@ sub input_from_file
 }
 
 package main;
+
+use strict;
+use warnings;
 
 # my $solver = Games::ABC_Path::Solver::Board->new;
 
