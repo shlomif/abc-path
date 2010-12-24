@@ -476,7 +476,7 @@ sub _inference_iteration
     return $self->_flush_changed;
 }
 
-sub neighbourhood_and_individuality_inferring
+sub _neighbourhood_and_individuality_inferring
 {
     my ($self) = @_;
 
@@ -488,6 +488,15 @@ sub neighbourhood_and_individuality_inferring
     }
 
     return $num_changed;
+}
+
+sub solve
+{
+    my ($self) = @_;
+
+    $self->_neighbourhood_and_individuality_inferring;
+
+    return;
 }
 
 my $letter_re_s = join('', map { quotemeta($_) } @letters);
@@ -734,7 +743,7 @@ if (!defined ($board_fn))
 my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
 # Now let's do a neighbourhood inferring of the board.
 
-$solver->neighbourhood_and_individuality_inferring;
+$solver->solve;
 
 foreach my $move (@{$solver->get_moves})
 {
