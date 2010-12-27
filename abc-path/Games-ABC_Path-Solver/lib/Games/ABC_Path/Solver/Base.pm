@@ -5,15 +5,15 @@ use strict;
 
 =head1 NAME
 
-Games::ABC_Path::Solver::Base - The great new Games::ABC_Path::Solver::Base!
+Games::ABC_Path::Solver::Base - base class for Games::ABC_Path::Solver classes.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 
 =head1 SYNOPSIS
@@ -22,30 +22,30 @@ Quick summary of what the module does.
 
 Perhaps a little code snippet.
 
-    use Games::ABC_Path::Solver::Base;
+    use base 'Games::ABC_Path::Solver::Base';
 
-    my $foo = Games::ABC_Path::Solver::Base->new();
-    ...
+    sub _init
+    {
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    }
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 new
+
+The default constructor - construct an object and calls _init.
 
 =cut
 
-sub function1 {
-}
+sub new
+{
+    my $class = shift;
 
-=head2 function2
+    my $self = bless {}, $class;
 
-=cut
+    $self->_init(@_);
 
-sub function2 {
+    return $self;
 }
 
 =head1 AUTHOR

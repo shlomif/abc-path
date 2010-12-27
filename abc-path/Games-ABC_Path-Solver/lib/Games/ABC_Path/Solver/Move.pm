@@ -5,15 +5,15 @@ use strict;
 
 =head1 NAME
 
-Games::ABC_Path::Solver::Move - The great new Games::ABC_Path::Solver::Move!
+Games::ABC_Path::Solver::Move - an ABC Path move.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 
 =head1 SYNOPSIS
@@ -25,27 +25,79 @@ Perhaps a little code snippet.
     use Games::ABC_Path::Solver::Move;
 
     my $foo = Games::ABC_Path::Solver::Move->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 new
+
+The constructor.
 
 =cut
 
-sub function1 {
+use base 'Games::ABC_Path::Solver::Base';
+
+=head2 get_text()
+
+A method that retrieves the text of the move.
+
+=cut
+
+sub get_text
+{
+    my ($self) = @_;
+    
+    return $self->{_text};
 }
 
-=head2 function2
+sub _depth {
+    my $self = shift;
+
+    if (@_) {
+        $self->{_depth} = shift;
+    }
+
+    return $self->{_depth};
+}
+
+=head2 get_depth()
+
+A method that retrieves the solving recursion depth of the move.
 
 =cut
 
-sub function2 {
+sub get_depth
+{
+    my ($self) = @_;
+
+    return $self->_depth();
+}
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->{_text} = $args->{text};
+    $self->_depth($args->{depth} || 0);
+
+    return;
+}
+
+=head2 bump
+
+Creates a new identical move with an incremented depth.
+
+=cut
+
+sub bump
+{
+    my ($self) = @_;
+
+    return ref($self)->new(
+        { 
+            text => $self->get_text(), 
+            depth => ($self->get_depth+1),
+        }
+    );
 }
 
 =head1 AUTHOR
