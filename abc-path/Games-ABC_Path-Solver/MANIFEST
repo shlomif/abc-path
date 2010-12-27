@@ -1,0 +1,11 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+lib/Games/ABC_Path/Solver.pm
+lib/Games/ABC_Path/Solver/Base.pm
+lib/Games/ABC_Path/Solver/Board.pm
+lib/Games/ABC_Path/Solver/Move.pm
+t/00-load.t
+t/pod-coverage.t
+t/pod.t
