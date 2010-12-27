@@ -56,6 +56,8 @@ use Carp;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Solver::Move;
+
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
