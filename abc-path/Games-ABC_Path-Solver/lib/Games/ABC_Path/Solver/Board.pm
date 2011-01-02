@@ -355,6 +355,13 @@ sub _get_possible_letter_indexes
     ];
 }
 
+=head2 $board->get_possible_letters_for_cell($x,$y)
+
+Returns an array reference of the possible letters for the cell ($x,$y) where
+$x and $y are in the range 0..4 and the letters are their letter names.
+
+=cut
+
 sub get_possible_letters_for_cell
 {
     my ($self, $x, $y) = @_;
