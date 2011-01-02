@@ -884,6 +884,13 @@ sub input_from_file
     return $self;
 }
 
+=head2 $board->get_moves()
+
+Returns the moves performed by the board. Each move is a 
+L<Games::ABC_Path::Solver::Move> object.
+
+=cut
+
 sub get_moves
 {
     my ($self) = @_;
