@@ -144,6 +144,14 @@ sub _add_move {
     return;
 }
 
+=head2 get_successful_layouts()
+
+Returns a copy of the successful layouts. Each one of them is a completed
+L<Games::ABC_Path::Solver::Board> the successful layouts. Each one of them is a completed
+L<Games::ABC_Path::Solver::Board> object.
+
+=cut
+
 sub get_successful_layouts {
     my ($self) = @_;
 
@@ -237,14 +245,14 @@ sub _calc_offset
     return $letter * ($BOARD_LEN * $BOARD_LEN) + $self->_xy_to_idx($x,$y);
 }
 
-sub get_verdict
+sub _get_verdict
 {
     my ($self, $letter, $x, $y) = @_;
 
     return vec(${$self->_layout}, $self->_calc_offset($letter, $x, $y), 2);
 }
 
-sub set_verdict
+sub _set_verdict
 {
     my ($self, $letter, $x, $y, $verdict) = @_;
 
@@ -263,7 +271,7 @@ sub set_verdict
     return;
 }
 
-sub xy_loop
+sub _xy_loop
 {
     my ($self, $sub_ref) = (@_);
 
@@ -286,7 +294,7 @@ sub xy_loop
 }
 
 
-sub set_verdicts_for_letter_sets
+sub _set_verdicts_for_letter_sets
 {
     my ($self, $letter_list, $maybe_list) = @_;
 
@@ -297,11 +305,11 @@ sub set_verdicts_for_letter_sets
     {
         my $letter = $self->_get_letter_numeric($letter_ascii);
 
-        $self->xy_loop(
+        $self->_xy_loop(
             sub {
                 my ($x, $y) = @_;
 
-                $self->set_verdict($letter, $x, $y,
+                $self->_set_verdict($letter, $x, $y,
                     ((exists $cell_is_maybe{"$x,$y"})
                         ? $ABCP_VERDICT_MAYBE
                         : $ABCP_VERDICT_NO
@@ -314,16 +322,16 @@ sub set_verdicts_for_letter_sets
     return;
 }
 
-sub set_conclusive_verdict_for_letter
+sub _set_conclusive_verdict_for_letter
 {
     my ($self, $letter, $xy) = @_;
 
     my ($l_x, $l_y) = @$xy;
 
-    $self->xy_loop(sub {
+    $self->_xy_loop(sub {
             my ($x, $y) = @_;
 
-            $self->set_verdict($letter, $x, $y,
+            $self->_set_verdict($letter, $x, $y,
                 ((($l_x == $x) && ($l_y == $y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
@@ -338,7 +346,7 @@ sub set_conclusive_verdict_for_letter
         {
             next OTHER_LETTER;
         }
-        $self->set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+        $self->_set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
     }
 
     return;
@@ -350,7 +358,7 @@ sub _get_possible_letter_indexes
 
     return 
     [
-        grep { $self->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        grep { $self->_get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
         $self->_l_indexes()
     ];
 }
@@ -385,10 +393,10 @@ sub _infer_letters
     {
         my @true_cells;
 
-        $self->xy_loop(sub {
+        $self->_xy_loop(sub {
             my @c = @_;
 
-            my $ver = $self->get_verdict($letter, @c);
+            my $ver = $self->_get_verdict($letter, @c);
             if (    ($ver == $ABCP_VERDICT_YES) 
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
@@ -404,10 +412,10 @@ sub _infer_letters
         elsif (@true_cells == 1)
         {
             my $xy = $true_cells[0];
-            if ($self->get_verdict($letter, @$xy) ==
+            if ($self->_get_verdict($letter, @$xy) ==
                 $ABCP_VERDICT_MAYBE)
             {
-                $self->set_conclusive_verdict_for_letter($letter, $xy);
+                $self->_set_conclusive_verdict_for_letter($letter, $xy);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
@@ -440,7 +448,7 @@ sub _infer_letters
             (($letter < $ABCP_MAX_LETTER) ? ($letter+1) : ()),
         )
         {
-            $self->xy_loop(sub {
+            $self->_xy_loop(sub {
                 my ($x, $y) = @_;
 
                 if ($neighbourhood[$y][$x])
@@ -449,7 +457,7 @@ sub _infer_letters
                 }
 
                 my $existing_verdict =
-                    $self->get_verdict($neighbour_letter, $x, $y);
+                    $self->_get_verdict($neighbour_letter, $x, $y);
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
@@ -459,7 +467,7 @@ sub _infer_letters
 
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                 {
-                    $self->set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                    $self->_set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
                     $self->_add_move(
                         Games::ABC_Path::Solver::Move->new(
                             {
@@ -479,7 +487,7 @@ sub _infer_cells
 {
     my ($self) = @_;
 
-    $self->xy_loop(sub {
+    $self->_xy_loop(sub {
         my ($x, $y) = @_;
 
         my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
@@ -493,9 +501,9 @@ sub _infer_cells
         {
             my $letter = $letters_aref->[0];
 
-            if ($self->get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+            if ($self->_get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
             {
-                $self->set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                $self->_set_conclusive_verdict_for_letter($letter, [$x, $y]);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
@@ -552,6 +560,12 @@ sub _clone
         );
 }
 
+=head2 $board->solve()
+
+Performs the actual solution. Should be called after input.
+
+=cut
+
 sub solve
 {
     my ($self) = @_;
@@ -566,7 +580,7 @@ sub solve
     my @min_coords;
     my @min_options;
 
-    $self->xy_loop(sub {
+    $self->_xy_loop(sub {
         my ($x, $y) = @_;
 
         my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
@@ -608,7 +622,7 @@ sub solve
             ),
             );
 
-            $recurse_solver->set_conclusive_verdict_for_letter(
+            $recurse_solver->_set_conclusive_verdict_for_letter(
                 $letter, [$x,$y]
             );
 
@@ -700,7 +714,7 @@ sub _process_major_diagonal
 
     push @major_diagonal_letters, $1;
 
-    $self->set_verdicts_for_letter_sets(
+    $self->_set_verdicts_for_letter_sets(
         \@major_diagonal_letters, 
         [map { [$_,$_] } $self->_y_indexes],
     );
@@ -722,7 +736,7 @@ sub _process_minor_diagonal
 
     push @minor_diagonal_letters, $1;
 
-    $self->set_verdicts_for_letter_sets(
+    $self->_set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
         [map { [$_, 4-$_] } ($self->_y_indexes)]
     );
@@ -739,7 +753,7 @@ sub _process_input_columns
 
     foreach my $x ($self->_x_indexes)
     {
-        $self->set_verdicts_for_letter_sets(
+        $self->_set_verdicts_for_letter_sets(
             [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
             [map { [$x,$_] } $self->_y_indexes],
         );
@@ -759,7 +773,7 @@ sub _process_input_rows_and_initial_letter_clue
     foreach my $y ($self->_y_indexes)
     {
         my $row = $rows->[$y];
-        $self->set_verdicts_for_letter_sets(
+        $self->_set_verdicts_for_letter_sets(
             [substr($row, 0, 1), substr($row, -1),],
             [map { [$_,$y] } $self->_x_indexes],
         );
@@ -781,7 +795,7 @@ sub _process_input_rows_and_initial_letter_clue
         confess "Did not find any clue letters inside the layout.";
     }
 
-    $self->set_conclusive_verdict_for_letter(
+    $self->_set_conclusive_verdict_for_letter(
         $self->_get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
@@ -789,7 +803,7 @@ sub _process_input_rows_and_initial_letter_clue
     return;
 }
 
-sub input
+sub _input
 {
     my ($self, $args) = @_;
 
@@ -851,14 +865,19 @@ sub _get_results_text_table
     return $tb;
 }
 
-sub get_successes_text_tables
+sub _get_successes_text_tables
 {
     my ($self) = @_;
 
     return [map { $_->_get_results_text_table() } @{$self->get_successful_layouts()}];
 }
 
-# Input the board.
+=head2 $board->input_from_file($filename)
+
+Inputs the board from the C<$filename> file path containing a representation
+of the initial board.
+
+=cut
 
 sub input_from_file
 {
@@ -886,7 +905,7 @@ sub input_from_file
     }
     close($in_fh);
 
-    $self->input({ layout => $layout_string, version => 1});
+    $self->_input({ layout => $layout_string, version => 1});
 
     return $self;
 }
