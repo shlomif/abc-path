@@ -71,7 +71,7 @@ my $ABCP_MAX_LETTER = $#letters;
 
 my %letters_map = (map { $letters[$_] => $_ } (0 .. $ABCP_MAX_LETTER));
 
-sub get_letter_numeric
+sub _get_letter_numeric
 {
     my ($self, $letter_ascii) = @_;
 
@@ -295,7 +295,7 @@ sub set_verdicts_for_letter_sets
 
     foreach my $letter_ascii (@$letter_list)
     {
-        my $letter = $self->get_letter_numeric($letter_ascii);
+        my $letter = $self->_get_letter_numeric($letter_ascii);
 
         $self->xy_loop(
             sub {
@@ -775,7 +775,7 @@ sub _process_input_rows_and_initial_letter_clue
     }
 
     $self->set_conclusive_verdict_for_letter(
-        $self->get_letter_numeric($clue_letter),
+        $self->_get_letter_numeric($clue_letter),
         [$clue_x, $clue_y],
     );
 
