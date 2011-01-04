@@ -419,7 +419,10 @@ sub _infer_letters
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
-                            text =>  "For $letters[$letter] only ($xy->[0],$xy->[1]) is possible.",
+                            text => sprintf(
+                                "For %s only (%d,%d) is possible.", 
+                                $letters[$letter], $xy->[0]+1, $xy->[1]+1,
+                            ),
                         }
                     )
                 );
@@ -471,7 +474,12 @@ sub _infer_letters
                     $self->_add_move(
                         Games::ABC_Path::Solver::Move->new(
                             {
-                                text => "$letters[$neighbour_letter] cannot be at ($x,$y) due to lack of vicinity from $letters[$letter].",
+                                text => sprintf(
+                                    "%s cannot be at (%d,%d) due to lack of vicinity from %s.", 
+                                    $letters[$neighbour_letter], 
+                                    $x+1,$y+1, 
+                                    $letters[$letter]
+                                ),
                             }
                         )
                     );
@@ -507,7 +515,10 @@ sub _infer_cells
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
-                            text => "The only letter that can be at ($x,$y) is $letters[$letter]. Invalidating it for all other cells."
+                            text => sprintf(
+                                "The only letter that can be at (%d,%d) is %s. Invalidating it for all other cells.", 
+                                $x+1,$y+1, $letters[$letter]
+                            ),
                         }
                     )
                 );
@@ -617,7 +628,10 @@ sub solve
             $self->_add_move(
                 Games::ABC_Path::Solver::Move->new(
                 {
-                    text => "We have non-conclusive cells. Trying $letters[$letter] for ($x,$y)",
+                    text => sprintf(
+                        "We have non-conclusive cells. Trying %s for (%d,%d)",
+                        $letters[$letter], $x+1, $y+1,
+                    ),
                 }
             ),
             );
@@ -638,7 +652,13 @@ sub solve
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                     {
-                        text => "Trying $letters[$letter] for ($x,$y) results in an error.",
+                        text => 
+                        sprintf(
+                            "Trying %s for (%d,%d) results in an error.", 
+                            $letters[$letter],
+                            $x+1,
+                            $y+1
+                        ),
                     }
                     )
                 );
@@ -648,7 +668,11 @@ sub solve
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move->new(
                         {
-                            text => "Trying $letters[$letter] for ($x,$y) returns a success."
+                            text => 
+                            sprintf(
+                                "Trying %s for (%d,%d) returns a success.", 
+                                $letters[$letter], $x+1,$y+1
+                            ),
                         }
                     )
                 );
@@ -860,7 +884,7 @@ sub _get_results_text_table
     return join('',
         map { $render_row->($_) }
         (
-        [map { sprintf("X = %d", $_) } $self->_x_indexes ],
+        [map { sprintf("X = %d", $_+1) } $self->_x_indexes ],
         map { my $y = $_; 
             [ 
                 map 
