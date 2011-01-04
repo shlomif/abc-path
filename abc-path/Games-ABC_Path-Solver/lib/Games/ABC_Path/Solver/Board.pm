@@ -846,26 +846,40 @@ sub _get_results_text_table
 {
     my ($self) = @_;
 
-    require Text::Table;
+    my $render_row = sub {
+        my $cols = shift;
 
-    my $tb =
-        Text::Table->new(
-            \" | ", (map {; "X = $_", (\' | '); } $self->_x_indexes)
-        );
+        return 
+            "| " .
+            join(
+                " | ", 
+                map { length($_) == 1 ? "  $_  " : $_ } @$cols
+            ) . " |\n";
+    };
 
-    foreach my $y ($self->_y_indexes)
-    {
-        $tb->add(
-            map 
-            { $self->_get_possible_letters_string($_, $y) } 
-            $self->_x_indexes
-        );
-    }
-
-    return $tb;
+    return join('',
+        map { $render_row->($_) }
+        (
+        [map { sprintf("X = %d", $_) } $self->_x_indexes ],
+        map { my $y = $_; 
+            [ 
+                map 
+                { $self->_get_possible_letters_string($_, $y) }
+                $self->_x_indexes
+            ]
+            }
+            $self->_y_indexes
+        )
+    );
 }
 
-sub _get_successes_text_tables
+=head2 $self->get_successes_text_tables()
+
+This returns a textual representation of the successful layouts.
+
+=cut
+
+sub get_successes_text_tables
 {
     my ($self) = @_;
 

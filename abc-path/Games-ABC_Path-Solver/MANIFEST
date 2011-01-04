@@ -8,6 +8,13 @@ lib/Games/ABC_Path/Solver.pm
 Makefile.PL
 MANIFEST
 README
+scripts/abc-path-solve
 t/00-load.t
+t/layouts/brain-bashers.2010-12-21.abc-path
+t/layouts/brain-bashers.2010-12-22.abc-path
 t/pod-coverage.t
 t/pod.t
+t/results/brain-bashers.2010-12-21.abc-path-sol
+t/results/brain-bashers.2010-12-22.abc-path-sol
+t/solver-output-system-test.t
+META.yml

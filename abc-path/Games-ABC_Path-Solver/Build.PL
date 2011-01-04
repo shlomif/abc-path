@@ -21,7 +21,7 @@ my $builder = Test::Run::Builder->new(
     add_to_cleanup      => [ 'Games-Solitaire-Verify-*' ],
     create_makefile_pl => 'traditional',
     script_files => [
-        # "script/abc-path-solve",
+        "scripts/abc-path-solve",
     ],
     meta_merge =>
     {

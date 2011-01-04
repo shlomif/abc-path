@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Games::ABC_Path::Solver::Board;
+
+my $board_fn = shift(@ARGV);
+
+if (!defined ($board_fn))
+{
+    die "Filename not specified - usage: abc-path-solver.pl [filename]!";
+}
+
+my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
+# Now let's do a neighbourhood inferring of the board.
+
+$solver->solve;
+
+foreach my $move (@{$solver->get_moves})
+{
+    print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
+}
+
+print @{$solver->get_successes_text_tables};
+
+1;
+
