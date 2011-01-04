@@ -7,6 +7,8 @@ lib/Games/ABC_Path/Solver/Move.pm
 lib/Games/ABC_Path/Solver.pm
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
+META.yml
 README
 scripts/abc-path-solve
 t/00-load.t
@@ -17,4 +19,3 @@ t/pod.t
 t/results/brain-bashers.2010-12-21.abc-path-sol
 t/results/brain-bashers.2010-12-22.abc-path-sol
 t/solver-output-system-test.t
-META.yml
