@@ -57,6 +57,7 @@ use Carp;
 use base 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Move;
+use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
@@ -417,12 +418,13 @@ sub _infer_letters
             {
                 $self->_set_conclusive_verdict_for_letter($letter, $xy);
                 $self->_add_move(
-                    Games::ABC_Path::Solver::Move->new(
+                    Games::ABC_Path::Solver::Move::LastRemainingCellForLetter->new(
                         {
-                            text => sprintf(
-                                "For %s only (%d,%d) is possible.", 
-                                $letters[$letter], $xy->[0]+1, $xy->[1]+1,
-                            ),
+                            vars =>
+                            {
+                                letter => $letter,
+                                coords => $xy,
+                            },
                         }
                     )
                 );

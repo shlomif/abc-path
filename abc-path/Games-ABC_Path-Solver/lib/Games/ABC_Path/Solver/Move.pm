@@ -15,12 +15,7 @@ Version 0.0.1
 
 our $VERSION = '0.0.1';
 
-
 =head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
 
     use Games::ABC_Path::Solver::Move;
 
@@ -43,6 +38,11 @@ A method that retrieves the text of the move.
 =cut
 
 sub get_text
+{
+    return shift->_get_text();
+}
+
+sub _get_text
 {
     my ($self) = @_;
     
@@ -78,6 +78,7 @@ sub _init
 
     $self->{_text} = $args->{text};
     $self->_depth($args->{depth} || 0);
+    $self->{_vars} = ($args->{vars} || {});
 
     return;
 }
@@ -96,8 +97,47 @@ sub bump
         { 
             text => $self->get_text(), 
             depth => ($self->get_depth+1),
+            vars => { %{$self->{_vars}}, },
         }
     );
+}
+
+=head2 $self->get_var($name)
+
+This method returns the raw, unformatted value of the move's variable (or its 
+parameter) called $name. Each move class contains several parameters that can
+be accessed programatically.
+
+=cut
+
+sub get_var
+{
+    my ($self, $name) = @_;
+
+    return $self->{_vars}->{$name};
+}
+
+# TODO : duplicate code with ::Board
+my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
+
+sub _expand_format
+{
+    my ($self, $name, $type) = @_;
+
+    my $value = $self->get_var($name);
+
+    if ($type eq "letter")
+    {
+        return $letters[$value];
+    }
+    elsif ($type eq "coords")
+    {
+        return sprintf("(%d,%d)", $value->[0]+1, $value->[1]+1);
+    }
+    else
+    {
+        die "Unknown format type '$type'!";
+    }
 }
 
 =head1 AUTHOR

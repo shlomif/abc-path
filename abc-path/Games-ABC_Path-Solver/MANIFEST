@@ -3,6 +3,7 @@ Changes
 inc/Test/Run/Builder.pm
 lib/Games/ABC_Path/Solver/Base.pm
 lib/Games/ABC_Path/Solver/Board.pm
+lib/Games/ABC_Path/Solver/Move/LastRemainingCellForLetter.pm
 lib/Games/ABC_Path/Solver/Move.pm
 lib/Games/ABC_Path/Solver.pm
 Makefile.PL
