@@ -39,18 +39,6 @@ trying to put the letter C<'letter'> in the coordinate C<'coords'>.
 
 =cut
 
-sub _get_text {
-    my $self = shift;
-
-    my $text = $self->_format;
-
-    $text =~ s/%\((\w+)\)\{(\w+)\}/
-        $self->_expand_format($1,$2)
-        /ge;
-
-    return $text;
-}
-
 sub _format {
     return "We have non-conclusive cells. Trying %(letter){letter} for %(coords){coords}";
 }

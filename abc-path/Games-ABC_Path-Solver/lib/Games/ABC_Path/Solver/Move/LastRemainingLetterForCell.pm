@@ -39,18 +39,6 @@ letter as C<'letter'>.
 
 =cut
 
-sub _get_text {
-    my $self = shift;
-
-    my $text = $self->_format;
-
-    $text =~ s/%\((\w+)\)\{(\w+)\}/
-        $self->_expand_format($1,$2)
-        /ge;
-
-    return $text;
-}
-
 sub _format {
     return "The only letter that can be at %(coords){coords} is %(letter){letter}. Invalidating it for all other cells.";
 }

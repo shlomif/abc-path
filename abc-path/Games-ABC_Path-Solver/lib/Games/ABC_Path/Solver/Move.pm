@@ -44,9 +44,15 @@ sub get_text
 
 sub _get_text
 {
-    my ($self) = @_;
-    
-    return $self->{_text};
+    my $self = shift;
+
+    my $text = $self->_format;
+
+    $text =~ s/%\((\w+)\)\{(\w+)\}/
+        $self->_expand_format($1,$2)
+        /ge;
+
+    return $text;
 }
 
 sub _depth {

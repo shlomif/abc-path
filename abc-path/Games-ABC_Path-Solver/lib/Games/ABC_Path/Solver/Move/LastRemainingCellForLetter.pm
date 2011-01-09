@@ -39,18 +39,6 @@ as C<'coords'>.
 
 =cut
 
-sub _get_text {
-    my $self = shift;
-
-    my $text = $self->_format;
-
-    $text =~ s/%\((\w+)\)\{(\w+)\}/
-        $self->_expand_format($1,$2)
-        /ge;
-
-    return $text;
-}
-
 sub _format {
     return "For %(letter){letter} only %(coords){coords} is possible.";
 }
