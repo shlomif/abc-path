@@ -53,6 +53,7 @@ use Games::ABC_Path::Solver::Move;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
+use Games::ABC_Path::Solver::Move::ResultsInAnError;
 use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 
 my $ABCP_VERDICT_NO = 0;
@@ -646,15 +647,13 @@ sub solve
             if ($recurse_solver->_error())
             {
                 $self->_add_move(
-                    Games::ABC_Path::Solver::Move->new(
+                    Games::ABC_Path::Solver::Move::ResultsInAnError->new(
                     {
-                        text => 
-                        sprintf(
-                            "Trying %s for (%d,%d) results in an error.", 
-                            $letters[$letter],
-                            $x+1,
-                            $y+1
-                        ),
+                        vars =>
+                        {
+                            letter => $letter,
+                            coords => [$x,$y],
+                        },
                     }
                     )
                 );
