@@ -51,6 +51,7 @@ use base 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Move;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
+use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
 
 my $ABCP_VERDICT_NO = 0;
@@ -509,13 +510,14 @@ sub _infer_cells
             {
                 $self->_set_conclusive_verdict_for_letter($letter, [$x, $y]);
                 $self->_add_move(
-                    Games::ABC_Path::Solver::Move->new(
+                    Games::ABC_Path::Solver::Move::LastRemainingLetterForCell->new(
                         {
-                            text => sprintf(
-                                "The only letter that can be at (%d,%d) is %s. Invalidating it for all other cells.", 
-                                $x+1,$y+1, $letters[$letter]
-                            ),
-                        }
+                            vars =>
+                            {
+                                coords => [$x,$y],
+                                letter => $letter,
+                            },
+                        },
                     )
                 );
             }
