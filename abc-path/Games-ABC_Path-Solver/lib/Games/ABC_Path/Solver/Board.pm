@@ -51,6 +51,7 @@ use base 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Move;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
+use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
 
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
@@ -467,14 +468,14 @@ sub _infer_letters
                 {
                     $self->_set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
                     $self->_add_move(
-                        Games::ABC_Path::Solver::Move->new(
+                        Games::ABC_Path::Solver::Move::LettersNotInVicinity->new(
                             {
-                                text => sprintf(
-                                    "%s cannot be at (%d,%d) due to lack of vicinity from %s.", 
-                                    $letters[$neighbour_letter], 
-                                    $x+1,$y+1, 
-                                    $letters[$letter]
-                                ),
+                                vars =>
+                                {
+                                    target => $neighbour_letter,
+                                    coords => [$x,$y],
+                                    source => $letter,
+                                },
                             }
                         )
                     );
