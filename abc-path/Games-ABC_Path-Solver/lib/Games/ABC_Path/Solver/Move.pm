@@ -39,11 +39,6 @@ A method that retrieves the text of the move.
 
 sub get_text
 {
-    return shift->_get_text();
-}
-
-sub _get_text
-{
     my $self = shift;
 
     my $text = $self->_format;
