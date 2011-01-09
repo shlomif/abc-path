@@ -53,6 +53,7 @@ use Games::ABC_Path::Solver::Move;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
+use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
@@ -624,14 +625,11 @@ sub solve
             my $recurse_solver = $self->_clone;
 
             $self->_add_move(
-                Games::ABC_Path::Solver::Move->new(
-                {
-                    text => sprintf(
-                        "We have non-conclusive cells. Trying %s for (%d,%d)",
-                        $letters[$letter], $x+1, $y+1,
-                    ),
-                }
-            ),
+                Games::ABC_Path::Solver::Move::TryingLetterForCell->new(
+                    {
+                        vars => { letter => $letter, coords => [$x, $y], },
+                    }
+                ),
             );
 
             $recurse_solver->_set_conclusive_verdict_for_letter(
