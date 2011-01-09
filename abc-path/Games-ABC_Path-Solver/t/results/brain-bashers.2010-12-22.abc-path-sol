@@ -84,13 +84,13 @@ The only letter that can be at (2,2) is C. Invalidating it for all other cells.
 The only letter that can be at (4,4) is N. Invalidating it for all other cells.
 For D only (2,1) is possible.
 For P only (3,3) is possible.
-We have non-conclusive cells. Trying I for (2,4)
+We have non-conclusive cells. Trying I for (2,4).
  => For K only (1,5) is possible.
  => J cannot be at (3,5) due to lack of vicinity from K.
  => L cannot be at (3,5) due to lack of vicinity from K.
  => For L only (2,5) is possible.
 Trying I for (2,4) results in an error.
-We have non-conclusive cells. Trying K for (2,4)
+We have non-conclusive cells. Trying K for (2,4).
  => For I only (2,5) is possible.
  => For L only (3,5) is possible.
  => The only letter that can be at (1,5) is J. Invalidating it for all other cells.

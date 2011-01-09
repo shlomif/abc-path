@@ -40,7 +40,7 @@ trying to put the letter C<'letter'> in the coordinate C<'coords'>.
 =cut
 
 sub _format {
-    return "We have non-conclusive cells. Trying %(letter){letter} for %(coords){coords}";
+    return "We have non-conclusive cells. Trying %(letter){letter} for %(coords){coords}.";
 }
 
 1;
