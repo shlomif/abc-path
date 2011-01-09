@@ -15,17 +15,10 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
 
     use strict;
     use warnings;
-
-    # my $solver = Games::ABC_Path::Solver::Board->new;
 
     my $board_fn = shift(@ARGV);
 

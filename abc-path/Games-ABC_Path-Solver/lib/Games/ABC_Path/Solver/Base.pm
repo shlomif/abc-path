@@ -18,10 +18,6 @@ our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use base 'Games::ABC_Path::Solver::Base';
 
     sub _init
