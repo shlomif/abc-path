@@ -8,6 +8,7 @@ lib/Games/ABC_Path/Solver/Move/LastRemainingLetterForCell.pm
 lib/Games/ABC_Path/Solver/Move/LettersNotInVicinity.pm
 lib/Games/ABC_Path/Solver/Move.pm
 lib/Games/ABC_Path/Solver/Move/ResultsInAnError.pm
+lib/Games/ABC_Path/Solver/Move/ResultsInASuccess.pm
 lib/Games/ABC_Path/Solver/Move/TryingLetterForCell.pm
 lib/Games/ABC_Path/Solver.pm
 Makefile.PL

@@ -49,11 +49,11 @@ use Carp;
 
 use base 'Games::ABC_Path::Solver::Base';
 
-use Games::ABC_Path::Solver::Move;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
 use Games::ABC_Path::Solver::Move::ResultsInAnError;
+use Games::ABC_Path::Solver::Move::ResultsInASuccess;
 use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 
 my $ABCP_VERDICT_NO = 0;
@@ -661,13 +661,9 @@ sub solve
             else
             {
                 $self->_add_move(
-                    Games::ABC_Path::Solver::Move->new(
+                    Games::ABC_Path::Solver::Move::ResultsInASuccess->new(
                         {
-                            text => 
-                            sprintf(
-                                "Trying %s for (%d,%d) returns a success.", 
-                                $letters[$letter], $x+1,$y+1
-                            ),
+                            vars => { letter => $letter, coords => [$x,$y],},
                         }
                     )
                 );
@@ -945,8 +941,8 @@ sub input_from_file
 
 =head2 $board->get_moves()
 
-Returns the moves performed by the board. Each move is a 
-L<Games::ABC_Path::Solver::Move> object.
+Returns the moves performed by the board. Each move is an
+object of a L<Games::ABC_Path::Solver::Move> sub-class.
 
 =cut
 
