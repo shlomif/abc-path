@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Solver
 
+        - Add the missing Test::Differences to the build_requires. It caused
+        some build failures.
+
 0.0.1   Sun Jan  9 20:37:26 IST 2011
         First version, released on an unsuspecting world.
 

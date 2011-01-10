@@ -11,6 +11,7 @@ my $builder = Test::Run::Builder->new(
     license             => 'mit',
     dist_author         => 'Shlomi Fish <shlomif@cpan.org>',
     build_requires => {
+        'Test::Differences' => 0,
         'Test::More' => 0,
     },
     requires => {
