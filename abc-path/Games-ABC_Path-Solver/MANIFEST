@@ -17,6 +17,7 @@ MANIFEST.SKIP
 META.yml
 README
 scripts/abc-path-solve
+scripts/bump-version-number.pl
 t/00-load.t
 t/layouts/brain-bashers.2010-12-21.abc-path
 t/layouts/brain-bashers.2010-12-22.abc-path
