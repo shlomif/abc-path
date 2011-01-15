@@ -906,6 +906,20 @@ sub get_successes_text_tables
 Inputs the board from the C<$filename> file path containing a representation
 of the initial board.
 
+Sample boards can be found in the distribution under C<t/layouts/> .
+
+Here is the description of their formats. The first line should be the
+magic string C<ABC Path Solver Layout Version 1:> , and the next line should
+be a row of 7 letters, the first being a hint for the top-left-to-bottom-right
+perpendicular, the last being a hint for the top-right-to-bottom-left 
+perpendicular and the rest of the letters being vertical hints. 
+
+After that, there are 5 rows of horizontal hints being a letter, 5 spaces
+and another letter. On one of the squares one can put a letter instead of a
+space, to indicate it must be there.
+
+The last row is another row of vertical hints and perpendicular hints.
+
 =cut
 
 sub input_from_file
