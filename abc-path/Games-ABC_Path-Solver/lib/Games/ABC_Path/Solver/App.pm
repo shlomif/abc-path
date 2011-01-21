@@ -43,6 +43,8 @@ Run the application based on the arguments in the constructor.
 use base 'Games::ABC_Path::Solver::Base';
 
 use Carp;
+use Getopt::Long;
+use Pod::Usage;
 
 use Games::ABC_Path::Solver::Board;
 
@@ -70,7 +72,24 @@ sub run
 {
     my $self = shift;
 
-    my $board_fn = shift(@{$self->_argv});
+    local @ARGV = @{$self->_argv};
+
+    my $man = 0;
+    my $help = 0;
+    GetOptions('help|h' => \$help, man => \$man)
+        or pod2usage(2);
+
+    if ($help)
+    {
+        pod2usage(1);
+    }
+
+    if ($man)
+    {
+        pod2usage(-verbose => 2);
+    }
+
+    my $board_fn = shift(@ARGV);
 
     if (!defined ($board_fn))
     {

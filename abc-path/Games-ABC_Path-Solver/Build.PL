@@ -18,6 +18,7 @@ my $builder = Test::Run::Builder->new(
         'base' => 0,
         'Carp' => 0,
         'Getopt::Long' => '2.36',
+        'Pod::Usage' => 0,
     },
     add_to_cleanup      => [ 'Games-Solitaire-Verify-*' ],
     create_makefile_pl => 'traditional',
