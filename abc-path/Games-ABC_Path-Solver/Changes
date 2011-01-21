@@ -1,5 +1,9 @@
 Revision history for Games-ABC_Path-Solver
 
+0.0.3
+        - Encapsulated scripts/abc-path-solve inside
+        lib/Games/ABC_Path/Solver/App.pm .
+
 0.0.2   Mon Jan 10 12:24:28 IST 2011
         - Add the missing Test::Differences to the build_requires. It caused
         some build failures.
