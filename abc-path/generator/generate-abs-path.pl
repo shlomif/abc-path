@@ -85,9 +85,6 @@ sub _fisher_yates_shuffle {
     return;
 }
 
-my $LAYOUT_FIELD = 0;
-my $LAST_CELL_FIELD = 1;
-
 {
 my @get_next_cells_lookup =
 (
@@ -124,7 +121,7 @@ sub _get_next_state
     my $cells = $self->_get_next_cells($l, $cell_int);
     $self->_fisher_yates_shuffle($cells);
 
-    return [$l, $cell_int, $cells];
+    return [$l, $cells];
 }
 
 use List::Util qw(first);
@@ -147,7 +144,7 @@ sub generate
     while (@dfs_stack)
     {
         my $last_state = $dfs_stack[-1];
-        my ($l, undef, $last_cells) = @$last_state;
+        my ($l, $last_cells) = @$last_state;
 
         if (@dfs_stack == $BOARD_SIZE)
         {
