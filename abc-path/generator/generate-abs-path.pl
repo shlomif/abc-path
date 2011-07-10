@@ -150,14 +150,14 @@ sub generate
     DFS:
     while (@dfs_stack)
     {
+        my $last_state = $dfs_stack[-1];
+        my $l = $last_state->{layout};
+
         if (@dfs_stack == $BOARD_SIZE)
         {
-            return $dfs_stack[-1]->{layout};
+            return $l;
         }
 
-        my $last_state = $dfs_stack[-1];
-
-        my $l = $last_state->{layout};
         # TODO : remove these traces later.
         # print "Depth = " . scalar(@dfs_stack) . "\n";
         # print "Last state = " . Dumper($last_state) . "\n";
