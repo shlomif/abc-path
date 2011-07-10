@@ -85,6 +85,7 @@ sub _fisher_yates_shuffle {
     return;
 }
 
+{
 my @get_next_cells_lookup =
 (
     map {
@@ -101,29 +102,17 @@ my @get_next_cells_lookup =
 
 sub _get_next_cells
 {
-    my ($self, $state, $init_xy) = @_;
+    my ($self, $state, $init_idx) = @_;
 
     my $l = $state->{layout};
 
-    my ($sy, $sx) = @{$init_xy}[$Y,$X];
-    return
-    [ 
-        map
-        {
-            my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
-            (
-            (
-                ($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN)
-                    &&
-                (vec($l, $y*$LEN + $x, 8) == 0)
-            ) 
-                ? [$y,$x]
-                : ()
-            )
-        } 
-        ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
+    return [ grep { vec($l, $self->_xy_to_int($_), 8) == 0 }
+        @{$get_next_cells_lookup[$init_idx]}
     ];
 }
+
+}
+
 
 sub _fill_next_cells
 {
@@ -149,7 +138,7 @@ sub generate
     vec($init_layout, $init_xy, 8) = 1;
 
     my $initial_state =
-    { layout => $init_layout, last_cell => [@initial_cell]}
+    { layout => $init_layout, last_cell => $init_xy}
     ;
 
     $self->_fill_next_cells($initial_state);
@@ -183,9 +172,7 @@ sub generate
                 my $int = pop(@connectivity_stack);
                 $connected{$int} = 1;
 
-                my $xy = [$self->_to_xy($int)];
-
-                my $cells = $self->_get_next_cells($last_state, $xy);
+                my $cells = $self->_get_next_cells($last_state, $int);
                 foreach my $next_xy (@$cells)
                 {
                     my $next_int = $self->_xy_to_int($next_xy);
@@ -214,11 +201,12 @@ sub generate
         }
 
         my $next_layout = $l;
-        vec($next_layout, $self->_xy_to_int($next_cell), 8) = 1+@dfs_stack;
+        my $next_idx = $self->_xy_to_int($next_cell);
+        vec($next_layout, $next_idx, 8) = 1+@dfs_stack;
         my $next_state =
         {
             layout => $next_layout,
-            last_cell => $next_cell,
+            last_cell => $next_idx,
         };
 
         $self->_fill_next_cells($next_state);
