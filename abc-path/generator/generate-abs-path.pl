@@ -62,6 +62,13 @@ sub _to_xy
     return (($pos / $LEN), ($pos % $LEN));
 }
 
+sub _xy_to_int
+{
+    my ($self, $xy) = @_;
+
+    return $xy->[$Y] * $LEN + $xy->[$X];
+}
+
 my @letters = ('A' .. 'Y');
 
 sub _fisher_yates_shuffle {
@@ -78,26 +85,44 @@ sub _fisher_yates_shuffle {
     return;
 }
 
+sub _get_moves
+{
+    my ($self, $pos, $xy) = @_;
+
+    my $in_range = sub { my $i = shift; return (($i >= 0) && ($i < $LEN)); };
+
+    return
+    [ 
+        grep {
+        my $m = $_;
+        my $applied_x = $xy->[$X] + $m->[$X];
+        my $applied_y = $xy->[$Y] + $m->[$Y];
+
+        $in_range->($applied_x) && $in_range->($applied_y) &&
+        (!defined($pos->{layout}->[$applied_y]->[$applied_x]))
+        } ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
+    ];
+}
+
 sub _fill_available_moves
 {
     my ($self, $pos) = @_;
 
-    my $in_range = sub { my $i = shift; return (($i >= 0) && ($i < $LEN)); };
 
-    my @moves = (grep {
-        my $m = $_;
-        my $applied_x = $pos->{last_pos}->[$X] + $m->[$X];
-        my $applied_y = $pos->{last_pos}->[$Y] + $m->[$Y];
-        
-        $in_range->($applied_x) && $in_range->($applied_y) &&
-        (!defined($pos->{layout}->[$applied_y]->[$applied_x]))
-    } ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
-    );
-    
-    $self->_fisher_yates_shuffle(\@moves);
-    $pos->{moves} = \@moves;
+    my $moves = $self->_get_moves($pos, $pos->{last_pos});
+    $self->_fisher_yates_shuffle($moves);
+    $pos->{moves} = $moves;
 
     return;
+}
+
+use List::Util qw(first);
+
+sub _apply_move_to_pos
+{
+    my ($self, $pos, $move) = @_;
+
+    return [$pos->[$Y] + $move->[$Y], $pos->[$X] + $move->[$X]];
 }
 
 sub generate
@@ -127,9 +152,49 @@ sub generate
         my $last_state = $dfs_stack[-1];
 
         # TODO : remove these traces later.
-        print "Depth = " . scalar(@dfs_stack) . "\n";
-        print "Last state = " . Dumper($last_state) . "\n";
+        # print "Depth = " . scalar(@dfs_stack) . "\n";
+        # print "Last state = " . Dumper($last_state) . "\n";
 
+        {
+            my $l = $last_state->{layout};
+
+            my $first_xy = first { my ($y,$x) = $self->_to_xy($_); 
+                !defined($l->[$y]->[$x]) } (0 .. $BOARD_SIZE-1);
+
+            my @connectivity_stack = ($first_xy);
+
+            my %connected;
+            while (@connectivity_stack)
+            {
+                my $int = pop(@connectivity_stack);
+                $connected{$int} = 1;
+
+                my $xy = [$self->_to_xy($int)];
+
+                my $moves =
+                    $self->_get_moves($last_state, $xy );
+
+                foreach my $m (@$moves)
+                {
+                    my $next_xy =
+                        $self->_apply_move_to_pos($xy, $m);
+
+                    my $next_int = $self->_xy_to_int($next_xy);
+                    if (!exists($connected{$next_int}))
+                    {
+                        push @connectivity_stack, $next_int;
+                    }
+                }
+            }
+
+            if (
+                (scalar(keys(%connected)) != $BOARD_SIZE - scalar(@dfs_stack))
+            )
+            {
+                pop(@dfs_stack);
+                next DFS;
+            }
+        }
 
         my $next_move = shift(@{$last_state->{moves}});
 
@@ -139,14 +204,9 @@ sub generate
             next DFS;
         }
 
-        my $next_pos =
-        [
-            map
-            { 
-                $last_state->{last_pos}->[$_] + $next_move->[$_] 
-            }
-            (0 .. $#$next_move)
-        ];
+        my $next_pos = $self->_apply_move_to_pos(
+            $last_state->{last_pos}, $next_move
+        );
 
         my $next_state =
         {
