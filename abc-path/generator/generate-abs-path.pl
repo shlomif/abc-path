@@ -92,8 +92,10 @@ my @get_next_cells_lookup =
         my ($sy, $sx) = __PACKAGE__->_to_xy($_);
         [ map {
             my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
-            (($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN)) ?
-            [$y, $x] : ()
+            (
+                (($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN))
+                ? (__PACKAGE__->_xy_to_int([$y,$x])) : ()
+            )
             }
             ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
         ]
@@ -106,7 +108,7 @@ sub _get_next_cells
 
     my $l = $state->{layout};
 
-    return [ grep { vec($l, $self->_xy_to_int($_), 8) == 0 }
+    return [ grep { vec($l, $_, 8) == 0 }
         @{$get_next_cells_lookup[$init_idx]}
     ];
 }
@@ -173,9 +175,8 @@ sub generate
                 $connected{$int} = 1;
 
                 my $cells = $self->_get_next_cells($last_state, $int);
-                foreach my $next_xy (@$cells)
+                foreach my $next_int (@$cells)
                 {
-                    my $next_int = $self->_xy_to_int($next_xy);
                     if (!exists($connected{$next_int}))
                     {
                         push @connectivity_stack, $next_int;
@@ -192,16 +193,15 @@ sub generate
             }
         }
 
-        my $next_cell = shift(@{$last_state->{cells}});
+        my $next_idx = shift(@{$last_state->{cells}});
 
-        if (!defined($next_cell))
+        if (!defined($next_idx))
         {
             pop(@dfs_stack);
             next DFS;
         }
 
         my $next_layout = $l;
-        my $next_idx = $self->_xy_to_int($next_cell);
         vec($next_layout, $next_idx, 8) = 1+@dfs_stack;
         my $next_state =
         {
