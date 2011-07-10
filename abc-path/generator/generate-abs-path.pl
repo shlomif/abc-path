@@ -87,23 +87,27 @@ sub _fisher_yates_shuffle {
 
 sub _get_next_cells
 {
-    my ($self, $state, $xy) = @_;
+    my ($self, $state, $init_xy) = @_;
 
     my $l = $state->{layout};
-    my $in_range = sub { my $i = shift; return (($i >= 0) && ($i < $LEN)); };
 
+    my ($sy, $sx) = @{$init_xy}[$Y,$X];
     return
     [ 
-        map {
-        my $m = $_;
-        my $x = $xy->[$X] + $m->[$X];
-        my $y = $xy->[$Y] + $m->[$Y];
-
-        (
-        $in_range->($x) && $in_range->($y) &&
-        (vec($l, $y*$LEN + $x, 8) == 0)
-        ) ? [$y,$x] : ()
-        } ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
+        map
+        {
+            my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
+            (
+            (
+                ($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN)
+                    &&
+                (vec($l, $y*$LEN + $x, 8) == 0)
+            ) 
+                ? [$y,$x]
+                : ()
+            )
+        } 
+        ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
     ];
 }
 
