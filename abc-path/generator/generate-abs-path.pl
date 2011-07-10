@@ -164,7 +164,7 @@ sub generate
         # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
         {
-            my $first_int = first { vec($l, $_, 8) == 0 } (0 .. $BOARD_SIZE-1);
+            my $first_int = index($l, "\0");
 
             my @connectivity_stack = ($first_int);
 
