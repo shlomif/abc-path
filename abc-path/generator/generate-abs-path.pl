@@ -85,6 +85,9 @@ sub _fisher_yates_shuffle {
     return;
 }
 
+my $LAYOUT_FIELD = 0;
+my $LAST_CELL_FIELD = 1;
+
 {
 my @get_next_cells_lookup =
 (
@@ -106,7 +109,7 @@ sub _get_next_cells
 {
     my ($self, $state, $init_idx) = @_;
 
-    my $l = $state->{layout};
+    my $l = $state->[$LAYOUT_FIELD];
 
     return [ grep { vec($l, $_, 8) == 0 }
         @{$get_next_cells_lookup[$init_idx]}
@@ -120,9 +123,9 @@ sub _fill_next_cells
 {
     my ($self, $state) = @_;
 
-    my $cells = $self->_get_next_cells($state, $state->{last_cell});
+    my $cells = $self->_get_next_cells($state, $state->[$LAST_CELL_FIELD]);
     $self->_fisher_yates_shuffle($cells);
-    $state->{cells} = $cells;
+    push @$state, $cells;
 
     return;
 }
@@ -139,10 +142,7 @@ sub generate
     my $init_layout = '';
     vec($init_layout, $init_xy, 8) = 1;
 
-    my $initial_state =
-    { layout => $init_layout, last_cell => $init_xy}
-    ;
-
+    my $initial_state = [$init_layout, $init_xy];
     $self->_fill_next_cells($initial_state);
     
     my @dfs_stack = ($initial_state);
@@ -151,7 +151,7 @@ sub generate
     while (@dfs_stack)
     {
         my $last_state = $dfs_stack[-1];
-        my $l = $last_state->{layout};
+        my ($l, undef, $last_cells) = @$last_state;
 
         if (@dfs_stack == $BOARD_SIZE)
         {
@@ -163,7 +163,7 @@ sub generate
         # print "Last state = " . Dumper($last_state) . "\n";
         # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
-        my $next_idx = shift(@{$last_state->{cells}});
+        my $next_idx = shift(@$last_cells);
 
         if (!defined($next_idx))
         {
@@ -197,12 +197,7 @@ sub generate
 
         my $next_layout = $l;
         vec($next_layout, $next_idx, 8) = 1+@dfs_stack;
-        my $next_state =
-        {
-            layout => $next_layout,
-            last_cell => $next_idx,
-        };
-
+        my $next_state = [$next_layout, $next_idx];
         $self->_fill_next_cells($next_state);
 
         push @dfs_stack, $next_state;
