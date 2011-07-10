@@ -26,7 +26,7 @@ sub range_rand
 {
     my ($self, $max) = @_;
 
-    return ($self->Rand() % $max);
+    return ($self->rand() % $max);
 }
 
 package Games::ABC_Path::Generator;
@@ -35,6 +35,8 @@ use strict;
 use warnings;
 
 use base 'Games::ABC_Path::Solver::Base';
+
+use Data::Dumper;
 
 sub _init
 {
@@ -69,7 +71,7 @@ sub _fisher_yates_shuffle {
 
     my $i = @$deck;
     while (--$i) {
-        my $j = $self->{'rand'}->rand_range($i+1);
+        my $j = $self->{'rand'}->range_rand($i+1);
         @$deck[$i,$j] = @$deck[$j,$i];
     }
 
@@ -103,7 +105,9 @@ sub generate
     my $self = shift;
 
     my @initial_cell = $self->_to_xy($self->{rand}->range_rand($BOARD_SIZE));
-    my $initial_position = { layout => [], last_pos => [@initial_cell]};
+    my $initial_position =
+    { layout => [map { [] } (0 .. $LEN-1)], last_pos => [@initial_cell]}
+    ;
 
     $initial_position->{layout}->[$initial_cell[$Y]]->[$initial_cell[$X]] =
         $letters[0];
@@ -122,6 +126,11 @@ sub generate
 
         my $last_state = $dfs_stack[-1];
 
+        # TODO : remove these traces later.
+        print "Depth = " . scalar(@dfs_stack) . "\n";
+        print "Last state = " . Dumper($last_state) . "\n";
+
+
         my $next_move = shift(@{$last_state->{moves}});
 
         if (!defined($next_move))
@@ -138,6 +147,7 @@ sub generate
             }
             (0 .. $#$next_move)
         ];
+
         my $next_state =
         {
             layout => [ map { [@{$_}] } @{ $last_state->{layout} } ],
@@ -157,4 +167,11 @@ sub generate
 
 package main;
 
+use strict;
+use warnings;
 
+use Data::Dumper;
+
+my $gen = Games::ABC_Path::Generator->new({ seed => 24 });
+
+print Dumper($gen->generate());
