@@ -57,9 +57,9 @@ my $X = 1;
 
 sub _to_xy
 {
-    my ($self, $pos) = @_;
+    my ($self, $int) = @_;
 
-    return (($pos / $LEN), ($pos % $LEN));
+    return (($int / $LEN), ($int % $LEN));
 }
 
 sub _xy_to_int
@@ -87,9 +87,9 @@ sub _fisher_yates_shuffle {
 
 sub _get_next_cells
 {
-    my ($self, $pos, $xy) = @_;
+    my ($self, $state, $xy) = @_;
 
-    my $l = $pos->{layout};
+    my $l = $state->{layout};
     my $in_range = sub { my $i = shift; return (($i >= 0) && ($i < $LEN)); };
 
     return
@@ -109,23 +109,16 @@ sub _get_next_cells
 
 sub _fill_next_cells
 {
-    my ($self, $pos) = @_;
+    my ($self, $state) = @_;
 
-    my $cells = $self->_get_next_cells($pos, $pos->{last_pos});
+    my $cells = $self->_get_next_cells($state, $state->{last_cell});
     $self->_fisher_yates_shuffle($cells);
-    $pos->{cells} = $cells;
+    $state->{cells} = $cells;
 
     return;
 }
 
 use List::Util qw(first);
-
-sub _apply_move_to_pos
-{
-    my ($self, $pos, $move) = @_;
-
-    return [$pos->[$Y] + $move->[$Y], $pos->[$X] + $move->[$X]];
-}
 
 sub generate
 {
@@ -137,13 +130,13 @@ sub generate
     my $init_layout = '';
     vec($init_layout, $init_xy, 8) = 1;
 
-    my $initial_position =
-    { layout => $init_layout, last_pos => [@initial_cell]}
+    my $initial_state =
+    { layout => $init_layout, last_cell => [@initial_cell]}
     ;
 
-    $self->_fill_next_cells($initial_position);
+    $self->_fill_next_cells($initial_state);
     
-    my @dfs_stack = ($initial_position);
+    my @dfs_stack = ($initial_state);
 
     DFS:
     while (@dfs_stack)
@@ -194,20 +187,20 @@ sub generate
             }
         }
 
-        my $next_pos = shift(@{$last_state->{cells}});
+        my $next_cell = shift(@{$last_state->{cells}});
 
-        if (!defined($next_pos))
+        if (!defined($next_cell))
         {
             pop(@dfs_stack);
             next DFS;
         }
 
         my $next_layout = $l;
-        vec($next_layout, $self->_xy_to_int($next_pos), 8) = 1+@dfs_stack;
+        vec($next_layout, $self->_xy_to_int($next_cell), 8) = 1+@dfs_stack;
         my $next_state =
         {
             layout => $next_layout,
-            last_pos => $next_pos,
+            last_cell => $next_cell,
         };
 
         $self->_fill_next_cells($next_state);
