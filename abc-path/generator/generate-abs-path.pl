@@ -89,6 +89,7 @@ sub _get_moves
 {
     my ($self, $pos, $xy) = @_;
 
+    my $l = $pos->{layout};
     my $in_range = sub { my $i = shift; return (($i >= 0) && ($i < $LEN)); };
 
     return
@@ -99,7 +100,7 @@ sub _get_moves
         my $applied_y = $xy->[$Y] + $m->[$Y];
 
         $in_range->($applied_x) && $in_range->($applied_y) &&
-        (!defined($pos->{layout}->[$applied_y]->[$applied_x]))
+        (vec($l, $applied_y*$LEN+$applied_x, 8) == 0)
         } ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
     ];
 }
@@ -129,13 +130,15 @@ sub generate
 {
     my $self = shift;
 
-    my @initial_cell = $self->_to_xy($self->{rand}->range_rand($BOARD_SIZE));
-    my $initial_position =
-    { layout => [map { [] } (0 .. $LEN-1)], last_pos => [@initial_cell]}
-    ;
+    my $init_xy = $self->{rand}->range_rand($BOARD_SIZE);
+    my @initial_cell = $self->_to_xy($init_xy);
 
-    $initial_position->{layout}->[$initial_cell[$Y]]->[$initial_cell[$X]] =
-        $letters[0];
+    my $init_layout = '';
+    vec($init_layout, $init_xy, 8) = 1;
+
+    my $initial_position =
+    { layout => $init_layout, last_pos => [@initial_cell]}
+    ;
 
     $self->_fill_available_moves($initial_position);
     
@@ -151,17 +154,16 @@ sub generate
 
         my $last_state = $dfs_stack[-1];
 
+        my $l = $last_state->{layout};
         # TODO : remove these traces later.
         # print "Depth = " . scalar(@dfs_stack) . "\n";
         # print "Last state = " . Dumper($last_state) . "\n";
+        # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
         {
-            my $l = $last_state->{layout};
+            my $first_int = first { vec($l, $_, 8) == 0 } (0 .. $BOARD_SIZE-1);
 
-            my $first_xy = first { my ($y,$x) = $self->_to_xy($_); 
-                !defined($l->[$y]->[$x]) } (0 .. $BOARD_SIZE-1);
-
-            my @connectivity_stack = ($first_xy);
+            my @connectivity_stack = ($first_int);
 
             my %connected;
             while (@connectivity_stack)
@@ -208,14 +210,13 @@ sub generate
             $last_state->{last_pos}, $next_move
         );
 
+        my $next_layout = $l;
+        vec($next_layout, $self->_xy_to_int($next_pos), 8) = 1+@dfs_stack;
         my $next_state =
         {
-            layout => [ map { [@{$_}] } @{ $last_state->{layout} } ],
+            layout => $next_layout,
             last_pos => $next_pos,
         };
-
-        $next_state->{layout}->[$next_pos->[$Y]]->[$next_pos->[$X]] =
-            $letters[scalar @dfs_stack];
 
         $self->_fill_available_moves($next_state);
 
@@ -230,12 +231,14 @@ sub get_layout_as_string
     my ($self, $l) = @_;
 
     my $render_row = sub {
-        my $row = shift;
+        my $y = shift;
 
-        return join(" | ", map { defined($_) ? $_ : '*' } @$row);
+        return join(" | ", 
+            map { my $x = $_; my $v = vec($l, $self->_xy_to_int([$y,$x]), 8);
+            $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
     };
 
-    return join('', map { $render_row->($_) . "\n" } @$l);
+    return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
 }
 
 package main;
