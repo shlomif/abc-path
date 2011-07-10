@@ -85,6 +85,20 @@ sub _fisher_yates_shuffle {
     return;
 }
 
+my @get_next_cells_lookup =
+(
+    map {
+        my ($sy, $sx) = __PACKAGE__->_to_xy($_);
+        [ map {
+            my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
+            (($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN)) ?
+            [$y, $x] : ()
+            }
+            ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
+        ]
+    } (0 .. $BOARD_SIZE - 1)
+);
+
 sub _get_next_cells
 {
     my ($self, $state, $init_xy) = @_;
