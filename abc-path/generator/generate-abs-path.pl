@@ -164,9 +164,7 @@ sub generate
         # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
         {
-            my $first_int = index($l, "\0");
-
-            my @connectivity_stack = ($first_int);
+            my @connectivity_stack = (index($l, "\0"));
 
             my %connected;
             while (@connectivity_stack)
