@@ -225,6 +225,19 @@ sub generate
     die "Not found!";
 }
 
+sub get_layout_as_string
+{
+    my ($self, $l) = @_;
+
+    my $render_row = sub {
+        my $row = shift;
+
+        return join(" | ", map { defined($_) ? $_ : '*' } @$row);
+    };
+
+    return join('', map { $render_row->($_) . "\n" } @$l);
+}
+
 package main;
 
 use strict;
@@ -234,4 +247,4 @@ use Data::Dumper;
 
 my $gen = Games::ABC_Path::Generator->new({ seed => 24 });
 
-print Dumper($gen->generate());
+print $gen->get_layout_as_string($gen->generate());
