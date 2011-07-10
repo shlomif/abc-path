@@ -85,7 +85,7 @@ sub _fisher_yates_shuffle {
     return;
 }
 
-sub _get_moves
+sub _get_next_cells
 {
     my ($self, $pos, $xy) = @_;
 
@@ -94,25 +94,26 @@ sub _get_moves
 
     return
     [ 
-        grep {
+        map {
         my $m = $_;
-        my $applied_x = $xy->[$X] + $m->[$X];
-        my $applied_y = $xy->[$Y] + $m->[$Y];
+        my $x = $xy->[$X] + $m->[$X];
+        my $y = $xy->[$Y] + $m->[$Y];
 
-        $in_range->($applied_x) && $in_range->($applied_y) &&
-        (vec($l, $applied_y*$LEN+$applied_x, 8) == 0)
+        (
+        $in_range->($x) && $in_range->($y) &&
+        (vec($l, $y*$LEN + $x, 8) == 0)
+        ) ? [$y,$x] : ()
         } ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
     ];
 }
 
-sub _fill_available_moves
+sub _fill_next_cells
 {
     my ($self, $pos) = @_;
 
-
-    my $moves = $self->_get_moves($pos, $pos->{last_pos});
-    $self->_fisher_yates_shuffle($moves);
-    $pos->{moves} = $moves;
+    my $cells = $self->_get_next_cells($pos, $pos->{last_pos});
+    $self->_fisher_yates_shuffle($cells);
+    $pos->{cells} = $cells;
 
     return;
 }
@@ -140,7 +141,7 @@ sub generate
     { layout => $init_layout, last_pos => [@initial_cell]}
     ;
 
-    $self->_fill_available_moves($initial_position);
+    $self->_fill_next_cells($initial_position);
     
     my @dfs_stack = ($initial_position);
 
@@ -173,14 +174,9 @@ sub generate
 
                 my $xy = [$self->_to_xy($int)];
 
-                my $moves =
-                    $self->_get_moves($last_state, $xy );
-
-                foreach my $m (@$moves)
+                my $cells = $self->_get_next_cells($last_state, $xy);
+                foreach my $next_xy (@$cells)
                 {
-                    my $next_xy =
-                        $self->_apply_move_to_pos($xy, $m);
-
                     my $next_int = $self->_xy_to_int($next_xy);
                     if (!exists($connected{$next_int}))
                     {
@@ -198,17 +194,13 @@ sub generate
             }
         }
 
-        my $next_move = shift(@{$last_state->{moves}});
+        my $next_pos = shift(@{$last_state->{cells}});
 
-        if (!defined($next_move))
+        if (!defined($next_pos))
         {
             pop(@dfs_stack);
             next DFS;
         }
-
-        my $next_pos = $self->_apply_move_to_pos(
-            $last_state->{last_pos}, $next_move
-        );
 
         my $next_layout = $l;
         vec($next_layout, $self->_xy_to_int($next_pos), 8) = 1+@dfs_stack;
@@ -218,7 +210,7 @@ sub generate
             last_pos => $next_pos,
         };
 
-        $self->_fill_available_moves($next_state);
+        $self->_fill_next_cells($next_state);
 
         push @dfs_stack, $next_state;
     }
