@@ -114,14 +114,17 @@ sub _get_next_cells
 }
 
 
-sub _get_next_state
+sub _add_next_state
 {
-    my ($self, $l, $cell_int) = @_;
+    my ($self, $stack, $l, $cell_int) = @_;
 
+    vec($l, $cell_int, 8) = 1+@$stack;
     my $cells = $self->_get_next_cells($l, $cell_int);
     $self->_fisher_yates_shuffle($cells);
 
-    return [$l, $cells];
+    push @$stack, [$l, $cells];
+
+    return;
 }
 
 use List::Util qw(first);
@@ -130,12 +133,8 @@ sub generate
 {
     my $self = shift;
 
-    my $init_xy = $self->{rand}->range_rand($BOARD_SIZE);
-
-    my $init_layout = '';
-    vec($init_layout, $init_xy, 8) = 1;
-
-    my @dfs_stack = ($self->_get_next_state($init_layout, $init_xy));
+    my @dfs_stack;
+    $self->_add_next_state(\@dfs_stack, '', $self->{rand}->range_rand($BOARD_SIZE));
 
     DFS:
     while (@dfs_stack)
@@ -184,10 +183,7 @@ sub generate
             }
         }
 
-        my $next_layout = $l;
-        vec($next_layout, $next_idx, 8) = 1+@dfs_stack;
-
-        push @dfs_stack, $self->_get_next_state($next_layout, $next_idx);
+        $self->_add_next_state(\@dfs_stack, $l, $next_idx);
     }
 
     die "Not found!";
