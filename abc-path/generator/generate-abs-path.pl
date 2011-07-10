@@ -127,6 +127,30 @@ sub _add_next_state
     return;
 }
 
+sub _get_num_connected
+{
+    my ($self, $l) = @_;
+
+    my @connectivity_stack = (index($l, "\0"));
+
+    my %connected;
+    while (@connectivity_stack)
+    {
+        my $int = pop(@connectivity_stack);
+        if (!exists($connected{$int}))
+        {
+            $connected{$int} = 1;
+
+            push @connectivity_stack, 
+            (grep { !exists($connected{$_}) } 
+                @{ $self->_get_next_cells($l, $int) }
+            );
+        }
+    }
+
+    return scalar keys %connected;
+}
+
 use List::Util qw(first);
 
 sub generate
@@ -153,40 +177,19 @@ sub generate
 
         my $next_idx = shift(@$last_cells);
 
-        if (!defined($next_idx))
+        if ( ( ! defined($next_idx) )
+                or
+            ($self->_get_num_connected($l) != 
+                ($BOARD_SIZE - scalar(@dfs_stack))
+            )
+        )
         {
             pop(@dfs_stack);
-            next DFS;
         }
-
+        else
         {
-            my @connectivity_stack = (index($l, "\0"));
-
-            my %connected;
-            while (@connectivity_stack)
-            {
-                my $int = pop(@connectivity_stack);
-                if (!exists($connected{$int}))
-                {
-                    $connected{$int} = 1;
-
-                    push @connectivity_stack, 
-                        (grep { !exists($connected{$_}) } 
-                            @{ $self->_get_next_cells($l, $int) }
-                        );
-                }
-            }
-
-            if (
-                (scalar(keys(%connected)) != $BOARD_SIZE - scalar(@dfs_stack))
-            )
-            {
-                pop(@dfs_stack);
-                next DFS;
-            }
+            $self->_add_next_state(\@dfs_stack, $l, $next_idx);
         }
-
-        $self->_add_next_state(\@dfs_stack, $l, $next_idx);
     }
 
     die "Not found!";
