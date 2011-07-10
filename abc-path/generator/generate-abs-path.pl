@@ -174,15 +174,10 @@ sub generate
                 my $int = pop(@connectivity_stack);
                 $connected{$int} = 1;
 
-                foreach my $next_int (
-                    @{ $self->_get_next_cells($last_state, $int) }
-                )
-                {
-                    if (!exists($connected{$next_int}))
-                    {
-                        push @connectivity_stack, $next_int;
-                    }
-                }
+                push @connectivity_stack, 
+                    (grep { !exists($connected{$_}) } 
+                        @{ $self->_get_next_cells($last_state, $int) }
+                    );
             }
 
             if (
