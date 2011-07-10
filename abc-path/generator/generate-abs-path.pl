@@ -137,10 +137,8 @@ sub _get_num_connected
     while (@connectivity_stack)
     {
         my $int = pop(@connectivity_stack);
-        if (!exists($connected{$int}))
+        if (!$connected{$int}++)
         {
-            $connected{$int} = 1;
-
             push @connectivity_stack, 
             (grep { !exists($connected{$_}) } 
                 @{ $self->_get_next_cells($l, $int) }
