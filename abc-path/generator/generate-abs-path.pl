@@ -72,13 +72,14 @@ sub _xy_to_int
 my @letters = ('A' .. 'Y');
 
 sub _fisher_yates_shuffle {
-    my $self = shift;
-    my $deck = shift;  # $deck is a reference to an array
+    my ($self, $deck) = @_;
     return unless @$deck; # must not be empty!
+
+    my $r = $self->{'rand'};
 
     my $i = @$deck;
     while (--$i) {
-        my $j = $self->{'rand'}->range_rand($i+1);
+        my $j = $r->range_rand($i+1);
         @$deck[$i,$j] = @$deck[$j,$i];
     }
 
