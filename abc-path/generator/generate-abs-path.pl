@@ -163,6 +163,14 @@ sub generate
         # print "Last state = " . Dumper($last_state) . "\n";
         # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
+        my $next_idx = shift(@{$last_state->{cells}});
+
+        if (!defined($next_idx))
+        {
+            pop(@dfs_stack);
+            next DFS;
+        }
+
         {
             my @connectivity_stack = (index($l, "\0"));
 
@@ -185,14 +193,6 @@ sub generate
                 pop(@dfs_stack);
                 next DFS;
             }
-        }
-
-        my $next_idx = shift(@{$last_state->{cells}});
-
-        if (!defined($next_idx))
-        {
-            pop(@dfs_stack);
-            next DFS;
         }
 
         my $next_layout = $l;
