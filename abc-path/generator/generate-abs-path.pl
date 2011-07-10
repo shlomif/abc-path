@@ -117,17 +117,14 @@ sub _get_next_cells
 }
 
 
-sub _fill_next_cells
+sub _get_next_state
 {
-    my ($self, $state) = @_;
+    my ($self, $l, $cell_int) = @_;
 
-    my $cells = $self->_get_next_cells(
-        $state->[$LAYOUT_FIELD], $state->[$LAST_CELL_FIELD]
-    );
+    my $cells = $self->_get_next_cells($l, $cell_int);
     $self->_fisher_yates_shuffle($cells);
-    push @$state, $cells;
 
-    return;
+    return [$l, $cell_int, $cells];
 }
 
 use List::Util qw(first);
@@ -142,8 +139,7 @@ sub generate
     my $init_layout = '';
     vec($init_layout, $init_xy, 8) = 1;
 
-    my $initial_state = [$init_layout, $init_xy];
-    $self->_fill_next_cells($initial_state);
+    my $initial_state = $self->_get_next_state($init_layout, $init_xy);
     
     my @dfs_stack = ($initial_state);
 
@@ -197,10 +193,8 @@ sub generate
 
         my $next_layout = $l;
         vec($next_layout, $next_idx, 8) = 1+@dfs_stack;
-        my $next_state = [$next_layout, $next_idx];
-        $self->_fill_next_cells($next_state);
 
-        push @dfs_stack, $next_state;
+        push @dfs_stack, $self->_get_next_state($next_layout, $next_idx);
     }
 
     die "Not found!";
