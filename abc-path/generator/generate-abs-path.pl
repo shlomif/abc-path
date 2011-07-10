@@ -243,8 +243,17 @@ package main;
 use strict;
 use warnings;
 
-use Data::Dumper;
+use Getopt::Long;
 
-my $gen = Games::ABC_Path::Generator->new({ seed => 24 });
+my $seed = 24;
+
+if (!GetOptions(
+        'seed=i' => \$seed,
+    ))
+{
+    die "Could not get options for program!";
+}
+
+my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
 
 print $gen->get_layout_as_string($gen->generate());
