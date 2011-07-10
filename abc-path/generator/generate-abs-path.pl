@@ -107,9 +107,7 @@ my @get_next_cells_lookup =
 
 sub _get_next_cells
 {
-    my ($self, $state, $init_idx) = @_;
-
-    my $l = $state->[$LAYOUT_FIELD];
+    my ($self, $l, $init_idx) = @_;
 
     return [ grep { vec($l, $_, 8) == 0 }
         @{$get_next_cells_lookup[$init_idx]}
@@ -123,7 +121,9 @@ sub _fill_next_cells
 {
     my ($self, $state) = @_;
 
-    my $cells = $self->_get_next_cells($state, $state->[$LAST_CELL_FIELD]);
+    my $cells = $self->_get_next_cells(
+        $state->[$LAYOUT_FIELD], $state->[$LAST_CELL_FIELD]
+    );
     $self->_fisher_yates_shuffle($cells);
     push @$state, $cells;
 
@@ -182,7 +182,7 @@ sub generate
 
                 push @connectivity_stack, 
                     (grep { !exists($connected{$_}) } 
-                        @{ $self->_get_next_cells($last_state, $int) }
+                        @{ $self->_get_next_cells($l, $int) }
                     );
             }
 
