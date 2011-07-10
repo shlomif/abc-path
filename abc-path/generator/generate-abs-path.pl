@@ -166,12 +166,15 @@ sub generate
             while (@connectivity_stack)
             {
                 my $int = pop(@connectivity_stack);
-                $connected{$int} = 1;
+                if (!exists($connected{$int}))
+                {
+                    $connected{$int} = 1;
 
-                push @connectivity_stack, 
-                    (grep { !exists($connected{$_}) } 
-                        @{ $self->_get_next_cells($l, $int) }
-                    );
+                    push @connectivity_stack, 
+                        (grep { !exists($connected{$_}) } 
+                            @{ $self->_get_next_cells($l, $int) }
+                        );
+                }
             }
 
             if (
