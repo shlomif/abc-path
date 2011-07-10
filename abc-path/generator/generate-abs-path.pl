@@ -131,20 +131,16 @@ sub generate
     my $self = shift;
 
     my $init_xy = $self->{rand}->range_rand($BOARD_SIZE);
-    my @initial_cell = $self->_to_xy($init_xy);
 
     my $init_layout = '';
     vec($init_layout, $init_xy, 8) = 1;
 
-    my $initial_state = $self->_get_next_state($init_layout, $init_xy);
-    
-    my @dfs_stack = ($initial_state);
+    my @dfs_stack = ($self->_get_next_state($init_layout, $init_xy));
 
     DFS:
     while (@dfs_stack)
     {
-        my $last_state = $dfs_stack[-1];
-        my ($l, $last_cells) = @$last_state;
+        my ($l, $last_cells) = @{$dfs_stack[-1]};
 
         if (@dfs_stack == $BOARD_SIZE)
         {
