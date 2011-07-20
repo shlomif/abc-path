@@ -36,6 +36,8 @@ use warnings;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Solver::Board '0.1.0';
+
 use Data::Dumper;
 
 sub _init
@@ -269,12 +271,32 @@ sub calc_riddle
             if (!@clues)
             {
                 # Yay! We found a configuration.
-                return
+                my $riddle =
                 {
                     solution => $layout,
                     clues => [map { [ map { vec($layout, $_, 8) } @{$_->{cells}}] } @{$last_state->{clues}}],
                     A_pos => [$self->_to_xy($A_pos)],
                 };
+                
+                my $riddle_string = $self->_get_riddle_only_as_string($riddle);
+
+                my $solver = 
+                    Games::ABC_Path::Solver::Board->input_from_v1_string(
+                        $riddle_string
+                    );
+                
+                $solver->solve();
+
+                if (@{$solver->get_successes_text_tables()} != 1)
+                {
+                    # The solution is ambiguous
+                    pop(@dfs_stack);
+                    next DFS;
+                }
+                else
+                {
+                    return $riddle;
+                }
             }
             # Not enough for the clues there.
             if ($clues[0][1]->{num_remaining} < 2)
@@ -346,6 +368,21 @@ sub get_riddle_as_string
 
     my $layout_string = $self->get_layout_as_string($riddle->{solution});
     
+    my $riddle_string = $self->_get_riddle_only_as_string($riddle);
+
+    return <<"EOF";
+ABC Path Solver Layout Version 1:
+$riddle_string
+
+Solution:
+$layout_string
+EOF
+}
+
+sub _get_riddle_only_as_string
+{
+    my ($self,$riddle) = @_;
+
     my $s = ((' ' x 7)."\n")x7;
 
     substr($s, ($riddle->{A_pos}->[$Y]+1) * 8 + $riddle->{A_pos}->[$X]+1, 1) = 'A';
@@ -367,14 +404,9 @@ sub get_riddle_as_string
         }
     }
 
-    return <<"EOF";
-ABC Path Solver Layout Version 1:
-$s
-
-Solution:
-$layout_string
-EOF
+    return $s;
 }
+
 
 package main;
 
