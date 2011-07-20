@@ -900,7 +900,7 @@ sub get_successes_text_tables
     return [map { $_->_get_results_text_table() } @{$self->get_successful_layouts()}];
 }
 
-=head2 $board->input_from_file($filename)
+=head2 my $board = Games::ABC_Path::Solver::Board->input_from_file($filename)
 
 Inputs the board from the C<$filename> file path containing a representation
 of the initial board.
@@ -946,6 +946,24 @@ sub input_from_file
         $layout_string .= "$line\n";
     }
     close($in_fh);
+
+    $self->_input({ layout => $layout_string, version => 1});
+
+    return $self;
+}
+
+=head2 my $board = Games::ABC_Path::Solver::Board->input_from_v1_string($layout_string)
+
+This is a class method that inputs a version 1 string (as specified in 
+L<input_from_file> only without the opening magic line.)
+
+=cut
+
+sub input_from_v1_string
+{
+    my ($class, $layout_string) = @_;
+
+    my $self = $class->new;
 
     $self->_input({ layout => $layout_string, version => 1});
 

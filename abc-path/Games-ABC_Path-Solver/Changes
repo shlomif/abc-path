@@ -1,5 +1,9 @@
 Revision history for Games-ABC_Path-Solver
 
+        - Add the input_from_v1_string class method to input from a version
+        1 string, so there will be a way to input from something besides
+        a file.
+
 0.0.3
         - Encapsulated scripts/abc-path-solve inside
         lib/Games/ABC_Path/Solver/App.pm .
