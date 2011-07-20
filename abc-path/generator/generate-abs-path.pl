@@ -208,6 +208,143 @@ sub get_layout_as_string
     return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
 }
 
+sub calc_riddle
+{
+    my ($self) = @_;
+
+    my $layout = $self->calc_final_layout();
+
+    my $A_pos = index($layout, chr(1));
+
+    my $NUM_CLUES = (2+5+5); 
+    my %init_state = (pos_taken => '', 
+        clues =>
+        [ 
+            map { +{ num_remaining => 5, } }
+            (1 .. $NUM_CLUES),
+        ]
+    );
+
+    my $mark = sub {
+        my ($state, $pos) = @_;
+        
+        vec($state->{pos_taken}, $pos, 1) = 1;
+        
+        my ($y,$x) = $self->_to_xy($pos);
+        foreach my $clue (
+            (($y == $x) ? 0 : ()),
+            (($y == (5-1)-$x) ? 1 : ()),
+            (2+$y),
+            ((2+5)+$x),
+        )
+        {
+            $state->{clues}->[$clue]->{num_remaining}--;
+        }
+    };
+
+    $mark->(\%init_state, $A_pos);
+
+    my @dfs_stack = (\%init_state);
+
+    DFS:
+    while (@dfs_stack)
+    {
+        my $last_state = $dfs_stack[-1];
+
+        if (! exists($last_state->{chosen_clue}))
+        {
+            my @clues =
+            (
+                sort {
+                    ($a->[1]->{num_remaining} <=> $b->[1]->{num_remaining})
+                        or
+                    ($a->[0] <=> $b->[0])
+                }
+                grep { !exists($_->[1]->{cells}) }
+                map { [$_, $last_state->{clues}->[$_]] }
+                (0 .. $NUM_CLUES-1)
+            );
+
+            if (!@clues)
+            {
+                # Yay! We found a configuration.
+                return
+                {
+                    solution => $layout,
+                    clues => [map { [ map { vec($layout, $_, 1) } @{$_->{cells}}] } @{$last_state->{clues}}],
+                }
+            }
+            # Not enough for the clues there.
+            if ($clues[0][1]->{num_remaining} < 2)
+            {
+                pop(@dfs_stack);
+                next DFS;
+            }
+
+            my $clue_idx = $clues[0][0];
+
+            $last_state->{chosen_clue} = $clue_idx;
+
+            my @positions =
+            (
+                grep { !vec($last_state->{pos_taken}, $_, 1) } 
+                (
+                    map { $self->_xy_to_int($_) }
+                    (($clue_idx == 0)
+                        ? (map { [$_,$_] } (0 .. $LEN-1))
+                        : ($clue_idx == 1)
+                        ? (map { [$_,4-$_] } ( 0 .. $LEN-1))
+                        : ($clue_idx <= (2+5))
+                        ? (map { [$clue_idx-2,$_] } (0 .. $LEN-1))
+                        : (map { [$_, $clue_idx-(2+5)] } (0 .. $LEN-1))
+                    )
+                )
+            );
+
+            my @pairs;
+
+            foreach my $first_idx (0 .. $#positions-1)
+            {
+                foreach my $second_idx ($first_idx+1 .. $#positions)
+                {
+                    push @pairs, [@positions[$first_idx, $second_idx]];
+                }
+            }
+
+            $self->_fisher_yates_shuffle(\@pairs);
+
+            $last_state->{pos_pairs} = \@pairs;
+        }
+
+        my $chosen_clue = $last_state->{chosen_clue};
+        my $next_pair = shift(@{$last_state->{pos_pairs}});
+
+        if (!defined($next_pair))
+        {
+            pop(@dfs_stack);
+            next DFS;
+        }
+
+        my %new_state;
+        $new_state{pos_taken} = $last_state->{pos_taken};
+        $new_state{clues} = [map { +{ %{$_} } } @{$last_state->{clues}}];
+        foreach my $pos (@$next_pair)
+        {
+            $mark->(\%new_state, $pos);
+        }
+        $new_state{clues}->[$chosen_clue]->{cells} = [@$next_pair];
+
+        push @dfs_stack, (\%new_state);
+    }
+}
+
+sub get_riddle_as_string
+{
+    my ($self,$riddle) = @_;
+
+    return '';
+}
+
 package main;
 
 use strict;
@@ -216,9 +353,10 @@ use warnings;
 use Getopt::Long;
 
 my $seed = 24;
-
+my $mode = 'final';
 if (!GetOptions(
         'seed=i' => \$seed,
+        'mode=s' => \$mode,
     ))
 {
     die "Could not get options for program!";
@@ -226,4 +364,11 @@ if (!GetOptions(
 
 my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
 
-print $gen->get_layout_as_string($gen->calc_final_layout());
+if ($mode eq 'final')
+{
+    print $gen->get_layout_as_string($gen->calc_final_layout());
+}
+elsif ($mode eq 'riddle')
+{
+    print $gen->get_riddle_as_string($gen->calc_riddle());
+}
