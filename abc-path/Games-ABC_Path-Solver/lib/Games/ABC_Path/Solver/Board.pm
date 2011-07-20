@@ -925,8 +925,6 @@ sub input_from_file
 {
     my ($class, $board_fn) = @_;
 
-    my $self = $class->new;
-
     open my $in_fh, "<", $board_fn
         or die "Cannot open '$board_fn' - $!";
 
@@ -947,9 +945,7 @@ sub input_from_file
     }
     close($in_fh);
 
-    $self->_input({ layout => $layout_string, version => 1});
-
-    return $self;
+    return $class->input_from_v1_string($layout_string);
 }
 
 =head2 my $board = Games::ABC_Path::Solver::Board->input_from_v1_string($layout_string)
