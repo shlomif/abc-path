@@ -1,5 +1,6 @@
 Revision history for Games-ABC_Path-Solver
 
+0.1.0   Wed Jul 20 20:34:01 IDT 2011
         - Add the input_from_v1_string class method to input from a version
         1 string, so there will be a way to input from something besides
         a file.
