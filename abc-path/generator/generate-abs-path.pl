@@ -208,6 +208,7 @@ sub get_layout_as_string
     return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
 }
 
+my $NUM_CLUES = (2+5+5); 
 sub calc_riddle
 {
     my ($self) = @_;
@@ -216,7 +217,6 @@ sub calc_riddle
 
     my $A_pos = index($layout, chr(1));
 
-    my $NUM_CLUES = (2+5+5); 
     my %init_state = (pos_taken => '', 
         clues =>
         [ 
@@ -271,8 +271,9 @@ sub calc_riddle
                 return
                 {
                     solution => $layout,
-                    clues => [map { [ map { vec($layout, $_, 1) } @{$_->{cells}}] } @{$last_state->{clues}}],
-                }
+                    clues => [map { [ map { vec($layout, $_, 8) } @{$_->{cells}}] } @{$last_state->{clues}}],
+                    A_pos => [$self->_to_xy($A_pos)],
+                };
             }
             # Not enough for the clues there.
             if ($clues[0][1]->{num_remaining} < 2)
@@ -294,7 +295,7 @@ sub calc_riddle
                         ? (map { [$_,$_] } (0 .. $LEN-1))
                         : ($clue_idx == 1)
                         ? (map { [$_,4-$_] } ( 0 .. $LEN-1))
-                        : ($clue_idx <= (2+5))
+                        : ($clue_idx < (2+5))
                         ? (map { [$clue_idx-2,$_] } (0 .. $LEN-1))
                         : (map { [$_, $clue_idx-(2+5)] } (0 .. $LEN-1))
                     )
@@ -342,7 +343,36 @@ sub get_riddle_as_string
 {
     my ($self,$riddle) = @_;
 
-    return '';
+    my $layout_string = $self->get_layout_as_string($riddle->{solution});
+    
+    my $s = ((' ' x 7)."\n")x7;
+
+    substr($s, $riddle->{A_pos}->[$Y] * 8 + $riddle->{A_pos}->[$X], 1) = 'A';
+
+    my $clues = $riddle->{clues};
+    foreach my $clue_idx (0 .. $NUM_CLUES-1)
+    {
+        my @pos = 
+            ($clue_idx == 0) ? ([0,0],[6,6]) 
+            : ($clue_idx == 1) ? ([0,6],[6,0])
+            : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
+            : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])
+            ;
+
+        foreach my $i (0 .. 1)
+        {
+            substr ($s, $pos[$i][0] * 8 + $pos[$i][1], 1)
+                = $letters[$clues->[$clue_idx]->[$i] - 1];
+        }
+    }
+
+    return <<"EOF";
+ABC Path Solver Layout Version 1:
+$s
+
+Solution:
+$layout_string
+EOF
 }
 
 package main;
