@@ -378,13 +378,10 @@ sub get_riddle_as_string
     
     my $riddle_string = $self->_get_riddle_only_as_string($riddle);
 
-    return <<"EOF";
-ABC Path Solver Layout Version 1:
-$riddle_string
-
-Solution:
-$layout_string
-EOF
+    return sprintf(
+        "ABC Path Solver Layout Version 1:\n%s\nSolution:\n%s",
+        $riddle_string, $layout_string,
+    );
 }
 
 sub _get_riddle_only_as_string
