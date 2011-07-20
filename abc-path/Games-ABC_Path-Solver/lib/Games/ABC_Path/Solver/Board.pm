@@ -145,7 +145,6 @@ sub _add_move {
 =head2 get_successful_layouts()
 
 Returns a copy of the successful layouts. Each one of them is a completed
-L<Games::ABC_Path::Solver::Board> the successful layouts. Each one of them is a completed
 L<Games::ABC_Path::Solver::Board> object.
 
 =cut
