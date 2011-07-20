@@ -152,7 +152,7 @@ sub _get_num_connected
 
 use List::Util qw(first);
 
-sub generate
+sub calc_final_layout
 {
     my $self = shift;
 
@@ -169,7 +169,6 @@ sub generate
             return $l;
         }
 
-        # TODO : remove these traces later.
         # print "Depth = " . scalar(@dfs_stack) . "\n";
         # print "Last state = " . Dumper($last_state) . "\n";
         # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
@@ -227,4 +226,4 @@ if (!GetOptions(
 
 my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
 
-print $gen->get_layout_as_string($gen->generate());
+print $gen->get_layout_as_string($gen->calc_final_layout());
