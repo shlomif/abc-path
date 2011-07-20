@@ -271,10 +271,18 @@ sub calc_riddle
             if (!@clues)
             {
                 # Yay! We found a configuration.
+                my $handle_clue = sub {
+                    my @cells = @{shift->{cells}};
+                    $self->_fisher_yates_shuffle(\@cells);
+                    return [map { vec($layout, $_, 8) } @cells];
+                };
                 my $riddle =
                 {
                     solution => $layout,
-                    clues => [map { [ map { vec($layout, $_, 8) } @{$_->{cells}}] } @{$last_state->{clues}}],
+                    clues =>
+                    [
+                        map { $handle_clue->($_) } @{$last_state->{clues}}
+                    ],
                     A_pos => [$self->_to_xy($A_pos)],
                 };
                 
