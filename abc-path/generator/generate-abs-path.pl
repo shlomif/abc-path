@@ -208,7 +208,8 @@ sub get_layout_as_string
     return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
 }
 
-my $NUM_CLUES = (2+5+5); 
+my $NUM_CLUES = (2+5+5);
+
 sub calc_riddle
 {
     my ($self) = @_;
@@ -347,7 +348,7 @@ sub get_riddle_as_string
     
     my $s = ((' ' x 7)."\n")x7;
 
-    substr($s, $riddle->{A_pos}->[$Y] * 8 + $riddle->{A_pos}->[$X], 1) = 'A';
+    substr($s, ($riddle->{A_pos}->[$Y]+1) * 8 + $riddle->{A_pos}->[$X]+1, 1) = 'A';
 
     my $clues = $riddle->{clues};
     foreach my $clue_idx (0 .. $NUM_CLUES-1)
