@@ -360,26 +360,6 @@ sub calc_riddle
     }
 }
 
-=head2 $gen->get_riddle_as_string($riddle)
-
-For internal use.
-
-=cut
-
-sub get_riddle_as_string
-{
-    my ($self,$riddle) = @_;
-
-    my $layout_string = $riddle->get_final_layout_as_string({});
-    
-    my $riddle_string = $riddle->get_riddle_v1_string;
-
-    return sprintf(
-        "ABC Path Solver Layout Version 1:\n%s\nSolution:\n%s",
-        $riddle_string, $layout_string,
-    );
-}
-
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>
