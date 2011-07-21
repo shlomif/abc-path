@@ -13,6 +13,8 @@ use Games::ABC_Path::Solver::Board '0.1.0';
 
 use Games::ABC_Path::MicrosoftRand;
 
+use Games::ABC_Path::Generator::RiddleObj;
+
 =head1 NAME
 
 Games::ABC_Path::Generator - a generator for ABC Path puzzle games.
@@ -32,7 +34,7 @@ our $VERSION = '0.0.1';
 
     my $gen = Games::ABC_Path::Generator->new({seed => 1});
 
-    # Returns a Games::ABC_Path::Generator::Riddle object.
+    # Returns a Games::ABC_Path::Generator::RiddleObj object.
     my $riddle = $gen->calc_riddle();
 
 =head1 SUBROUTINES/METHODS
@@ -300,14 +302,16 @@ sub calc_riddle
                     return [map { vec($layout, $_, 8) } @cells];
                 };
                 my $riddle =
-                {
-                    solution => $layout,
-                    clues =>
-                    [
-                        map { $handle_clue->($_) } @{$last_state->{clues}}
-                    ],
-                    A_pos => [$self->_to_xy($A_pos)],
-                };
+                Games::ABC_Path::Generator::RiddleObj->new(
+                    {
+                        solution => $layout,
+                        clues =>
+                        [
+                            map { $handle_clue->($_) } @{$last_state->{clues}}
+                        ],
+                        A_pos => [$self->_to_xy($A_pos)],
+                    }
+                );
                 
                 my $riddle_string = $self->_get_riddle_only_as_string($riddle);
 
@@ -403,7 +407,7 @@ sub get_riddle_as_string
 {
     my ($self,$riddle) = @_;
 
-    my $layout_string = $self->get_layout_as_string($riddle->{solution});
+    my $layout_string = $self->get_layout_as_string($riddle->{_solution});
     
     my $riddle_string = $self->_get_riddle_only_as_string($riddle);
 
@@ -419,9 +423,9 @@ sub _get_riddle_only_as_string
 
     my $s = ((' ' x 7)."\n")x7;
 
-    substr($s, ($riddle->{A_pos}->[$Y]+1) * 8 + $riddle->{A_pos}->[$X]+1, 1) = 'A';
+    substr($s, ($riddle->_A_pos()->[$Y]+1) * 8 + $riddle->_A_pos->[$X]+1, 1) = 'A';
 
-    my $clues = $riddle->{clues};
+    my $clues = $riddle->_clues();
     foreach my $clue_idx (0 .. $NUM_CLUES-1)
     {
         my @pos = 

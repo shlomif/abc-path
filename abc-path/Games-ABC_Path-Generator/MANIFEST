@@ -3,6 +3,7 @@ Changes
 inc/Test/Run/Builder.pm
 lib/Games/ABC_Path/Generator/App.pm
 lib/Games/ABC_Path/Generator.pm
+lib/Games/ABC_Path/Generator/RiddleObj.pm
 lib/Games/ABC_Path/MicrosoftRand.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -17,3 +18,4 @@ t/manifest.t
 t/ms-rand.t
 t/pod-coverage.t
 t/pod.t
+t/riddle-obj.t
