@@ -26,6 +26,14 @@ our $VERSION = '0.0.1';
 
     my $random_digit = $randomizer->rand_max(10);
 
+=head1 DESCRIPTION
+
+This is a random number generator use by Games::ABC_Path::Generator, which
+emulates the one found in Microsoft's Visual C++. It was utilised here, out
+of familiarity and accessibility, because it is commonly used to generate
+Freecell layouts in the Freecell world (see
+L<http://en.wikipedia.org/wiki/FreeCell_%28Windows%29> ).
+
 =cut
 
 use integer;
