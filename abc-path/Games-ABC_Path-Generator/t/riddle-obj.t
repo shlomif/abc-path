@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Test::Differences;
 
 use Games::ABC_Path::Generator;
@@ -39,7 +39,13 @@ EOF
     # TEST
     eq_or_diff($riddle->get_letters_of_clue({ type => 'row', index => 3, }),
         ['O', 'K',],
-        'get_letters_of_clue type col',
+        'get_letters_of_clue type row',
+    );
+
+    # TEST
+    eq_or_diff($riddle->get_letters_of_clue({ type => 'diag', }),
+        ['Y', 'L',],
+        'get_letters_of_clue type diag',
     );
 
     my $layout = $riddle->get_final_layout();

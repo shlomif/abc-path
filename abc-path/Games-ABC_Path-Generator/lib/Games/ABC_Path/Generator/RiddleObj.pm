@@ -170,6 +170,10 @@ sub get_letters_of_clue
     {
         $clue_idx = 2 + $get_index->();
     }
+    elsif ($type eq 'diag')
+    {
+        $clue_idx = 0;
+    }
     else
     {
         Carp::confess ("Unknown type $type.");
