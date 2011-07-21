@@ -41,13 +41,6 @@ F     V
 O A   K
 M     I
 HEXCQPL
-
-Solution:
-Y | X | R | S | T
-E | D | W | Q | U
-F | B | C | V | P
-G | A | K | L | O
-H | I | J | N | M
 EOF
         'Riddle mode for seed #1',
     );

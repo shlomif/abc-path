@@ -32,7 +32,7 @@ elsif ($mode eq 'riddle')
     my $riddle_string = $riddle->get_riddle_v1_string;
 
     print sprintf(
-        "ABC Path Solver Layout Version 1:\n%s\nSolution:\n%s",
-        $riddle_string, $layout_string,
+        "ABC Path Solver Layout Version 1:\n%s",
+        $riddle_string,
     );
 }
