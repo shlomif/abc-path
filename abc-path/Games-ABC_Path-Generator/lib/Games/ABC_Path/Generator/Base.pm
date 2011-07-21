@@ -1,4 +1,4 @@
-package Games::ABC_Path::Generator::FinalLayoutObj;
+package Games::ABC_Path::Generator::Base;
 
 use 5.006;
 
@@ -7,13 +7,13 @@ use warnings;
 
 use integer;
 
-use base 'Games::ABC_Path::Generator::Base';
+use base 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Generator::Constants;
 
 =head1 NAME
 
-Games::ABC_Path::Generator::FinalLayoutObj - represents a final layout.
+Games::ABC_Path::Generator::Base - a base class.
 
 =head1 VERSION
 
@@ -23,113 +23,19 @@ Version 0.0.1
 
 our $VERSION = '0.0.1';
 
+sub _xy_to_int
+{
+    my ($self, $xy) = @_;
+
+    return $xy->[$Y] * $LEN + $xy->[$X];
+}
+
 =head1 SYNOPSIS
 
-    use Games::ABC_Path::Generator;
-
-    my $gen = Games::ABC_Path::Generator->new({seed => 1});
-
-    # Returns a Games::ABC_Path::Generator::RiddleObj object.
-    my $riddle = $gen->calc_riddle();
-
-    print $riddle->get_riddle_v1_string();
-    print $riddle->get_riddle_string_with_header();
-
-
-=head1 SUBROUTINES/METHODS
-
-=head2 my $riddle = Games::ABC_Path::Generator::RiddleObj->new({%args}); 
-
-Initialised a new riddle. Arguments are:
-
-=over 4
-
-=item * solution
-
-The solution layout.
-
-=item * clues
-
-An array of the clues.
-
-=item * A_pos
-
-The position of the A cell.
-
-=back
+B<For internal use.>.
 
 =cut
 
-sub _s
-{
-    my $self = shift;
-
-    if (@_)
-    {
-        $self->{_s} = shift;
-    }
-
-    return $self->{_s};
-}
-
-sub _init
-{
-    my $self = shift;
-    my $args = shift;
-
-    $self->_s($args->{layout_string});
-
-    return;
-}
-
-=head2 $layout->get_A_pos()
-
-Returns the position of the letter 'A'.
-
-=cut
-
-sub get_A_pos
-{
-    my ($self) = @_;
-
-    return index($self->_s, chr(1));
-}
-
-=head2 $layout->get_cell_contents($index)
-
-Returns the cell at index L<$index> (where index is C< $Y*5 + $X>).
-
-=cut
-
-sub get_cell_contents
-{
-    my ($self, $index) = @_;
-
-    return vec($self->_s, $index, 8) ;
-}
-
-=head2 $layout->as_string($args);
-
-Represents the layout as string.
-
-=cut
-
-sub as_string
-{
-    my ($l, $args) = @_;
-
-    my $render_row = sub {
-        my $y = shift;
-
-        return join(" | ", 
-            map {
-                my $x = $_; 
-                my $v = $l->get_cell_contents($l->_xy_to_int([$y,$x]));
-            $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
-    };
-
-    return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
-}
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

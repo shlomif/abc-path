@@ -7,7 +7,7 @@ use warnings;
 
 use integer;
 
-use base 'Games::ABC_Path::Solver::Base';
+use base 'Games::ABC_Path::Generator::Base';
 
 use Games::ABC_Path::Generator::Constants;
 
@@ -65,13 +65,6 @@ sub _to_xy
     my ($self, $int) = @_;
 
     return (($int / $LEN), ($int % $LEN));
-}
-
-sub _xy_to_int
-{
-    my ($self, $xy) = @_;
-
-    return $xy->[$Y] * $LEN + $xy->[$X];
 }
 
 sub _fisher_yates_shuffle {
