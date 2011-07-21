@@ -166,6 +166,10 @@ sub get_letters_of_clue
     {
         $clue_idx = 2 + $LEN + $get_index->();
     }
+    elsif ($type eq 'row')
+    {
+        $clue_idx = 2 + $get_index->();
+    }
     else
     {
         Carp::confess ("Unknown type $type.");
