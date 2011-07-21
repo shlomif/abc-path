@@ -1,9 +1,13 @@
 use 5.006;
+
 use strict;
 use warnings;
-use Module::Build;
 
-my $builder = Module::Build->new(
+use lib './inc';
+
+use Test::Run::Builder;
+
+my $builder = Test::Run::Builder->new(
     module_name         => 'Games::ABC_Path::Generator',
     license             => 'mit',
     dist_author         => q{Shlomi Fish <shlomif@cpan.org>},
