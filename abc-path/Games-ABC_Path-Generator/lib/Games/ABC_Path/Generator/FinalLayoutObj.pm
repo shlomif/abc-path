@@ -124,6 +124,31 @@ sub get_cell_contents
     return vec($self->_s, $index, 8) ;
 }
 
+=head2 my $letter = $layout->get_letter_at_pos({y => $y, x => $x});
+
+Returns the letter at $y and $x .
+
+=cut
+
+sub get_letter_at_pos
+{
+    my ($self, $pos) = @_;
+
+    return $letters[
+        $self->get_cell_contents(
+            $self->_xy_to_int(
+                [$pos->{'y'},$pos->{'x'}],
+            )
+        )-1,
+    ];
+}
+
+=head2 $layout->as_string($args);
+
+Represents the layout as string.
+
+=cut
+
 =head2 $layout->as_string($args);
 
 Represents the layout as string.
