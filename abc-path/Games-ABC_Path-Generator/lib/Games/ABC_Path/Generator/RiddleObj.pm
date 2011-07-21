@@ -174,6 +174,10 @@ sub get_letters_of_clue
     {
         $clue_idx = 0;
     }
+    elsif ($type eq 'antidiag')
+    {
+        $clue_idx = 1;
+    }
     else
     {
         Carp::confess ("Unknown type $type.");
