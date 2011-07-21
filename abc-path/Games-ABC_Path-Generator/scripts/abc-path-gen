@@ -21,7 +21,7 @@ my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
 
 if ($mode eq 'final')
 {
-    print $gen->get_layout_as_string($gen->calc_final_layout());
+    print $gen->calc_final_layout()->as_string({});
 }
 elsif ($mode eq 'riddle')
 {

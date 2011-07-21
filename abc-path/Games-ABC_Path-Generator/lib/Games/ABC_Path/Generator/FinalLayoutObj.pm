@@ -1,4 +1,4 @@
-package Games::ABC_Path::Generator::RiddleObj;
+package Games::ABC_Path::Generator::FinalLayoutObj;
 
 use 5.006;
 
@@ -11,7 +11,7 @@ use base 'Games::ABC_Path::Solver::Base';
 
 =head1 NAME
 
-Games::ABC_Path::Generator::RiddleObj - represents a riddle.
+Games::ABC_Path::Generator::FinalLayoutObj - represents a final layout.
 
 =head1 VERSION
 
@@ -26,6 +26,7 @@ my $Y = 0;
 my $X = 1;
 my $NUM_CLUES = (2+5+5);
 my @letters = ('A' .. 'Y');
+my $LEN = 5;
 
 =head1 SYNOPSIS
 
@@ -64,40 +65,16 @@ The position of the A cell.
 
 =cut
 
-sub _solution
+sub _s
 {
     my $self = shift;
 
     if (@_)
     {
-        $self->{_solution} = shift;
+        $self->{_s} = shift;
     }
 
-    return $self->{_solution};
-}
-
-sub _clues
-{
-    my $self = shift;
-
-    if (@_)
-    {
-        $self->{_clues} = shift;
-    }
-
-    return $self->{_clues};
-}
-
-sub _A_pos
-{
-    my $self = shift;
-
-    if (@_)
-    {
-        $self->{_A_pos} = shift;
-    }
-
-    return $self->{_A_pos};
+    return $self->{_s};
 }
 
 sub _init
@@ -105,61 +82,66 @@ sub _init
     my $self = shift;
     my $args = shift;
 
-    $self->_solution($args->{solution});
-    $self->_clues($args->{clues});
-    $self->_A_pos($args->{A_pos});
+    $self->_s($args->{layout_string});
 
     return;
 }
 
-=head2 my $string = $riddle->get_riddle_v1_string()
+=head2 $layout->get_A_pos()
 
-Returns the riddle version 1 string (without the header). See the documentation
-of L<Games::ABC_Path::Solver::Board> for explanation.
+Returns the position of the letter 'A'.
 
 =cut
 
-sub get_riddle_v1_string
+sub get_A_pos
 {
     my ($self) = @_;
 
-    my $s = ((' ' x 7)."\n")x7;
-
-    substr($s, ($self->_A_pos()->[$Y]+1) * 8 + $self->_A_pos->[$X]+1, 1) = 'A';
-
-    my $clues = $self->_clues();
-    foreach my $clue_idx (0 .. $NUM_CLUES-1)
-    {
-        my @pos = 
-            ($clue_idx == 0) ? ([0,0],[6,6]) 
-            : ($clue_idx == 1) ? ([0,6],[6,0])
-            : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
-            : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])
-            ;
-
-        foreach my $i (0 .. 1)
-        {
-            substr ($s, $pos[$i][0] * 8 + $pos[$i][1], 1)
-                = $letters[$clues->[$clue_idx]->[$i] - 1];
-        }
-    }
-
-    return $s;
+    return index($self->_s, chr(1));
 }
 
-=head2 my $string = $riddle->get_final_layout_as_string({%args})
+=head2 $layout->get_cell_contents($index)
 
-Returns the final layout as a string. %args is included for future extension.
+Returns the cell at index L<$index> (where index is C< $Y*5 + $X>).
 
 =cut
 
-sub get_final_layout_as_string
+sub get_cell_contents
 {
-    my ($self, $args) = @_;
+    my ($self, $index) = @_;
 
-    return $self->_solution->as_string($args);
+    return vec($self->_s, $index, 8) ;
 }
 
+=head2 $layout->as_string($args);
+
+Represents the layout as string.
+
+=cut
+
+sub _xy_to_int
+{
+    my ($self, $xy) = @_;
+
+    return $xy->[$Y] * $LEN + $xy->[$X];
+}
+
+sub as_string
+{
+    my ($l, $args) = @_;
+
+    my $render_row = sub {
+        my $y = shift;
+
+        return join(" | ", 
+            map {
+                my $x = $_; 
+                my $v = $l->get_cell_contents($l->_xy_to_int([$y,$x]));
+            $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
+    };
+
+    return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
+}
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

@@ -14,6 +14,7 @@ use Games::ABC_Path::Solver::Board '0.1.0';
 use Games::ABC_Path::MicrosoftRand;
 
 use Games::ABC_Path::Generator::RiddleObj;
+use Games::ABC_Path::Generator::FinalLayoutObj;
 
 =head1 NAME
 
@@ -163,7 +164,8 @@ use List::Util qw(first);
 Calculates the final, solved, layout of the board based on the current
 random seed.
 
-Returns the layout as an object.
+Returns the layout as a L<Games::ABC_Path::Generator::FinalLayoutObj>
+object.
 
 =cut
 
@@ -181,7 +183,9 @@ sub calc_final_layout
 
         if (@dfs_stack == $BOARD_SIZE)
         {
-            return $l;
+            return Games::ABC_Path::Generator::FinalLayoutObj->new(
+                {layout_string => $l, },
+            );
         }
 
         # print "Depth = " . scalar(@dfs_stack) . "\n";
@@ -208,26 +212,6 @@ sub calc_final_layout
     die "Not found!";
 }
 
-=head2 $gen->get_layout_as_string($layout)
-
-For internal use.
-
-=cut
-
-sub get_layout_as_string
-{
-    my ($self, $l) = @_;
-
-    my $render_row = sub {
-        my $y = shift;
-
-        return join(" | ", 
-            map { my $x = $_; my $v = vec($l, $self->_xy_to_int([$y,$x]), 8);
-            $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
-    };
-
-    return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
-}
 
 my $NUM_CLUES = (2+5+5);
 
@@ -243,7 +227,7 @@ sub calc_riddle
 
     my $layout = $self->calc_final_layout();
 
-    my $A_pos = index($layout, chr(1));
+    my $A_pos = $layout->get_A_pos;
 
     my %init_state = (pos_taken => '', 
         clues =>
@@ -299,7 +283,7 @@ sub calc_riddle
                 my $handle_clue = sub {
                     my @cells = @{shift->{cells}};
                     $self->_fisher_yates_shuffle(\@cells);
-                    return [map { vec($layout, $_, 8) } @cells];
+                    return [map { $layout->get_cell_contents($_) } @cells];
                 };
                 my $riddle =
                 Games::ABC_Path::Generator::RiddleObj->new(
@@ -407,7 +391,7 @@ sub get_riddle_as_string
 {
     my ($self,$riddle) = @_;
 
-    my $layout_string = $self->get_layout_as_string($riddle->_solution());
+    my $layout_string = $riddle->get_final_layout_as_string({});
     
     my $riddle_string = $riddle->get_riddle_v1_string;
 
