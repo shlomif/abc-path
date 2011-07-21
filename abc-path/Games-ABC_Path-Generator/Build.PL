@@ -20,10 +20,12 @@ my $builder = Test::Run::Builder->new(
         'Test::More' => 0,
     },
     requires => {
+        'Carp' => 0,
         'Class::XSAccessor' => 0,
         'Exporter' => 0,
         'Games::ABC_Path::Solver::Base' => 0,
         'Games::ABC_Path::Solver::Board' => '0.1.0',
+        'Getopt::Long' => 0,
         'integer' => 0,
         'perl' => 5.006,
         'strict' => 0,
