@@ -17,6 +17,8 @@ my $builder = Test::Run::Builder->new(
     },
     requires => {
         'Class::XSAccessor' => 0,
+        'Games::ABC_Path::Solver::Base' => 0,
+        'Games::ABC_Path::Solver::Board' => '0.1.0',
         'integer' => 0,
         'perl' => 5.006,
         'strict' => 0,
