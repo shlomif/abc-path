@@ -407,7 +407,7 @@ sub get_riddle_as_string
 {
     my ($self,$riddle) = @_;
 
-    my $layout_string = $self->get_layout_as_string($riddle->{_solution});
+    my $layout_string = $self->get_layout_as_string($riddle->_solution());
     
     my $riddle_string = $riddle->get_riddle_v1_string;
 
