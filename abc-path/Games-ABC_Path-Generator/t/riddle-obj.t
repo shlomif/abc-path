@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Differences;
 
 use Games::ABC_Path::Generator;
@@ -48,6 +48,12 @@ EOF
     # TEST
     is ($layout->get_letter_at_pos({y => 0, x => 0,}),
         'Y',
+        'get_letter_at_pos #1',
+    );
+
+    # TEST
+    is ($layout->get_letter_at_pos({y => 2, x => 1,}),
+        'B',
         'get_letter_at_pos #1',
     );
 }
