@@ -6,7 +6,8 @@ use warnings;
 
 =head1 NAME
 
-Games::ABC_Path::MicrosoftRand - The great new Games::ABC_Path::MicrosoftRand!
+Games::ABC_Path::MicrosoftRand - a pseudo-random number generator compatible
+with Visual C.
 
 =head1 VERSION
 
@@ -19,14 +20,11 @@ our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Games::ABC_Path::MicrosoftRand;
 
-    my $foo = Games::ABC_Path::MicrosoftRand->new();
-    ...
+    my $randomizer = Games::ABC_Path::MicrosoftRand->new(seed => 24);
+
+    my $random_digit = $randomizer->rand_max(10);
 
 =cut
 
@@ -80,7 +78,7 @@ Can be used to re-assign the seed of the randomizer (though not recommended).
 
 =head1 AUTHOR
 
-Shlomi Fish, C<< <shlomif at cpan.org> >>
+Shlomi Fish, L<http://www.shlomifish.org/> .
 
 =head1 BUGS
 
