@@ -12,5 +12,6 @@ scripts/bump-version-number.pl
 scripts/tag-release.pl
 t/00-load.t
 t/manifest.t
+t/ms-rand.t
 t/pod-coverage.t
 t/pod.t

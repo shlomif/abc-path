@@ -28,26 +28,55 @@ Perhaps a little code snippet.
     my $foo = Games::ABC_Path::MicrosoftRand->new();
     ...
 
-=head1 EXPORT
+=cut
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+use integer;
+
+use Class::XSAccessor {
+    constructor => 'new',
+    accessors => [qw(seed)],
+};
+
+sub rand
+{
+    my $self = shift;
+    $self->seed(($self->seed() * 214013 + 2531011) & (0x7FFF_FFFF));
+    return (($self->seed >> 16) & 0x7fff);
+}
+
+sub max_rand
+{
+    my ($self, $max) = @_;
+
+    return ($self->rand() % $max);
+}
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 new
+
+The constructor. Accepts a numeric seed as an argument.
+
+    my $randomizer = Games::ABC_Path::MicrosoftRand->new(seed => 1);
+
+=head2 $randomizer->rand()
+
+Returns a random integer from 0 up to 0x7fff - 1.
+
+    my $n = $randomizer->rand()
+
+=head2 $randomizer->max_rand($max)
+
+Returns a random integer in the range 0 to ($max-1).
+
+    my $n = $randomizer->max_rand($max);
+    # $n is now between 0 and $max - 1.
+
+=head2 $randomizer->seed($seed)
+
+Can be used to re-assign the seed of the randomizer (though not recommended).
 
 =cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
