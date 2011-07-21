@@ -113,4 +113,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator
+1; # End of Games::ABC_Path::Generator::Base

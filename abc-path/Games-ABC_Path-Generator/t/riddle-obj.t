@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use Games::ABC_Path::Generator;
 
@@ -28,4 +28,9 @@ HEXCQPL
 EOF
         "get_riddle_v1_string()",
     );
+
+    my $layout = $riddle->get_final_layout();
+
+    # TEST
+    ok ($layout, "Layout was returned.");
 }

@@ -143,6 +143,20 @@ sub get_riddle_v1_string
     return $s;
 }
 
+=head2 my $string = $riddle->get_final_layout()
+
+Returns the final layout as a L<Games::ABC_Path::Generator::FinalLayoutObj> .
+
+=cut
+
+sub get_final_layout
+{
+    my ($self) = @_;
+
+    return $self->_solution;
+}
+
+
 =head2 my $string = $riddle->get_final_layout_as_string({%args})
 
 Returns the final layout as a string. %args is included for future extension.
