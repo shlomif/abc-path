@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
+use Test::Differences;
 
 use Games::ABC_Path::Generator;
 
@@ -36,4 +37,11 @@ EOF
 
     # TEST
     is ($layout->get_A_pos(), 16, "A_pos is correct.");
+
+    # TEST
+    eq_or_diff(
+        $layout->get_A_xy(),
+        { y => 3, x => 1, },
+        "get_A_xy is ok."
+    );
 }

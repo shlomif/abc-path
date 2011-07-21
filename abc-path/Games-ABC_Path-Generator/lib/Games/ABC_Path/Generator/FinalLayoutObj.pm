@@ -95,6 +95,22 @@ sub get_A_pos
     return index($self->_s, chr(1));
 }
 
+=head2 $layout->get_A_xy()
+
+Returns the (X,Y) coordinates of the letter A as a C<< {x => $x, y => $y} >>
+hash reference.
+
+=cut
+
+sub get_A_xy
+{
+    my ($self) = @_;
+
+    my ($y, $x) = $self->_to_xy($self->get_A_pos());
+
+    return {y => $y, x => $x,};
+}
+
 =head2 $layout->get_cell_contents($index)
 
 Returns the cell at index L<$index> (where index is C< $Y*5 + $X>).

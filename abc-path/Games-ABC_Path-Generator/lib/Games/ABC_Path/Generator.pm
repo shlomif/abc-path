@@ -60,12 +60,6 @@ sub _init
     return;
 }
 
-sub _to_xy
-{
-    my ($self, $int) = @_;
-
-    return (($int / $LEN), ($int % $LEN));
-}
 
 sub _fisher_yates_shuffle {
     my ($self, $deck) = @_;

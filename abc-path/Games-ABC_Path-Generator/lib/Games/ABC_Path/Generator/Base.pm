@@ -30,6 +30,12 @@ sub _xy_to_int
     return $xy->[$Y] * $LEN + $xy->[$X];
 }
 
+sub _to_xy
+{
+    my ($self, $int) = @_;
+
+    return (($int / $LEN), ($int % $LEN));
+}
 =head1 SYNOPSIS
 
 B<For internal use.>.
