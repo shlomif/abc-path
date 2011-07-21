@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Differences;
 
 use Games::ABC_Path::Generator;
@@ -28,6 +28,12 @@ M     I
 HEXCQPL
 EOF
         "get_riddle_v1_string()",
+    );
+
+    # TEST
+    eq_or_diff($riddle->get_letters_of_clue({ type => 'col', index => 1, }),
+        ['B', 'X',],
+        'get_letters_of_clue type col',
     );
 
     my $layout = $riddle->get_final_layout();

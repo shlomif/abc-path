@@ -5,6 +5,8 @@ use 5.006;
 use strict;
 use warnings;
 
+use Carp;
+
 use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
@@ -106,6 +108,70 @@ sub _init
     $self->_A_pos($args->{A_pos});
 
     return;
+}
+
+=head2 my [$letter1, $letter2] = $riddle->get_letters_of_clue({ type => $type, index => $index, })
+
+Returns the two letters (as an array reference) associated with the 
+clue represented by the hash reference. Type can be:
+
+=over 4
+
+=item * 'col'
+
+A column clue. C<'index'> points to the X coordinate.
+
+=item * 'row'
+
+A row clue. C<'index'> points to the Y coordinate.
+
+=item * 'diag'
+
+The diagonal clue. C<'index'> is ignored.
+
+=item * 'antidiag'
+
+The anti-diagonal clue. C<'index'> is ignored.
+
+=back
+
+Some examples:
+
+    my $letters_aref = $riddle->get_letters_of_clue({ type => 'col', index => 2, });
+    my $letters_aref = $riddle->get_letters_of_clue({ type => 'row', index => 1, });
+    my $letters_aref = $riddle->get_letters_of_clue({ type => 'diag', });
+    my $letters_aref = $riddle->get_letters_of_clue({ type => 'antidiag', });
+
+=cut
+
+sub get_letters_of_clue
+{
+    my ($self, $args) = @_;
+
+    my $get_index = sub {
+        my $i = $args->{index};
+
+        if ($i !~ m{\A[01234]\z})
+        {
+            Carp::confess ('index must be in the range 0-4');
+        }
+
+        return $i;
+    };
+
+    my $clue_idx;
+    my $type = $args->{type};
+
+    if ($type eq 'col')
+    {
+        $clue_idx = 2 + $LEN + $get_index->();
+    }
+    else
+    {
+        Carp::confess ("Unknown type $type.");
+    }
+    
+    return [map { $letters[$_-1] } @{$self->_clues->[$clue_idx]}];
 }
 
 =head2 my $string = $riddle->get_riddle_v1_string()
