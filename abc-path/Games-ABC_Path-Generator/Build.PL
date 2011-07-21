@@ -31,6 +31,30 @@ my $builder = Test::Run::Builder->new(
     },
     add_to_cleanup      => [ 'Games-ABC_Path-Generator-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => "http://svn.berlios.de/svnroot/repos/fc-solve/abc-path/",
+            homepage => "http://www.shlomifish.org/open-source/projects/japanese-puzzle-games/abc-path/",
+        },
+        keywords =>
+        [
+            "abc",
+            "game",
+            "games",
+            "generate",
+            "generator",
+            "grid",
+            "letters",
+            "path",
+            "puzzle",
+            "puzzles",
+            "riddle",
+            "riddles",
+            "table",
+        ],
+    },
 );
 
 $builder->create_build_script();
