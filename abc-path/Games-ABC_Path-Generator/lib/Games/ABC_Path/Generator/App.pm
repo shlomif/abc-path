@@ -4,6 +4,12 @@ use 5.006;
 use strict;
 use warnings;
 
+use base 'Games::ABC_Path::Generator::Base';
+
+use Getopt::Long qw(GetOptionsFromArray);
+
+use Games::ABC_Path::Generator;
+
 =head1 NAME
 
 Games::ABC_Path::Generator::App - The great new Games::ABC_Path::Generator::App!
@@ -25,28 +31,85 @@ Perhaps a little code snippet.
 
     use Games::ABC_Path::Generator::App;
 
-    my $foo = Games::ABC_Path::Generator::App->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my $app = Games::ABC_Path::Generator::App->new({ argv => [@ARGV], },);
+    $app->run();
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 Games::ABC_Path::Generator::App->new({ argv => [@ARGV], },);
+
+Initialize from @ARGV .
 
 =cut
 
-sub function1 {
+sub _argv
+{
+    my $self = shift;
+
+    if (@_)
+    {
+        $self->{_argv} = shift;
+    }
+
+    return $self->{_argv};
 }
 
-=head2 function2
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->_argv($args->{argv});
+
+    return;
+}
+
+=head2 $app->run()
+
+Runs the application.
 
 =cut
 
-sub function2 {
+sub run
+{
+    my ($self) = @_;
+
+    my $seed;
+    my $mode = 'riddle';
+    if (!GetOptionsFromArray(
+            $self->_argv(),
+            'seed=i' => \$seed,
+            'mode=s' => \$mode,
+        ))
+    {
+        die "Could not get options for program!";
+    }
+
+    if (!defined($seed))
+    {
+        die "Seed not specified!";
+    }
+
+    my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
+
+    if ($mode eq 'final')
+    {
+        print $gen->calc_final_layout()->as_string({});
+    }
+    elsif ($mode eq 'riddle')
+    {
+        my $riddle = $gen->calc_riddle();
+
+        my $layout_string = $riddle->get_final_layout_as_string({});
+
+        my $riddle_string = $riddle->get_riddle_v1_string;
+
+        print sprintf(
+            "ABC Path Solver Layout Version 1:\n%s",
+            $riddle_string,
+        );
+    }
+
+    return;
 }
 
 =head1 AUTHOR
