@@ -5,9 +5,13 @@ use 5.006;
 use strict;
 use warnings;
 
+use integer;
+
 use base 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Board '0.1.0';
+
+use Games::ABC_Path::MicrosoftRand;
 
 =head1 NAME
 
@@ -80,7 +84,7 @@ sub _fisher_yates_shuffle {
 
     my $i = @$deck;
     while (--$i) {
-        my $j = $r->range_rand($i+1);
+        my $j = $r->max_rand($i+1);
         @$deck[$i,$j] = @$deck[$j,$i];
     }
 
@@ -112,7 +116,6 @@ sub _get_next_cells
         @{$get_next_cells_lookup[$init_idx]}
     ];
 }
-
 }
 
 
@@ -167,7 +170,7 @@ sub calc_final_layout
     my $self = shift;
 
     my @dfs_stack;
-    $self->_add_next_state(\@dfs_stack, '', $self->{rand}->range_rand($BOARD_SIZE));
+    $self->_add_next_state(\@dfs_stack, '', $self->{rand}->max_rand($BOARD_SIZE));
 
     DFS:
     while (@dfs_stack)

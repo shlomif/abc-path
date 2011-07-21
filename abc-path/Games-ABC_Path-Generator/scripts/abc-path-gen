@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Games::ABC_Path::Generator;
+
+use Getopt::Long;
+
+my $seed = 24;
+my $mode = 'final';
+if (!GetOptions(
+        'seed=i' => \$seed,
+        'mode=s' => \$mode,
+    ))
+{
+    die "Could not get options for program!";
+}
+
+my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
+
+if ($mode eq 'final')
+{
+    print $gen->get_layout_as_string($gen->calc_final_layout());
+}
+elsif ($mode eq 'riddle')
+{
+    print $gen->get_riddle_as_string($gen->calc_riddle());
+}

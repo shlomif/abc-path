@@ -13,6 +13,7 @@ my $builder = Test::Run::Builder->new(
     dist_author         => q{Shlomi Fish <shlomif@cpan.org>},
     dist_version_from   => 'lib/Games/ABC_Path/Generator.pm',
     build_requires => {
+        'Test::Differences' => 0,
         'Test::More' => 0,
     },
     requires => {
