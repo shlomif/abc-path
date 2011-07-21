@@ -16,7 +16,11 @@ my $builder = Test::Run::Builder->new(
         'Test::More' => 0,
     },
     requires => {
+        'Class::XSAccessor' => 0,
+        'integer' => 0,
         'perl' => 5.006,
+        'strict' => 0,
+        'warnings' => 0,
     },
     add_to_cleanup      => [ 'Games-ABC_Path-Generator-*' ],
     create_makefile_pl => 'traditional',
