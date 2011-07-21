@@ -31,6 +31,9 @@ my $builder = Test::Run::Builder->new(
     },
     add_to_cleanup      => [ 'Games-ABC_Path-Generator-*' ],
     create_makefile_pl => 'traditional',
+    script_files => [
+        "scripts/abc-path-gen",
+    ],
     meta_merge =>
     {
         resources =>
