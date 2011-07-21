@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use Games::ABC_Path::Generator;
 
@@ -33,4 +33,7 @@ EOF
 
     # TEST
     ok ($layout, "Layout was returned.");
+
+    # TEST
+    is ($layout->get_A_pos(), 16, "A_pos is correct.");
 }
