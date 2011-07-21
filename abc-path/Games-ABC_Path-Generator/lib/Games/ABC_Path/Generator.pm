@@ -313,7 +313,7 @@ sub calc_riddle
                     }
                 );
                 
-                my $riddle_string = $self->_get_riddle_only_as_string($riddle);
+                my $riddle_string = $riddle->get_riddle_v1_string();
 
                 my $solver = 
                     Games::ABC_Path::Solver::Board->input_from_v1_string(
@@ -409,40 +409,12 @@ sub get_riddle_as_string
 
     my $layout_string = $self->get_layout_as_string($riddle->{_solution});
     
-    my $riddle_string = $self->_get_riddle_only_as_string($riddle);
+    my $riddle_string = $riddle->get_riddle_v1_string;
 
     return sprintf(
         "ABC Path Solver Layout Version 1:\n%s\nSolution:\n%s",
         $riddle_string, $layout_string,
     );
-}
-
-sub _get_riddle_only_as_string
-{
-    my ($self,$riddle) = @_;
-
-    my $s = ((' ' x 7)."\n")x7;
-
-    substr($s, ($riddle->_A_pos()->[$Y]+1) * 8 + $riddle->_A_pos->[$X]+1, 1) = 'A';
-
-    my $clues = $riddle->_clues();
-    foreach my $clue_idx (0 .. $NUM_CLUES-1)
-    {
-        my @pos = 
-            ($clue_idx == 0) ? ([0,0],[6,6]) 
-            : ($clue_idx == 1) ? ([0,6],[6,0])
-            : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
-            : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])
-            ;
-
-        foreach my $i (0 .. 1)
-        {
-            substr ($s, $pos[$i][0] * 8 + $pos[$i][1], 1)
-                = $letters[$clues->[$clue_idx]->[$i] - 1];
-        }
-    }
-
-    return $s;
 }
 
 =head1 AUTHOR
