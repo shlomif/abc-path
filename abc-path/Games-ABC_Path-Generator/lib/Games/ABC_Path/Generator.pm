@@ -11,7 +11,7 @@ use Games::ABC_Path::Solver::Board '0.1.0';
 
 =head1 NAME
 
-Games::ABC_Path::Generator - The great new Games::ABC_Path::Generator!
+Games::ABC_Path::Generator - a generator for ABC Path puzzle games.
 
 =head1 VERSION
 
@@ -24,21 +24,18 @@ our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Games::ABC_Path::Generator;
 
-    my $foo = Games::ABC_Path::Generator->new();
-    ...
+    my $gen = Games::ABC_Path::Generator->new({seed => 1});
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    # Returns a Games::ABC_Path::Generator::Riddle object.
+    my $riddle = $gen->calc_riddle();
 
 =head1 SUBROUTINES/METHODS
+
+=head2 my $gen = Games::ABC_Path::Generator->new({seed => $seed}); 
+
+Initialised a new generator with the random number generator seed $seed .
 
 =cut
 
