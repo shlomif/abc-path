@@ -9,6 +9,8 @@ use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Generator::Constants;
+
 use Games::ABC_Path::Solver::Board '0.1.0';
 
 use Games::ABC_Path::MicrosoftRand;
@@ -58,11 +60,6 @@ sub _init
     return;
 }
 
-my $LEN = 5;
-my $BOARD_SIZE = $LEN*$LEN;
-my $Y = 0;
-my $X = 1;
-
 sub _to_xy
 {
     my ($self, $int) = @_;
@@ -76,8 +73,6 @@ sub _xy_to_int
 
     return $xy->[$Y] * $LEN + $xy->[$X];
 }
-
-my @letters = ('A' .. 'Y');
 
 sub _fisher_yates_shuffle {
     my ($self, $deck) = @_;
@@ -211,9 +206,6 @@ sub calc_final_layout
 
     die "Not found!";
 }
-
-
-my $NUM_CLUES = (2+5+5);
 
 =head2 $gen->calc_riddle()
 

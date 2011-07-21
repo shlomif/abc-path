@@ -9,6 +9,8 @@ use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Generator::Constants;
+
 =head1 NAME
 
 Games::ABC_Path::Generator::RiddleObj - represents a riddle.
@@ -20,12 +22,6 @@ Version 0.0.1
 =cut
 
 our $VERSION = '0.0.1';
-
-# TODO : Merge with Games::ABC_Path::Generator
-my $Y = 0;
-my $X = 1;
-my $NUM_CLUES = (2+5+5);
-my @letters = ('A' .. 'Y');
 
 =head1 SYNOPSIS
 
