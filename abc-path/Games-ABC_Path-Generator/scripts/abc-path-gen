@@ -8,7 +8,7 @@ use Games::ABC_Path::Generator;
 use Getopt::Long;
 
 my $seed = 24;
-my $mode = 'final';
+my $mode = 'riddle';
 if (!GetOptions(
         'seed=i' => \$seed,
         'mode=s' => \$mode,
