@@ -12,7 +12,7 @@ use Games::ABC_Path::Generator;
 
 =head1 NAME
 
-Games::ABC_Path::Generator::App - The great new Games::ABC_Path::Generator::App!
+Games::ABC_Path::Generator::App - command line application for the ABC Path generator.
 
 =head1 VERSION
 
@@ -24,10 +24,6 @@ our $VERSION = '0.0.1';
 
 
 =head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
 
     use Games::ABC_Path::Generator::App;
 
@@ -114,7 +110,7 @@ sub run
 
 =head1 AUTHOR
 
-Shlomi Fish, C<< <shlomif at cpan.org> >>
+Shlomi Fish, L<http://www.shlomifish.org/> .
 
 =head1 BUGS
 
