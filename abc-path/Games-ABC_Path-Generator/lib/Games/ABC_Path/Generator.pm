@@ -202,24 +202,23 @@ Calculates the riddle (final state + initial hints) and returns it as an object.
 
 =cut
 
+sub _gen_clue_positions {
+    my ($cb) = @_;
+    return [map { $cb->($_) } (0 .. $LEN-1)];
+};
+
 my @_clues_positions =
 (
     map {
         [map { __PACKAGE__->_xy_to_int($_) } @{$_}]
     }
     (
-        [ map { [$_,$_] } (0 .. $LEN-1) ],
-        [ map { [$_,4-$_] } ( 0 .. $LEN-1) ],
-        (
-            map { my $y = $_; 
-            [ map { [$y,$_] } (0 .. $LEN-1) ] 
-            } (0 .. $LEN-1)
-        ),
-        (
-            map { my $x = $_;
-            [ map { [$_,$x] } (0 .. $LEN-1) ] 
-            } (0 .. $LEN-1)
-        ),
+        _gen_clue_positions(sub { [$_,$_];   }),
+        _gen_clue_positions(sub { [$_,4-$_]; }),
+        (map { my $y = $_; _gen_clue_positions(sub { [$y,$_] }); }
+            (0 .. $LEN-1)),
+        (map { my $x = $_; _gen_clue_positions(sub { [$_,$x] }); }
+            (0 .. $LEN-1)),
     )
 );
 
