@@ -40,6 +40,19 @@ our $VERSION = '0.0.1';
     # Returns a Games::ABC_Path::Generator::RiddleObj object.
     my $riddle = $gen->calc_riddle();
 
+=head1 DESCRIPTION
+
+ABC Path puzzle games are puzzle games where one is given a 5*5 grid which
+should contain a consecutive path of the letters from 'A' to 'Y' (with vertical,
+horizontal, diagonal, or anti-diagonal steps). The position of the letter 'A' 
+is given, and two letters are given for each of the columns, rows, main 
+diagonal and main anti-diagonal, which can appear anywhere there.
+
+ABC Path can be played online at L<http://www.brainbashers.com/abcpath.asp> .
+
+This package is a generator for ABC Path games, and it generates a different
+layout with different clues for every random number generator seed.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 my $gen = Games::ABC_Path::Generator->new({seed => $seed}); 
@@ -379,7 +392,6 @@ You can find documentation for this module with the perldoc command.
 
     perldoc Games::ABC_Path::Generator
 
-
 You can also look for information at:
 
 =over 4
@@ -402,9 +414,26 @@ L<http://search.cpan.org/dist/Games-ABC_Path-Generator/>
 
 =back
 
+=head1 SEE ALSO
+
+L<Games::ABC_Path::Solver> - a solver for ABC Path games which this
+generator uses.
+
+L<http://www.shlomifish.org/open-source/projects/japanese-puzzle-games/abc-path/> - the homepage of Shlomi Fish's ABC Path work.
+
+L<http://www.brainbashers.com/abcpath.asp> - play ABC Path online on
+brainbashers.com .
+
+L<http://www.janko.at/> - Otto Janko, the creator of ABC Path.
 
 =head1 ACKNOWLEDGEMENTS
 
+Otto Janko (L<http://www.janko.at/>) for creating ABC Path.
+
+L<http://www.brainbashers.com/> for introducing them to me.
+
+Altreus ( L<http://search.cpan.org/~altreus/> ) for suggesting an improvement
+to the documentation.
 
 =head1 LICENSE AND COPYRIGHT
 
