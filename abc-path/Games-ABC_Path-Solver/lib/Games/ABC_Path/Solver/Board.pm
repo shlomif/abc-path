@@ -233,7 +233,7 @@ sub _calc_offset
         confess "Letter $letter out of range.";
     }
 
-    return $letter * ($LEN * $LEN) + $self->_xy_to_idx($x,$y);
+    return $letter * $BOARD_SIZE + $self->_xy_to_idx($x,$y);
 }
 
 sub _get_verdict
