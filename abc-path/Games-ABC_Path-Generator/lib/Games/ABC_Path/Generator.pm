@@ -113,10 +113,8 @@ sub _add_next_state
     my ($self, $stack, $l, $cell_int) = @_;
 
     vec($l, $cell_int, 8) = 1+@$stack;
-    my $cells = $self->_get_next_cells($l, $cell_int);
-    $self->_shuffle($cells);
 
-    push @$stack, [$l, $cells];
+    push @$stack, [$l, $self->_shuffle($self->_get_next_cells($l, $cell_int))];
 
     return;
 }
@@ -265,8 +263,11 @@ sub calc_riddle
                 # Yay! We found a configuration.
                 my $handle_clue = sub {
                     my @cells = @{shift->{cells}};
-                    $self->_shuffle(\@cells);
-                    return [map { $layout->get_cell_contents($_) } @cells];
+                    return
+                    [
+                        map { $layout->get_cell_contents($_) } 
+                        @{$self->_shuffle(\@cells)}
+                    ];
                 };
                 my $riddle =
                 Games::ABC_Path::Generator::RiddleObj->new(
@@ -337,9 +338,7 @@ sub calc_riddle
                 }
             }
 
-            $self->_shuffle(\@pairs);
-
-            $last_state->{pos_pairs} = \@pairs;
+            $last_state->{pos_pairs} = $self->_shuffle(\@pairs);
         }
 
         my $chosen_clue = $last_state->{chosen_clue};
