@@ -49,6 +49,7 @@ use Carp;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Solver::Constants;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
@@ -59,13 +60,6 @@ use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
-
-my $BOARD_LEN = 5;
-my $BOARD_LEN_LIM = $BOARD_LEN - 1;
-
-my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
-
-my $ABCP_MAX_LETTER = $#letters;
 
 my %letters_map = (map { $letters[$_] => $_ } (0 .. $ABCP_MAX_LETTER));
 
@@ -178,12 +172,12 @@ sub _layout {
 
 sub _y_indexes
 {
-    return (0 .. $BOARD_LEN_LIM);
+    return (0 .. $LEN_LIM);
 }
 
 sub _x_indexes
 {
-    return (0 .. $BOARD_LEN_LIM);
+    return (0 .. $LEN_LIM);
 }
 
 # The letter indexes.
@@ -216,18 +210,18 @@ sub _xy_to_idx
 {
     my ($self, $x, $y) = @_;
 
-    if (($x < 0) or ($x > $BOARD_LEN_LIM))
+    if (($x < 0) or ($x > $LEN_LIM))
     {
         confess "X $x out of range.";
     }
 
-    if (($y < 0) or ($y > $BOARD_LEN_LIM))
+    if (($y < 0) or ($y > $LEN_LIM))
     {
         confess "Y $y out of range.";
     }
 
 
-    return $y * $BOARD_LEN +$x;
+    return $y * $LEN +$x;
 }
 
 sub _calc_offset
@@ -239,7 +233,7 @@ sub _calc_offset
         confess "Letter $letter out of range.";
     }
 
-    return $letter * ($BOARD_LEN * $BOARD_LEN) + $self->_xy_to_idx($x,$y);
+    return $letter * ($LEN * $LEN) + $self->_xy_to_idx($x,$y);
 }
 
 sub _get_verdict
@@ -427,14 +421,14 @@ sub _infer_letters
             }
         }
 
-        my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($self->_y_indexes));
+        my @neighbourhood = (map { [(0) x $LEN] } ($self->_y_indexes));
         
         foreach my $true (@true_cells)
         {
             foreach my $coords
             (
-                grep { $_->[0] >= 0 and $_->[0] < $BOARD_LEN and $_->[1] >= 0 and
-                $_->[1] < $BOARD_LEN }
+                grep { $_->[0] >= 0 and $_->[0] < $LEN and $_->[1] >= 0 and
+                $_->[1] < $LEN }
                 map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
                 map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
                 (-1 .. 1)
