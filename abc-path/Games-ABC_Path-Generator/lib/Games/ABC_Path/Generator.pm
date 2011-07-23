@@ -24,11 +24,11 @@ Games::ABC_Path::Generator - a generator for ABC Path puzzle games.
 
 =head1 VERSION
 
-Version 0.0.1
+Version 0.1.0
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 
 
 =head1 SYNOPSIS
