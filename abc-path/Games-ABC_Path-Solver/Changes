@@ -2,6 +2,7 @@ Revision history for Games-ABC_Path-Solver
 
         - Create lib/Games/ABC_Path/Solver/Constants.pm based on the one 
         from Games::ABC_Path::Generator.
+        - Merge common functionality into lib/Games/ABC_Path/Solver/Base.pm .
 
 0.1.0   Wed Jul 20 20:34:01 IDT 2011
         - Add the input_from_v1_string class method to input from a version
