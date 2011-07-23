@@ -89,6 +89,20 @@ sub _x_indexes
     return (0 .. $LEN_LIM);
 }
 
+sub _x_in_range
+{
+    my ($self, $x) = @_;
+
+    return ($x >= 0 and $x < $LEN);
+}
+
+sub _y_in_range
+{
+    my ($self, $y) = @_;
+
+    return $self->_x_in_range($y);
+}
+
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

@@ -398,8 +398,9 @@ sub _infer_letters
         {
             foreach my $coords
             (
-                grep { $_->[0] >= 0 and $_->[0] < $LEN and $_->[1] >= 0 and
-                $_->[1] < $LEN }
+                grep {
+                    $self->_x_in_range($_->[0]) and $self->_y_in_range($_->[1])
+                }
                 map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
                 map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
                 (-1 .. 1)
