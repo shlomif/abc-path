@@ -74,7 +74,7 @@ sub _init
 }
 
 
-sub _fisher_yates_shuffle {
+sub _shuffle {
     my ($self, $deck) = @_;
 
     return $self->{'rand'}->shuffle($deck);
@@ -114,7 +114,7 @@ sub _add_next_state
 
     vec($l, $cell_int, 8) = 1+@$stack;
     my $cells = $self->_get_next_cells($l, $cell_int);
-    $self->_fisher_yates_shuffle($cells);
+    $self->_shuffle($cells);
 
     push @$stack, [$l, $cells];
 
@@ -265,7 +265,7 @@ sub calc_riddle
                 # Yay! We found a configuration.
                 my $handle_clue = sub {
                     my @cells = @{shift->{cells}};
-                    $self->_fisher_yates_shuffle(\@cells);
+                    $self->_shuffle(\@cells);
                     return [map { $layout->get_cell_contents($_) } @cells];
                 };
                 my $riddle =
@@ -337,7 +337,7 @@ sub calc_riddle
                 }
             }
 
-            $self->_fisher_yates_shuffle(\@pairs);
+            $self->_shuffle(\@pairs);
 
             $last_state->{pos_pairs} = \@pairs;
         }
