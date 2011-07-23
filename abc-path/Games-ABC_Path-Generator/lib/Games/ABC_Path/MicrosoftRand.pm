@@ -57,6 +57,19 @@ sub max_rand
     return ($self->rand() % $max);
 }
 
+sub shuffle {
+    my ($self, $deck) = @_;
+    return unless @$deck; # must not be empty!
+
+    my $i = @$deck;
+    while (--$i) {
+        my $j = $self->max_rand($i+1);
+        @$deck[$i,$j] = @$deck[$j,$i];
+    }
+
+    return;
+}
+
 =head1 SUBROUTINES/METHODS
 
 =head2 new
@@ -81,6 +94,11 @@ Returns a random integer in the range 0 to ($max-1).
 =head2 $randomizer->seed($seed)
 
 Can be used to re-assign the seed of the randomizer (though not recommended).
+
+=head2 my $array_ref = $randomizer->shuffle(\@array)
+
+Shuffles the array reference of the first argument, B<destroys it> and returns
+it. This is using the fisher-yates shuffle.
 
 =cut
 
