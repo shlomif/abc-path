@@ -210,15 +210,13 @@ sub _gen_clue_positions {
 my @_clues_positions =
 (
     map {
-        [map { __PACKAGE__->_xy_to_int($_) } @{$_}]
+        [map { __PACKAGE__->_xy_to_int($_) } @{_gen_clue_positions($_)}]
     }
     (
-        _gen_clue_positions(sub { [$_,$_];   }),
-        _gen_clue_positions(sub { [$_,4-$_]; }),
-        (map { my $y = $_; _gen_clue_positions(sub { [$y,$_] }); }
-            (0 .. $LEN-1)),
-        (map { my $x = $_; _gen_clue_positions(sub { [$_,$x] }); }
-            (0 .. $LEN-1)),
+        sub { [$_,$_];   },
+        sub { [$_,4-$_]; },
+        (map { my $y = $_; sub { [$y,$_] }; } (0 .. $LEN-1)),
+        (map { my $x = $_; sub { [$_,$x] }; } (0 .. $LEN-1)),
     )
 );
 
