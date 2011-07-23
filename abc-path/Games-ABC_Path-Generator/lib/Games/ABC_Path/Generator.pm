@@ -9,7 +9,7 @@ use integer;
 
 use base 'Games::ABC_Path::Generator::Base';
 
-use Games::ABC_Path::Generator::Constants;
+use Games::ABC_Path::Solver::Constants;
 
 use Games::ABC_Path::Solver::Board '0.1.0';
 
