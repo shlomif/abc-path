@@ -170,22 +170,11 @@ sub _layout {
     return $self->{_layout};
 }
 
-sub _y_indexes
-{
-    return (0 .. $LEN_LIM);
-}
-
-sub _x_indexes
-{
-    return (0 .. $LEN_LIM);
-}
-
 # The letter indexes.
 sub _l_indexes
 {
     return (0 .. $ABCP_MAX_LETTER);
 }
-
 
 sub _init
 {
@@ -206,24 +195,6 @@ sub _init
     return;
 }
 
-sub _xy_to_idx
-{
-    my ($self, $x, $y) = @_;
-
-    if (($x < 0) or ($x > $LEN_LIM))
-    {
-        confess "X $x out of range.";
-    }
-
-    if (($y < 0) or ($y > $LEN_LIM))
-    {
-        confess "Y $y out of range.";
-    }
-
-
-    return $y * $LEN +$x;
-}
-
 sub _calc_offset
 {
     my ($self, $letter, $x, $y) = @_;
@@ -233,7 +204,7 @@ sub _calc_offset
         confess "Letter $letter out of range.";
     }
 
-    return $letter * $BOARD_SIZE + $self->_xy_to_idx($x,$y);
+    return $letter * $BOARD_SIZE + $self->_xy_to_int([$y,$x]);
 }
 
 sub _get_verdict
