@@ -205,19 +205,22 @@ Calculates the riddle (final state + initial hints) and returns it as an object.
 my @_clues_positions =
 (
     map {
-    my $clue_idx = $_;
-    [map { __PACKAGE__->_xy_to_int($_) } 
+        [map { __PACKAGE__->_xy_to_int($_) } @{$_}]
+    }
     (
-    ($clue_idx == 0)
-    ? (map { [$_,$_] } (0 .. $LEN-1))
-    : ($clue_idx == 1)
-    ? (map { [$_,4-$_] } ( 0 .. $LEN-1))
-    : ($clue_idx < (2+5))
-    ? (map { [$clue_idx-2,$_] } (0 .. $LEN-1))
-    : (map { [$_, $clue_idx-(2+5)] } (0 .. $LEN-1))
+        [ map { [$_,$_] } (0 .. $LEN-1) ],
+        [ map { [$_,4-$_] } ( 0 .. $LEN-1) ],
+        (
+            map { my $y = $_; 
+            [ map { [$y,$_] } (0 .. $LEN-1) ] 
+            } (0 .. $LEN-1)
+        ),
+        (
+            map { my $x = $_;
+            [ map { [$_,$x] } (0 .. $LEN-1) ] 
+            } (0 .. $LEN-1)
+        ),
     )
-    ]
-    } (0 .. $NUM_CLUES-1)
 );
 
 sub calc_riddle
