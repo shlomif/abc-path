@@ -1,5 +1,9 @@
 abc-path/Games-ABC_Path-Generator/Build
+abc-path/Games-ABC_Path-Generator/META.json
+abc-path/Games-ABC_Path-Generator/META.yml
+abc-path/Games-ABC_Path-Generator/MYMETA.json
 abc-path/Games-ABC_Path-Generator/MYMETA.yml
+abc-path/Games-ABC_Path-Generator/Makefile.PL
 abc-path/Games-ABC_Path-Generator/_build/
 abc-path/Games-ABC_Path-Generator/blib
 abc-path/Games-ABC_Path-Generator/tags
