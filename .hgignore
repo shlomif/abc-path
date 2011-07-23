@@ -4,6 +4,8 @@ abc-path/Games-ABC_Path-Generator/_build/
 abc-path/Games-ABC_Path-Generator/blib
 abc-path/Games-ABC_Path-Generator/tags
 abc-path/Games-ABC_Path-Solver/Build
+abc-path/Games-ABC_Path-Solver/META.yml
 abc-path/Games-ABC_Path-Solver/MYMETA.yml
+abc-path/Games-ABC_Path-Solver/Makefile.PL
 abc-path/Games-ABC_Path-Solver/_build
 abc-path/Games-ABC_Path-Solver/blib
