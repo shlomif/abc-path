@@ -9,8 +9,6 @@ use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
 
-use Games::ABC_Path::Solver::Constants;
-
 =head1 NAME
 
 Games::ABC_Path::Generator::Base - a base class.

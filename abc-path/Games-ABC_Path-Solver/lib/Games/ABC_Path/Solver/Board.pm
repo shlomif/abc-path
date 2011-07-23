@@ -393,7 +393,7 @@ sub _infer_letters
         }
 
         my @neighbourhood = (map { [(0) x $LEN] } ($self->_y_indexes));
-        
+
         foreach my $true (@true_cells)
         {
             foreach my $coords

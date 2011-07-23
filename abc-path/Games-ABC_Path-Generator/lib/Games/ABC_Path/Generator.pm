@@ -88,7 +88,7 @@ my @get_next_cells_lookup =
         [ map {
             my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
             (
-                (($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN))
+                (__PACKAGE__->_x_in_range($x) && __PACKAGE__->_y_in_range($y))
                 ? (__PACKAGE__->_xy_to_int([$y,$x])) : ()
             )
             }
@@ -203,22 +203,27 @@ Calculates the riddle (final state + initial hints) and returns it as an object.
 =cut
 
 sub _gen_clue_positions {
-    my ($cb) = @_;
-    return [map { $cb->($_) } (0 .. $LEN-1)];
+    my ($self, $cb) = @_;
+    return [map { $cb->($_) } $self->_x_indexes()];
 };
 
-my @_clues_positions =
-(
-    map {
-        [map { __PACKAGE__->_xy_to_int($_) } @{_gen_clue_positions($_)}]
-    }
-    (
-        sub { [$_,$_];   },
-        sub { [$_,4-$_]; },
-        (map { my $y = $_; sub { [$y,$_] }; } (0 .. $LEN-1)),
-        (map { my $x = $_; sub { [$_,$x] }; } (0 .. $LEN-1)),
-    )
-);
+sub _calc_clue_positions {
+    my $self = shift;
+    return
+    [
+        map {
+        [map { $self->_xy_to_int($_) } @{$self->_gen_clue_positions($_)}]
+        }
+        (
+            sub { [$_,$_];   },
+            sub { [$_,4-$_]; },
+            (map { my $y = $_; sub { [$y,$_] }; } $self->_y_indexes()),
+            (map { my $x = $_; sub { [$_,$x] }; } $self->_x_indexes()),
+        )
+    ]
+}
+
+my @_clues_positions = @{__PACKAGE__->_calc_clue_positions()};
 
 sub calc_riddle
 {
