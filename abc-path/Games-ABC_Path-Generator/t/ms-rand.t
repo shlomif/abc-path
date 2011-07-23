@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use Test::Differences;
 
@@ -27,11 +27,14 @@ use Games::ABC_Path::MicrosoftRand;
 
     my @array = (0 .. 9);
 
-    $r->shuffle(\@array);
+    my $ret = $r->shuffle(\@array);
     # TEST
     eq_or_diff(
         \@array,
         [1,7,9,8,4,5,3,2,0,6],
         'Array was shuffled.',
     );
+
+    # TEST
+    is ($ret, (\@array), 'shuffle returns the same array.');
 }

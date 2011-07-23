@@ -57,17 +57,20 @@ sub max_rand
     return ($self->rand() % $max);
 }
 
-sub shuffle {
+sub shuffle
+{
     my ($self, $deck) = @_;
-    return unless @$deck; # must not be empty!
 
-    my $i = @$deck;
-    while (--$i) {
-        my $j = $self->max_rand($i+1);
-        @$deck[$i,$j] = @$deck[$j,$i];
+    if (@$deck)
+    {
+        my $i = @$deck;
+        while (--$i) {
+            my $j = $self->max_rand($i+1);
+            @$deck[$i,$j] = @$deck[$j,$i];
+        }
     }
 
-    return;
+    return $deck;
 }
 
 =head1 SUBROUTINES/METHODS
