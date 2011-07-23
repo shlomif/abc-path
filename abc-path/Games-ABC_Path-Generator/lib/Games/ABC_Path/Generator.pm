@@ -76,17 +76,8 @@ sub _init
 
 sub _fisher_yates_shuffle {
     my ($self, $deck) = @_;
-    return unless @$deck; # must not be empty!
 
-    my $r = $self->{'rand'};
-
-    my $i = @$deck;
-    while (--$i) {
-        my $j = $r->max_rand($i+1);
-        @$deck[$i,$j] = @$deck[$j,$i];
-    }
-
-    return;
+    return $self->{'rand'}->shuffle($deck);
 }
 
 {
