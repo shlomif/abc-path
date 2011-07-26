@@ -9,7 +9,7 @@ use integer;
 
 use base 'Games::ABC_Path::Generator::Base';
 
-use Games::ABC_Path::Generator::Constants;
+use Games::ABC_Path::Solver::Constants;
 
 use Games::ABC_Path::Solver::Board '0.1.0';
 
@@ -24,11 +24,11 @@ Games::ABC_Path::Generator - a generator for ABC Path puzzle games.
 
 =head1 VERSION
 
-Version 0.0.1
+Version 0.1.0
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 
 
 =head1 SYNOPSIS
@@ -88,7 +88,7 @@ my @get_next_cells_lookup =
         [ map {
             my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
             (
-                (($x >= 0) && ($x < $LEN) && ($y >= 0) && ($y < $LEN))
+                (__PACKAGE__->_x_in_range($x) && __PACKAGE__->_y_in_range($y))
                 ? (__PACKAGE__->_xy_to_int([$y,$x])) : ()
             )
             }
@@ -201,6 +201,29 @@ sub calc_final_layout
 Calculates the riddle (final state + initial hints) and returns it as an object.
 
 =cut
+
+sub _gen_clue_positions {
+    my ($self, $cb) = @_;
+    return [map { $cb->($_) } $self->_x_indexes()];
+};
+
+sub _calc_clue_positions {
+    my $self = shift;
+    return
+    [
+        map {
+        [map { $self->_xy_to_int($_) } @{$self->_gen_clue_positions($_)}]
+        }
+        (
+            sub { [$_,$_];   },
+            sub { [$_,4-$_]; },
+            (map { my $y = $_; sub { [$y,$_] }; } $self->_y_indexes()),
+            (map { my $x = $_; sub { [$_,$x] }; } $self->_x_indexes()),
+        )
+    ]
+}
+
+my @_clues_positions = @{__PACKAGE__->_calc_clue_positions()};
 
 sub calc_riddle
 {
@@ -315,17 +338,7 @@ sub calc_riddle
             my @positions =
             (
                 grep { !vec($last_state->{pos_taken}, $_, 1) } 
-                (
-                    map { $self->_xy_to_int($_) }
-                    (($clue_idx == 0)
-                        ? (map { [$_,$_] } (0 .. $LEN-1))
-                        : ($clue_idx == 1)
-                        ? (map { [$_,4-$_] } ( 0 .. $LEN-1))
-                        : ($clue_idx < (2+5))
-                        ? (map { [$clue_idx-2,$_] } (0 .. $LEN-1))
-                        : (map { [$_, $clue_idx-(2+5)] } (0 .. $LEN-1))
-                    )
-                )
+                @{$_clues_positions[$clue_idx]}
             );
 
             my @pairs;

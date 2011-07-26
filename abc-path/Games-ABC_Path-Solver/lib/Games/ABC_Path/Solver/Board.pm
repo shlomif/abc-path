@@ -9,11 +9,11 @@ Games::ABC_Path::Solver::Board - handles an ABC Path board.
 
 =head1 VERSION
 
-Version 0.1.0
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.0';
+our $VERSION = '0.2.0';
 
 =head1 SYNOPSIS
 
@@ -49,6 +49,7 @@ use Carp;
 
 use base 'Games::ABC_Path::Solver::Base';
 
+use Games::ABC_Path::Solver::Constants;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;
 use Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use Games::ABC_Path::Solver::Move::LettersNotInVicinity;
@@ -59,13 +60,6 @@ use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
-
-my $BOARD_LEN = 5;
-my $BOARD_LEN_LIM = $BOARD_LEN - 1;
-
-my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
-
-my $ABCP_MAX_LETTER = $#letters;
 
 my %letters_map = (map { $letters[$_] => $_ } (0 .. $ABCP_MAX_LETTER));
 
@@ -176,22 +170,11 @@ sub _layout {
     return $self->{_layout};
 }
 
-sub _y_indexes
-{
-    return (0 .. $BOARD_LEN_LIM);
-}
-
-sub _x_indexes
-{
-    return (0 .. $BOARD_LEN_LIM);
-}
-
 # The letter indexes.
 sub _l_indexes
 {
     return (0 .. $ABCP_MAX_LETTER);
 }
-
 
 sub _init
 {
@@ -212,24 +195,6 @@ sub _init
     return;
 }
 
-sub _xy_to_idx
-{
-    my ($self, $x, $y) = @_;
-
-    if (($x < 0) or ($x > $BOARD_LEN_LIM))
-    {
-        confess "X $x out of range.";
-    }
-
-    if (($y < 0) or ($y > $BOARD_LEN_LIM))
-    {
-        confess "Y $y out of range.";
-    }
-
-
-    return $y * $BOARD_LEN +$x;
-}
-
 sub _calc_offset
 {
     my ($self, $letter, $x, $y) = @_;
@@ -239,7 +204,7 @@ sub _calc_offset
         confess "Letter $letter out of range.";
     }
 
-    return $letter * ($BOARD_LEN * $BOARD_LEN) + $self->_xy_to_idx($x,$y);
+    return $letter * $BOARD_SIZE + $self->_xy_to_int([$y,$x]);
 }
 
 sub _get_verdict
@@ -427,14 +392,15 @@ sub _infer_letters
             }
         }
 
-        my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($self->_y_indexes));
-        
+        my @neighbourhood = (map { [(0) x $LEN] } ($self->_y_indexes));
+
         foreach my $true (@true_cells)
         {
             foreach my $coords
             (
-                grep { $_->[0] >= 0 and $_->[0] < $BOARD_LEN and $_->[1] >= 0 and
-                $_->[1] < $BOARD_LEN }
+                grep {
+                    $self->_x_in_range($_->[0]) and $self->_y_in_range($_->[1])
+                }
                 map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
                 map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
                 (-1 .. 1)

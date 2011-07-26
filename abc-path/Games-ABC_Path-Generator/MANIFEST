@@ -22,3 +22,4 @@ t/ms-rand.t
 t/pod-coverage.t
 t/pod.t
 t/riddle-obj.t
+META.json

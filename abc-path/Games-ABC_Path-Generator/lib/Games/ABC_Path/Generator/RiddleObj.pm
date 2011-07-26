@@ -11,7 +11,7 @@ use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
 
-use Games::ABC_Path::Generator::Constants;
+use Games::ABC_Path::Solver::Constants;
 
 =head1 NAME
 
@@ -19,11 +19,11 @@ Games::ABC_Path::Generator::RiddleObj - represents a riddle.
 
 =head1 VERSION
 
-Version 0.0.1
+Version 0.1.0
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 
 =head1 SYNOPSIS
 
