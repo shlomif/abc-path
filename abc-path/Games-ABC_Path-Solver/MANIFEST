@@ -4,6 +4,7 @@ inc/Test/Run/Builder.pm
 lib/Games/ABC_Path/Solver/App.pm
 lib/Games/ABC_Path/Solver/Base.pm
 lib/Games/ABC_Path/Solver/Board.pm
+lib/Games/ABC_Path/Solver/Constants.pm
 lib/Games/ABC_Path/Solver/Move/LastRemainingCellForLetter.pm
 lib/Games/ABC_Path/Solver/Move/LastRemainingLetterForCell.pm
 lib/Games/ABC_Path/Solver/Move/LettersNotInVicinity.pm
@@ -29,3 +30,4 @@ t/pod.t
 t/results/brain-bashers.2010-12-21.abc-path-sol
 t/results/brain-bashers.2010-12-22.abc-path-sol
 t/solver-output-system-test.t
+META.json

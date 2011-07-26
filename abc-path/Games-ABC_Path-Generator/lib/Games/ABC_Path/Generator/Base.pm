@@ -9,33 +9,18 @@ use integer;
 
 use base 'Games::ABC_Path::Solver::Base';
 
-use Games::ABC_Path::Generator::Constants;
-
 =head1 NAME
 
 Games::ABC_Path::Generator::Base - a base class.
 
 =head1 VERSION
 
-Version 0.0.1
+Version 0.1.0
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 
-sub _xy_to_int
-{
-    my ($self, $xy) = @_;
-
-    return $xy->[$Y] * $LEN + $xy->[$X];
-}
-
-sub _to_xy
-{
-    my ($self, $int) = @_;
-
-    return (($int / $LEN), ($int % $LEN));
-}
 =head1 SYNOPSIS
 
 B<For internal use.>.
@@ -83,7 +68,6 @@ L<http://cpanratings.perl.org/d/Games-ABC_Path-Generator>
 L<http://search.cpan.org/dist/Games-ABC_Path-Generator/>
 
 =back
-
 
 =head1 ACKNOWLEDGEMENTS
 
