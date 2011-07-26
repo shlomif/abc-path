@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Games::ABC_Path::Generator::App;
+
+Games::ABC_Path::Generator::App->new({argv => [@ARGV]})->run();

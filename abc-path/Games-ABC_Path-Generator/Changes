@@ -1,0 +1,9 @@
+Revision history for Games-ABC_Path-Generator
+
+    - Improved lib/Games/ABC_Path/Generator.pm with acknowldgements, a 
+    "SEE ALSO" section and a "DESCRIPTION" section.
+    - Add the shuffle method to lib/Games/ABC_Path/MicrosoftRand.pm .
+    
+0.0.1       Thu Jul 21 19:02:11 IDT 2011
+    - First version, released on an unsuspecting world.
+

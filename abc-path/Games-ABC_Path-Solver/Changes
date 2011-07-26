@@ -1,0 +1,22 @@
+Revision history for Games-ABC_Path-Solver
+
+0.1.0   Wed Jul 20 20:34:01 IDT 2011
+        - Add the input_from_v1_string class method to input from a version
+        1 string, so there will be a way to input from something besides
+        a file.
+        - Add the scripts/tag-release.pl file to tag a release in the
+        Subversion repository.
+
+0.0.3
+        - Encapsulated scripts/abc-path-solve inside
+        lib/Games/ABC_Path/Solver/App.pm .
+        - Add POD to scripts/abc-path-solve
+
+0.0.2   Mon Jan 10 12:24:28 IST 2011
+        - Add the missing Test::Differences to the build_requires. It caused
+        some build failures.
+        - Add scripts/bump-version-number.pl .
+
+0.0.1   Sun Jan  9 20:37:26 IST 2011
+        First version, released on an unsuspecting world.
+
