@@ -25,4 +25,18 @@ function test_abc_path()
         equals( true, true, "passing test" );
     });
 
+    module("Constants");
+
+    test("Constants Test", function() {
+        expect(2);
+
+        var myconst = new ABC_Path.Constants({});
+
+        // TEST
+        ok (myconst, "myconst was initialized.");
+
+        // TEST
+        equals (myconst.LEN(), 5, "LEN is 5.");
+    });
+
 }
