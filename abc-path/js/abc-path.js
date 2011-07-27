@@ -1,3 +1,4 @@
+"use strict";
 Class('ABC_Path', {
 });
 Class('ABC_Path.Constants', {
