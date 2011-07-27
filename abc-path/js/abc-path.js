@@ -60,5 +60,8 @@ Class('ABC_Path.Solver.Base', {
         _y_indexes: function() {
             return this._perl_range(0,this.LEN_LIM());
         },
+        _x_indexes: function() {
+            return this._y_indexes(); 
+        },
     },
 });
