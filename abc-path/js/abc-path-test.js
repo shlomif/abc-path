@@ -28,7 +28,7 @@ function test_abc_path()
     module("Constants");
 
     test("Constants Test", function() {
-        expect(4);
+        expect(5);
 
         var myconst = new ABC_Path.Constants({});
 
@@ -43,6 +43,9 @@ function test_abc_path()
 
         // TEST
         equals (myconst.BOARD_SIZE(), 25, "BOARD_SIZE is 25 - LEN*LEN.");
+
+        // TEST
+        equals(myconst.Y(), 0, "Y is 0.");
     });
 
 }
