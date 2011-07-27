@@ -100,4 +100,20 @@ function test_abc_path()
         deepEqual(mybase._to_xy(3*5+4), [3,4], '_to_xy(3*5+4) -> [3,4]');
     });
 
+    test("Solver.Base _y_indexes", function() {
+        expect(3);
+
+        var mybase = new ABC_Path.Solver.Base({});
+
+        // TEST
+        deepEqual(mybase._perl_range(0,2), [0,1,2], '_perl_range');
+
+        // TEST
+        deepEqual(mybase._perl_range(2,6), [2,3,4,5,6], '_perl_range #2');
+
+        // TEST
+        deepEqual(mybase._y_indexes(), mybase._perl_range(0, 4), 
+            '_y_indexes returns right value.'
+        );
+    });
 }
