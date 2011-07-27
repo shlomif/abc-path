@@ -73,6 +73,19 @@ Class('ABC_Path.Solver.Base', {
 });
 Class('ABC_Path.Solver.Board', {
     isa: ABC_Path.Solver.Base,
+    has: {
+        letters_map: {
+            is: 'ro',
+            init: (function(){ 
+                var ret = {};
+                var l = this.letters();
+                for (var i in l) {
+                    ret[l[i]] = i;
+                }
+                return ret;
+            })(),
+        },
+    },
     methods: {
         ABCP_VERDICT_NO: function() {
             return 0;
@@ -82,6 +95,17 @@ Class('ABC_Path.Solver.Board', {
         },
         ABCP_VERDICT_YES: function() {
             return 2;
+        },
+        _get_letter_numeric: function(letter_ascii) {
+            if (letter_ascii in this.letters_map)
+            {
+                return this.letters_map[letter_ascii];
+            }
+            else
+            {
+                throw "Unknown letter '" + letter_ascii + "'";
+                return;
+            }
         },
     },
 });
