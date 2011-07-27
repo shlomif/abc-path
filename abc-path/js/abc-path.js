@@ -27,5 +27,12 @@ Class('ABC_Path.Constants', {
             ];
         },
 
+        NUM_CLUES : function() {
+            return 2 + this.LEN() + this.LEN();
+        },
+
+        ABCP_MAX_LETTER : function() {
+            return this.letters().length - 1;
+        }
     }
 });

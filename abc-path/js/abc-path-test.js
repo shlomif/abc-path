@@ -28,7 +28,7 @@ function test_abc_path()
     module("Constants");
 
     test("Constants Test", function() {
-        expect(8);
+        expect(9);
 
         var myconst = new ABC_Path.Constants({});
 
@@ -59,6 +59,9 @@ function test_abc_path()
             ],
             "Letters are OK."
             );
+
+        // TEST
+        equals(myconst.ABCP_MAX_LETTER(), 24, 'ABCP_MAX_LETTER is ok.');
     });
 
 }
