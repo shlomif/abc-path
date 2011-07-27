@@ -36,3 +36,13 @@ Class('ABC_Path.Constants', {
         }
     }
 });
+Class('ABC_Path.Solver', {
+});
+Class('ABC_Path.Solver.Base', {
+    isa: ABC_Path.Constants,
+    methods: {
+        _xy_to_int: function(xy){
+            return xy[this.Y()] * this.LEN() + xy[this.X()];
+        },
+    },
+});
