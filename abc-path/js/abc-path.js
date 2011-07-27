@@ -14,6 +14,11 @@ Class('ABC_Path.Constants', {
         
         Y : function() {
             return 0;
-        }
+        },
+
+        X : function() {
+            return 1;
+        },
+
     }
 });

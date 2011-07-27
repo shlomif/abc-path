@@ -28,7 +28,7 @@ function test_abc_path()
     module("Constants");
 
     test("Constants Test", function() {
-        expect(5);
+        expect(6);
 
         var myconst = new ABC_Path.Constants({});
 
@@ -46,6 +46,9 @@ function test_abc_path()
 
         // TEST
         equals(myconst.Y(), 0, "Y is 0.");
+
+        // TEST
+        equals(myconst.X(), 1, "X is 1, because coordinates are (Y,X)");
     });
 
 }
