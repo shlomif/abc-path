@@ -63,5 +63,11 @@ Class('ABC_Path.Solver.Base', {
         _x_indexes: function() {
             return this._y_indexes(); 
         },
+        _x_in_range: function(x) {
+            return ((x >= 0) && (x < this.LEN()));
+        },
+        _y_in_range: function(y) {
+            return this._x_in_range(y);
+        },
     },
 });
