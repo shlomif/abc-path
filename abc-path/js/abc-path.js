@@ -11,5 +11,9 @@ Class('ABC_Path.Constants', {
         BOARD_SIZE : function() {
             return this.LEN() * this.LEN();
         },
+        
+        Y : function() {
+            return 0;
+        }
     }
 });
