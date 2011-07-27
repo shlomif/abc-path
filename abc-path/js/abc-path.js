@@ -48,5 +48,17 @@ Class('ABC_Path.Solver.Base', {
         _to_xy: function(myint) {
             return [Math.floor(myint / this.LEN()), (myint % this.LEN())];
         },
+        _perl_range: function(start, end) {
+            var ret = [];
+            
+            for (var i = start; i <= end; i++) {
+                ret.push(i);
+            }
+
+            return ret;
+        },
+        _y_indexes: function() {
+            return this._perl_range(0,4);
+        },
     },
 });
