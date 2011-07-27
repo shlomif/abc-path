@@ -101,7 +101,7 @@ function test_abc_path()
     });
 
     test("Solver.Base _y_indexes", function() {
-        expect(3);
+        expect(4);
 
         var mybase = new ABC_Path.Solver.Base({});
 
@@ -114,6 +114,10 @@ function test_abc_path()
         // TEST
         deepEqual(mybase._y_indexes(), mybase._perl_range(0, 4), 
             '_y_indexes returns right value.'
+        );
+        // TEST
+        deepEqual(mybase._x_indexes(), mybase._perl_range(0, 4), 
+            '_x_indexes returns right value.'
         );
     });
 }
