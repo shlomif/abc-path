@@ -41,8 +41,11 @@ Class('ABC_Path.Solver', {
 Class('ABC_Path.Solver.Base', {
     isa: ABC_Path.Constants,
     methods: {
-        _xy_to_int: function(xy){
+        _xy_to_int: function(xy) {
             return xy[this.Y()] * this.LEN() + xy[this.X()];
+        },
+        _to_xy: function(myint) {
+            return [Math.floor(myint / this.LEN()), (myint % this.LEN())];
         },
     },
 });

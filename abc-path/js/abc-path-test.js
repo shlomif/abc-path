@@ -64,7 +64,9 @@ function test_abc_path()
         equals(myconst.ABCP_MAX_LETTER(), 24, 'ABCP_MAX_LETTER is ok.');
     });
 
-    test("Solver.Base Test", function() {
+    module("Solver.Base");
+
+    test("Solver.Base _xy_to_int", function() {
         expect(5);
 
         var mybase = new ABC_Path.Solver.Base({});
@@ -80,6 +82,21 @@ function test_abc_path()
         equals(mybase._xy_to_int([1,0]), 1*5+0, 'int of (Y,X) = [1,0] is 5.');
         // TEST
         equals(mybase._xy_to_int([2,3]), 2*5+3, 'int of (Y,X) = [2,3] is 2*5+3.');
+    });
+
+    test("Solver.Base _to_xy", function() {
+        expect(3);
+
+        var mybase = new ABC_Path.Solver.Base({});
+
+        // TEST
+        deepEqual(mybase._to_xy(0), [0,0], '_to_xy(0) -> [0,0]');
+
+        // TEST
+        deepEqual(mybase._to_xy(0*5+1), [0,1], '_to_xy(1) -> [0,1]');
+
+        // TEST
+        deepEqual(mybase._to_xy(3*5+4), [3,4], '_to_xy(3*5+4) -> [3,4]');
     });
 
 }
