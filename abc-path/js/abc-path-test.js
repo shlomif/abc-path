@@ -28,7 +28,7 @@ function test_abc_path()
     module("Constants");
 
     test("Constants Test", function() {
-        expect(6);
+        expect(8);
 
         var myconst = new ABC_Path.Constants({});
 
@@ -49,6 +49,16 @@ function test_abc_path()
 
         // TEST
         equals(myconst.X(), 1, "X is 1, because coordinates are (Y,X)");
+
+        // TEST
+        equals(myconst.letters()[0], 'A', "First letter is A.");
+
+        // TEST
+        deepEqual(myconst.letters(), [
+'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+            ],
+            "Letters are OK."
+            );
     });
 
 }
