@@ -7,6 +7,9 @@ Class('ABC_Path.Constants', {
         },
         LEN_LIM : function () {
             return (this.LEN()-1);
-        }
+        },
+        BOARD_SIZE : function() {
+            return this.LEN() * this.LEN();
+        },
     }
 });
