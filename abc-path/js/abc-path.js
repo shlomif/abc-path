@@ -120,9 +120,7 @@ Class('ABC_Path.Solver.Board', {
             }
         },
         _inc_changed: function() {
-            
             this.setIter_changed(this.getIter_changed() + 1);
-
             return;
         },
     },
