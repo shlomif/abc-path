@@ -71,3 +71,17 @@ Class('ABC_Path.Solver.Base', {
         },
     },
 });
+Class('ABC_Path.Solver.Board', {
+    isa: ABC_Path.Solver.Base,
+    methods: {
+        ABCP_VERDICT_NO: function() {
+            return 0;
+        },
+        ABCP_VERDICT_MAYBE: function() {
+            return 1;
+        },
+        ABCP_VERDICT_YES: function() {
+            return 2;
+        },
+    },
+});
