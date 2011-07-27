@@ -120,4 +120,22 @@ function test_abc_path()
             '_x_indexes returns right value.'
         );
     });
+
+    test("Solver.Base _x_in_range", function() {
+        expect(4);
+
+        var mybase = new ABC_Path.Solver.Base({});
+
+        // TEST
+        ok (mybase._x_in_range(0), '0 is in range');
+
+        // TEST
+        ok (mybase._x_in_range(4), '4 is in range');
+
+        // TEST
+        ok (!mybase._x_in_range(-1), '-1 is not in range.');
+
+        // TEST
+        ok (!mybase._x_in_range(5), '5 is not in range.');
+    });
 }
