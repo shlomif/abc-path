@@ -76,14 +76,26 @@ Class('ABC_Path.Solver.Board', {
     has: {
         letters_map: {
             is: 'ro',
-            init: (function(){ 
+            init: function(){ 
                 var ret = {};
                 var l = this.letters();
                 for (var i in l) {
                     ret[l[i]] = i;
                 }
                 return ret;
-            })(),
+            },
+        },
+        _iter_changed: {
+            is: 'rw',
+            init: 0,
+        },
+        _moves: {
+            is: 'rw',
+            init: function() { return [];},
+        },
+        _error: {
+            is: 'rw',
+            init: undefined,
         },
     },
     methods: {
@@ -106,6 +118,12 @@ Class('ABC_Path.Solver.Board', {
                 throw "Unknown letter '" + letter_ascii + "'";
                 return;
             }
+        },
+        _inc_changed: function() {
+            
+            this.setIter_changed(this.getIter_changed() + 1);
+
+            return;
         },
     },
 });

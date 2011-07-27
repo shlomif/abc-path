@@ -138,4 +138,23 @@ function test_abc_path()
         // TEST
         ok (!mybase._x_in_range(5), '5 is not in range.');
     });
+
+    module("Solver.Board");
+
+    test("Solver.Board iter_changed", function() {
+        expect(3);
+
+        var myboard = new ABC_Path.Solver.Board({});
+
+        // TEST
+        equals(myboard.getIter_changed(), 0, 'iter_changed is initialised to 0.');
+
+        myboard._inc_changed();
+        // TEST
+        equals(myboard.getIter_changed(), 1, 'iter_changed is now 1.');
+
+        myboard._inc_changed();
+        // TEST
+        equals(myboard.getIter_changed(), 2, 'iter_changed is now 2.');
+    });
 }
