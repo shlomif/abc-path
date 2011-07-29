@@ -97,6 +97,14 @@ Class('ABC_Path.Solver.Board', {
             is: 'rw',
             init: undefined,
         },
+        _successful_layouts: {
+            is: 'rw',
+            init: function() { return [];},
+        },
+        _layout: {
+            is: 'rw',
+            init: '',
+        },
     },
     methods: {
         ABCP_VERDICT_NO: function() {
@@ -135,6 +143,16 @@ Class('ABC_Path.Solver.Board', {
             this.getMoves().push(move);
             this._inc_changed();
             return;
+        },
+        get_successful_layouts: function() {
+            // slice(0) performs a shallow copy.
+            return this.getSuccesful_layouts().slice(0);
+        },
+        _l_indexes: function() {
+            return this._perl_range(0, this.ABCP_MAX_LETTER());
+        },
+        _calc_offset: function(letter, x, y) {
+            return letter * this.BOARD_SIZE() + this._xy_to_int([y,x]);
         },
     },
 });

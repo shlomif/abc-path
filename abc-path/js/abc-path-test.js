@@ -188,4 +188,20 @@ function test_abc_path()
         // TEST
         equals(myboard.getIter_changed(), 2, 'iter_changed is 2 after two _add_move-s.');
     });
+
+    test("Solver.Board _calc_offset", function() {
+        expect(2);
+
+        var myboard = new ABC_Path.Solver.Board({});
+
+        // TEST
+        equals(myboard._calc_offset(0, 0, 0), 0*25+0*5+0, 
+            '_calc_offset(0,0,0)'
+        );
+
+        // TEST
+        equals(myboard._calc_offset(20, 3, 2), 20*25+2*5+3, 
+            '_calc_offset(20,3,2)'
+        );
+    });
 }
