@@ -131,5 +131,10 @@ Class('ABC_Path.Solver.Board', {
 
             return ret;
         },
+        _add_move: function(move) {
+            this.getMoves().push(move);
+            this._inc_changed();
+            return;
+        },
     },
 });
