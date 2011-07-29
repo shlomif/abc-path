@@ -353,7 +353,7 @@ Class('ABC_Path.Solver.Board', {
                 });
 
                 if (true_cells.length == 0) {
-                    this._error(['letter', letter]);
+                    this.setError(['letter', letter]);
                 }
                 else if (true_cells.length == 1) {
                     var xy = true_cells[0];
@@ -410,7 +410,7 @@ Class('ABC_Path.Solver.Board', {
                     var existing_verdict = this._get_verdict(neighbour_letter, x, y);
 
                     if (existing_verdict == this.ABCP_VERDICT_YES()) {
-                        this._error(['mismatched_verdict', x, y]);
+                        this.setError(['mismatched_verdict', x, y]);
                         return;
                     }
                     
@@ -437,7 +437,7 @@ Class('ABC_Path.Solver.Board', {
                 var letters_aref = this._get_possible_letter_indexes(x, y);
 
                 if (letters_aref.length == 0) {
-                    this._error(['cell', [x, y]]);
+                    this.setError(['cell', [x, y]]);
                     return;
                 }
                 else if (letters_aref.length == 1) {
