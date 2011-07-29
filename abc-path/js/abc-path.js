@@ -317,5 +317,8 @@ Class('ABC_Path.Solver.Board', {
                 return this.letters()[l];
             });
         },
+        _get_possible_letters_string: function(x, y) {
+            return this.get_possible_letters_for_cell(x,y).join(',');
+        },
     },
 });
