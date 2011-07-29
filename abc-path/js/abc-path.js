@@ -103,7 +103,7 @@ Class('ABC_Path.Solver.Board', {
         },
         _layout: {
             is: 'rw',
-            init: '',
+            init: function() { return [];},
         },
     },
     methods: {
@@ -153,6 +153,52 @@ Class('ABC_Path.Solver.Board', {
         },
         _calc_offset: function(letter, x, y) {
             return letter * this.BOARD_SIZE() + this._xy_to_int([y,x]);
+        },
+        _get_verdict: function(letter, x, y) {
+            return this.getLayout()[this._calc_offset(letter, x, y)];
+        },
+        _set_verdict: function(letter, x, y, verdict) {
+
+            if (! ( 
+                        ( verdict == this.ABCP_VERDICT_NO() )
+                    ||
+                    (verdict == this.ABCP_VERDICT_MAYBE())
+                    ||
+                    (verdict == this.ABCP_VERDICT_YES())
+                  )
+               )
+            {
+                throw "Invalid verdict " + verdict + ".";
+            }
+
+            this.getLayout()[this._calc_offset(letter, x, y)] = verdict;
+
+            return;
+        },
+        _xy_loop: function(sub_ref) {
+
+            var y_indexes = this._y_indexes();
+            var x_indexes = this._x_indexes();
+
+            for var y_ (y_indexes)
+            {
+                var y = y_indexes[y_];
+                if (this.getError())
+                {
+                    return;
+                }
+                for var x_ (x_indexes)
+                {
+                    var x = x_indexes[x_]
+                    if (this.getError())
+                    {
+                        return;
+                    }
+                    
+                    sub_ref(x,y);
+                }
+            }
+            return;
         },
     },
 });
