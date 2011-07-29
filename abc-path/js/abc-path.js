@@ -467,5 +467,20 @@ Class('ABC_Path.Solver.Board', {
             this._infer_cells();
             return this._flush_changed();
         },
+        _neighbourhood_and_individuality_inferring: function() {
+            var num_changed = 0;
+
+            var iter_changed;
+            while (iter_changed = this._inference_iteration())
+            {
+                if (this.getError())
+                {
+                    return;
+                }
+                num_changed += iter_changed;
+            }
+
+            return num_changed;
+        },
     },
 });
