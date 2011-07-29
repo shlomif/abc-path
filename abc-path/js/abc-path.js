@@ -134,6 +134,9 @@ Class('ABC_Path.Solver.Move', {
 Class('ABC_Path.Solver.Move.LastRemainingCellForLetter', {
     isa: ABC_Path.Solver.Move
 });
+Class('ABC_Path.Solver.Move.LastRemainingLetterForCell', {
+    isa: ABC_Path.Solver.Move
+});
 Class('ABC_Path.Solver.Move.LettersNotInVicinity', {
     isa: ABC_Path.Solver.Move
 });
@@ -427,6 +430,36 @@ Class('ABC_Path.Solver.Board', {
                 });
             }
             
+            return;
+        },
+        _infer_cells: function() {
+            this._xy_loop(function (x, y) {
+                var letters_aref = this._get_possible_letter_indexes(x, y);
+
+                if (letters_aref.length == 0) {
+                    this._error(['cell', [x, y]]);
+                    return;
+                }
+                else if (letters_aref.length == 1) {
+                    var letter = letters_aref[0];
+
+                    if (this._get_verdict(letter, x, y) == this.ABCP_VERDICT_MAYBE()) {
+                        this._set_conclusive_verdict_for_letter(letter, [x, y]);
+
+                        this._add_move(
+                            new ABC_Path.Solver.Move.LastRemainingLetterForCell({
+                                    vars: {
+                                        coords: [x,y],
+                                        letter: letter,
+                                    },
+                                }
+                            )
+                        );
+                    }
+                }
+                return;
+            });
+
             return;
         },
     },
