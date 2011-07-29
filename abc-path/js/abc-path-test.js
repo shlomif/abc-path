@@ -163,4 +163,29 @@ function test_abc_path()
         // TEST
         equals(myboard.getIter_changed(), 0, 'iter_changed was reset to 0 after flush.');
     });
+
+    test("Solver.Board _add_move", function() {
+        expect(4);
+
+        var myboard = new ABC_Path.Solver.Board({});
+
+        myboard._add_move("Token");
+
+        // TEST
+        deepEqual(myboard.getMoves(), ["Token"], 
+            '_add_move works.'
+        );
+
+        // TEST
+        equals(myboard.getIter_changed(), 1, 'iter_changed is 1 after _add_move.');
+
+        myboard._add_move("SecondToken");
+        // TEST
+        deepEqual(myboard.getMoves(), ["Token", "SecondToken"],
+            '_add_move works again.'
+        );
+
+        // TEST
+        equals(myboard.getIter_changed(), 2, 'iter_changed is 2 after two _add_move-s.');
+    });
 }
