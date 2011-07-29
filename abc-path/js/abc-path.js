@@ -125,6 +125,18 @@ Class('ABC_Path.Solver.Base', {
         },
     },
 });
+Class('ABC_Path.Solver.Move', {
+    isa: ABC_Path.Solver.Base,
+    has: {
+        vars: { is: 'rw' }, 
+    },
+});
+Class('ABC_Path.Solver.Move.LastRemainingCellForLetter', {
+    isa: ABC_Path.Solver.Move
+});
+Class('ABC_Path.Solver.Move.LettersNotInVicinity', {
+    isa: ABC_Path.Solver.Move
+});
 Class('ABC_Path.Solver.Board', {
     isa: ABC_Path.Solver.Base,
     has: {
@@ -234,14 +246,14 @@ Class('ABC_Path.Solver.Board', {
             var y_indexes = this._y_indexes();
             var x_indexes = this._x_indexes();
 
-            for var y_ (y_indexes)
+            for (var y_ in y_indexes)
             {
                 var y = y_indexes[y_];
                 if (this.getError())
                 {
                     return;
                 }
-                for var x_ (x_indexes)
+                for (var x_ in x_indexes)
                 {
                     var x = x_indexes[x_]
                     if (this.getError())
@@ -266,7 +278,7 @@ Class('ABC_Path.Solver.Board', {
                 cell_is_maybe[this._xy_to_s(m[0], m[1])] = true;
             }
 
-            for (var letter_ascii_idx in letter_list)) {
+            for (var letter_ascii_idx in letter_list) {
                 var letter = this._get_letter_numeric(
                     letter_list[letter_ascii_idx]
                 );
@@ -298,7 +310,7 @@ Class('ABC_Path.Solver.Board', {
             });
 
             var _l_indexes = this._l_indexes();
-            for (var i in _l_indexes()) {
+            for (var i in _l_indexes) {
                 var other_letter = _l_indexes[i];
                 if (other_letter != letter)
                 {
@@ -319,6 +331,103 @@ Class('ABC_Path.Solver.Board', {
         },
         _get_possible_letters_string: function(x, y) {
             return this.get_possible_letters_for_cell(x,y).join(',');
+        },
+        _infer_letters: function() {
+            
+            var _l_indexes = this._l_indexes();
+            for (var l_i in _l_indexes) {
+                var letter = _l_indexes[l_i];
+
+                var true_cells = [];
+
+                this._xy_loop(function(cx, cy) {
+                    var ver = this._get_verdict(letter, x, y);
+
+                    if ((ver == this.ABCP_VERDICT_YES())
+                         || (ver == this.ABCP_VERDICT_MAYBE())) {
+                        true_cells.push([x,y]);
+                    }
+                });
+
+                if (true_cells.length == 0) {
+                    this._error(['letter', letter]);
+                }
+                else if (true_cells.length == 1) {
+                    var xy = true_cells[0];
+                    if (this._get_verdict(letter, xy[0], xy[1]) ==
+                            this.ABCP_VERDICT_MAYBE()) {
+                        this._set_conclusive_verdict_for_letter(letter, xy);
+                        this._add_move(
+                                new ABC_Path.Solver.Move.LastRemainingCellForLetter({
+                                    vars: { letter: letter, coords: xy },
+                                })
+                        );
+                    }
+                }
+
+                var neighbourhood = this._y_indexes.map(function(i) {
+                    return [false] * this.LEN();
+                });
+
+                for (var t_i in true_cells) {
+                    var true_cell = true_cells[t_i];
+
+                    for (var dx = -1; dx <= 1; dx++) {
+                        for (var dy = -1; dy <= 1; dy++) {
+                            var cx = true_cell[0] + dx;
+                            var cy = true_clel[1] + dy;
+                            
+                            if (this._x_in_range(cx) && this._y_in_range(cy))
+                            {
+                                neighbourhood[cy][cx] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var neighbour_letters = [];
+            if (letter > 0)
+            {
+                neighbour_letters.push(letter-1);
+            }
+            if (letter < this.ABCP_MAX_LETTER())
+            {
+                neighbour_letters.push(letter+1);
+            }
+
+            for (var n_l_i in neighbour_letters) {
+                neighbour_letter = neighbour_letters[n_l_i];
+                
+                this._xy_loop(function (x, y) {
+                    if (neighbourhood[y][x]) {
+                        return;
+                    }
+
+                    var existing_verdict = this._get_verdict(neighbour_letter, x, y);
+
+                    if (existing_verdict == this.ABCP_VERDICT_YES()) {
+                        this._error(['mismatched_verdict', x, y]);
+                        return;
+                    }
+                    
+                    if (existing_verdict == this.ABCP_VERDICT_MAYBE()) {
+                        this._set_verdict(neighbour_letter, x, y, this.ABCP_VERDICT_NO());
+
+                        this._add_move(
+                            new ABC_Path.Solver.Move.LettersNotInVicinity({
+                                vars: {
+                                    target: neighbour_letter,
+                                    coords: [x,y],
+                                    source: letter,
+                                },
+                            })
+                        );
+                    }
+                });
+            }
+            
+            return;
         },
     },
 });
