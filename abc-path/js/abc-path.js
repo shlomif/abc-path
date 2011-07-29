@@ -229,5 +229,29 @@ Class('ABC_Path.Solver.Board', {
             }
             return;
         },
+        _set_conclusive_verdict_for_letter: function(letter, xy_) {
+            var xy = xy_.slice(0);
+            var l_x = xy.shift;
+            var l_y = xy.shift;
+
+            this._xy_loop(function (x,y) {
+                this._set_verdict(letter, x, y,
+                    (((l_x == x) && (l_y == y))
+                        ? this.ABCP_VERDICT_YES()
+                        : this.ABCP_VERDICT_NO()
+                    )
+                    );
+            });
+
+            var _l_indexes = this._l_indexes();
+            for (var i in _l_indexes()) {
+                var other_letter = _l_indexes[i];
+                if (other_letter != letter)
+                {
+                    this._set_verdict(other_letter, l_x, l_y, ABCP_VERDICT_NO);
+                }
+            }
+            return;
+        },
     },
 });
