@@ -200,5 +200,34 @@ Class('ABC_Path.Solver.Board', {
             }
             return;
         },
+        _xy_to_s: function(x, y) {
+            return '' + x + ',' + y;
+        },
+        _set_verdicts_for_letter_sets: function(letter_list, maybe_list) {
+
+            var cell_is_maybe = new Array();
+
+            for (var maybe_idx in maybe_list) {
+                var m = maybe_list[maybe_idx];
+                cell_is_maybe[this._xy_to_s(m[0], m[1])] = true;
+            }
+
+            for (var letter_ascii_idx in letter_list)) {
+                var letter = this._get_letter_numeric(
+                    letter_list[letter_ascii_idx]
+                );
+
+                this._xy_loop(function(x,y) {
+                    this._set_verdict(letter, x, y,
+                        (
+                             (this._xy_to_s(x,y) in cell_is_maybe) 
+                                ? this.ABCP_VERDICT_MAYBE()
+                                : this.ABCP_VERDICT_NO()
+                        )
+                    );
+                });
+            }
+            return;
+        },
     },
 });
