@@ -462,5 +462,10 @@ Class('ABC_Path.Solver.Board', {
 
             return;
         },
+        _inference_iteration: function() {
+            this._infer_letters();
+            this._infer_cells();
+            return this._flush_changed();
+        },
     },
 });
