@@ -482,5 +482,8 @@ Class('ABC_Path.Solver.Board', {
 
             return num_changed;
         },
+        _clone: function() {
+            return new ABC_Path.Solver.Board({ _layout: this.getLayout().slice(0), });
+        },
     },
 });
