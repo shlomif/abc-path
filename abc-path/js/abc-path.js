@@ -1,4 +1,58 @@
 "use strict";
+if (!Array.prototype.map)
+{
+  Array.prototype.map = function(fun /*, thisp */)
+  {
+    "use strict";
+
+    if (this === void 0 || this === null)
+      throw new TypeError();
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== "function")
+      throw new TypeError();
+
+    var res = new Array(len);
+    var thisp = arguments[1];
+    for (var i = 0; i < len; i++)
+    {
+      if (i in t)
+        res[i] = fun.call(thisp, t[i], i, t);
+    }
+
+    return res;
+  };
+}
+if (!Array.prototype.filter)
+{
+    Array.prototype.filter = function(fun /*, thisp */)
+    {
+        "use strict";
+
+        if (this === void 0 || this === null)
+            throw new TypeError();
+
+        var t = Object(this);
+        var len = t.length >>> 0;
+        if (typeof fun !== "function")
+            throw new TypeError();
+
+        var res = [];
+        var thisp = arguments[1];
+        for (var i = 0; i < len; i++)
+        {
+            if (i in t)
+            {
+                var val = t[i]; // in case fun mutates this
+                if (fun.call(thisp, val, i, t))
+                    res.push(val);
+            }
+        }
+
+        return res;
+    };
+}
 Class('ABC_Path', {
 });
 Class('ABC_Path.Constants', {
@@ -252,6 +306,16 @@ Class('ABC_Path.Solver.Board', {
                 }
             }
             return;
+        },
+        _get_possible_letter_indexes: function(x, y) {
+            return this._l_indexes().filter(function (l) {
+                return (this._get_verdict(l, x, y) != this.ABCP_VERDICT_NO());
+            });
+        },
+        get_possible_letters_for_cell: function(x, y) {
+            return this._get_possible_letter_indexes(x,y).map(function (l) {
+                return this.letters()[l];
+            });
         },
     },
 });
