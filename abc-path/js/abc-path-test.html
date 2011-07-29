@@ -11,7 +11,10 @@
 <script type="text/javascript" src="abc-path-test.js"></script>
 
   <script>
-      $(document).ready(test_abc_path);
+      $(document).ready(function () { 
+          test_abc_path(); 
+          $('#qunit-tests').addClass('hidepass');
+      });
   </script>
   
 </head>
