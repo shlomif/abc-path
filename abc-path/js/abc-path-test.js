@@ -142,7 +142,7 @@ function test_abc_path()
     module("Solver.Board");
 
     test("Solver.Board iter_changed", function() {
-        expect(3);
+        expect(5);
 
         var myboard = new ABC_Path.Solver.Board({});
 
@@ -156,5 +156,11 @@ function test_abc_path()
         myboard._inc_changed();
         // TEST
         equals(myboard.getIter_changed(), 2, 'iter_changed is now 2.');
+
+        // TEST
+        equals(myboard._flush_changed(), 2, 'flush_changed returned 2.');
+
+        // TEST
+        equals(myboard.getIter_changed(), 0, 'iter_changed was reset to 0 after flush.');
     });
 }

@@ -123,5 +123,13 @@ Class('ABC_Path.Solver.Board', {
             this.setIter_changed(this.getIter_changed() + 1);
             return;
         },
+        _flush_changed: function() {
+            
+            var ret = this.getIter_changed();
+
+            this.setIter_changed(0);
+
+            return ret;
+        },
     },
 });
