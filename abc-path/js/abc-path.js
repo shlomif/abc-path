@@ -652,5 +652,19 @@ Class('ABC_Path.Solver.Board', {
             });
             return;
         },
+        _get_results_text_table: function() {
+            var render_row = function(cols) {
+                return "| " + cols.map(function(s) {
+                    return s.length == 1 ? ("  " + s + "  ") : s;
+                }).join(" | ") + " |\n";
+            };
+            return [this._x_indexes.map(function (x) { 
+                return "X = " + (x+1); })].concat(
+                    this._y_indexes.map(function(y) {
+                        return this._x_indexes.map(function (x) {
+                            return this._get_possible_letters_string(x,y);
+                        })
+                    })).map(render_row).join('');
+        },
     },
 });
