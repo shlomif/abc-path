@@ -53,6 +53,40 @@ if (!Array.prototype.filter)
         return res;
     };
 }
+// Production steps of ECMA-262, Edition 5, 15.4.4.18
+if ( !Array.prototype.forEach ) {
+
+  Array.prototype.forEach = function( callbackfn, thisArg ) {
+
+    var T,
+      O = Object(this),
+      len = O.length >>> 0,
+      k = 0;
+
+    if ( !callbackfn || !callbackfn.call ) {
+      throw new TypeError();
+    }
+
+    if ( thisArg ) {
+      T = thisArg;
+    }
+
+    while( k < len ) {
+
+      var Pk = String( k ),
+        kPresent = O.hasOwnProperty( Pk ),
+        kValue;
+
+      if ( kPresent ) {
+        kValue = O[ Pk ];
+
+        callbackfn.call( T, kValue, k, O );
+      }
+
+      k++;
+    }
+  };
+}
 Class('ABC_Path', {
 });
 Class('ABC_Path.Constants', {
@@ -138,6 +172,15 @@ Class('ABC_Path.Solver.Move.LastRemainingLetterForCell', {
     isa: ABC_Path.Solver.Move
 });
 Class('ABC_Path.Solver.Move.LettersNotInVicinity', {
+    isa: ABC_Path.Solver.Move
+});
+Class('ABC_Path.Solver.Move.TryingLetterForCell', {
+    isa: ABC_Path.Solver.Move
+});
+Class('ABC_Path.Solver.Move.ResultsInAnError', {
+    isa: ABC_Path.Solver.Move
+});
+Class('ABC_Path.Solver.Move.ResultsInASuccess', {
     isa: ABC_Path.Solver.Move
 });
 Class('ABC_Path.Solver.Board', {
@@ -484,6 +527,107 @@ Class('ABC_Path.Solver.Board', {
         },
         _clone: function() {
             return new ABC_Path.Solver.Board({ _layout: this.getLayout().slice(0), });
+        },
+        // Performs the actual solution. Should be called after input.
+        solve: function() {
+            this._neighbourhood_and_individuality_inferring();
+
+            if (this.getError())
+            {
+                return this.getError();
+            }
+            var min_coords;
+            var min_options = [];
+
+            this._xy_loop(function (x,y) {
+                var letters_aref = this._get_possible_letter_indexes(x, y);
+
+                if (letters_aref.length == 0) {
+                    this.setError(['cell', [$x, $y]]);
+                }
+                else if (letters_aref.length > 1) {
+                    if ((!min_coords) || 
+                        (letters_aref.length < min_options.length)) {
+                        min_options = letters_aref.slice(0);
+                        min_coords = [x,y];
+                    }
+                }
+
+                return;
+            });
+
+            if (this.getError())
+            {
+                return this.getError();
+            }
+
+            if (min_coords)
+            {
+                var x = min_coords.shift();
+                var y = min_coords.shift();
+                // We have at least one multiple rank cell. Let's recurse there:
+                min_options.forEach(function (letter) {
+                    var recurse_solver = this._clone();
+
+                    this._add_move(
+                        new ABC_Path.Solver.Move.TryingLetterForCell({
+                            vars: { letter: letter, coords: [x, y], },
+                        })
+                    );
+
+                    recurse_solver._set_conclusive_verdict_for_letter(
+                        letter, [x,y]
+                    );
+
+                    recurse_solver.solve();
+
+                    recurse_solver.get_moves().forEach(function (move) {
+                        this._add_move(move.bump());
+                    });
+
+                    if (recurse_solver.getError())
+                    {
+                        this._add_move(
+                            new ABC_Path.Solver.Move.ResultsInAnError({
+                                vars: {
+                                    letter: letter,
+                                    coords: [x,y],
+                                },
+                            })
+                        );
+                    }
+                    else
+                    {
+                        this._add_move(
+                            new ABC_Path.Solver.Move.ResultsInASuccess({
+                                vars: { letter: letter, coords: [x,y],},
+                            })
+                        );
+                        
+                        recurse_solver.getSuccesful_layouts().forEach(function (e) {
+                            this.getSuccesful_layouts().push(e);
+                        });
+                    }
+                });
+                var count = this.getSuccesful_layouts().length
+                if (! count)
+                {
+                    return ['all_options_bad'];
+                }
+                else if (count == 1)
+                {
+                    return ['success'];
+                }
+                else
+                {
+                    return ['success_multiple'];
+                }
+            }
+            else
+            {
+                this.setSuccessful_layouts([this._clone()]);
+                return ['success'];
+            }
         },
     },
 });
