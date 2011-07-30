@@ -666,5 +666,10 @@ Class('ABC_Path.Solver.Board', {
                         })
                     })).map(render_row).join('');
         },
+        get_successes_text_tables: function() {
+            return this.get_successful_layouts.map(function (l) { 
+                return l._get_results_text_table();
+            });
+        },
     },
 });
