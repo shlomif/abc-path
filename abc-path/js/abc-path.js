@@ -629,5 +629,28 @@ Class('ABC_Path.Solver.Board', {
                 return ['success'];
             }
         },
+        input_from_clues: function(clues) {
+            this._set_conclusive_verdict_for_letter(this._get_letter_numeric(clues.clue_letter),
+                [clues.clue_letter_x, clues.clue_letter_y]
+            );
+
+            this._set_verdicts_for_letter_sets(clues.major_diagonal,
+                [this._y_indexes.map(function(y) { [y,y] })]
+            );
+            this._set_verdicts_for_letter_sets(clues.minor_diagonal,
+                [this._y_indexes.map(function(y) { [y,4-y] })]
+            );
+            this._x_indexes.forEach(function (x) {
+                this._set_verdicts_for_letter_sets(clues.columns[x],
+                    [this._y_indexes.map(function(y) { [x,y] })]
+                );
+            });
+            this._y_indexes.forEach(function (y) {
+                this._set_verdicts_for_letter_sets(clues.rows[y],
+                    [this._x_indexes.map(function(x) { [x,y] })]
+                );
+            });
+            return;
+        },
     },
 });
