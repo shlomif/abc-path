@@ -230,5 +230,45 @@ function test_abc_path()
 
     });
 
+    test("Solver.Board get_successes_text_tables", function() {
+        expect(2);
+        // Games::ABC_Path::Generator layout No. 1.
+        var myboard = new ABC_Path.Solver.Board({});
 
+        myboard.input_from_clues({
+            clue_letter: 'A',
+            clue_letter_x: 1,
+            clue_letter_y: 3,
+            major_diagonal: ['Y', 'L'],
+            minor_diagonal: ['T', 'H'],
+            columns: [
+                [ 'G', 'E', ],
+            ['B','X',],
+            ['J','C',],
+            ['N','Q',],
+            ['U','P',],
+            ],
+            rows: [
+            ['S','R',],
+            ['D','W',],
+            ['F','V',],
+            ['O','K',],
+            ['M','I',],
+            ],
+            }
+        );
+
+        // TEST
+        deepEqual(myboard.solve(), ['success'], 'solved successfully.');
+        // TEST
+        deepEqual(myboard.get_successes_text_tables(), [
+("| X = 1 | X = 2 | X = 3 | X = 4 | X = 5 |\n" +
+ "|   Y   |   X   |   R   |   S   |   T   |\n" +
+ "|   E   |   D   |   W   |   Q   |   U   |\n" +
+ "|   F   |   B   |   C   |   V   |   P   |\n" +
+ "|   G   |   A   |   K   |   L   |   O   |\n" +
+ "|   H   |   I   |   J   |   N   |   M   |\n" +
+ "")
+                ], 'solves Generator Board No. 1 OK.');
+    });
 }

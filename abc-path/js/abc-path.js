@@ -24,6 +24,7 @@ if (!Array.prototype.map)
     return res;
   };
 }
+
 if (!Array.prototype.filter)
 {
     Array.prototype.filter = function(fun /*, thisp */)
@@ -53,6 +54,13 @@ if (!Array.prototype.filter)
         return res;
     };
 }
+
+function _shlomif_repeat(arr, times) {
+    "use strict";
+
+    return (times == 0) ? [] : arr.concat(_shlomif_repeat(arr, times-1));
+}
+
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 if ( !Array.prototype.forEach ) {
 
@@ -86,6 +94,29 @@ if ( !Array.prototype.forEach ) {
       k++;
     }
   };
+}
+/*
+ * Taken from:
+ * http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-a-javascript-object
+ * */
+function shlomif_clone(obj){
+    if(obj == null || obj == undefined || typeof(obj) != 'object')
+        return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj)
+        temp[key] = shlomif_clone(obj[key]);
+    return temp;
+}
+function deepCopy(p,c) {
+var c = c||{};
+for (var i in p) {
+  if (typeof p[i] === 'object') {
+    c[i] = (p[i].constructor === Array)?[]:{};
+    deepCopy(p[i],c[i]);
+  } else c[i] = p[i];}
+return c;
 }
 Class('ABC_Path', {
 });
@@ -163,7 +194,16 @@ Class('ABC_Path.Solver.Move', {
     isa: ABC_Path.Solver.Base,
     has: {
         vars: { is: 'rw' }, 
+        depth: { is: 'rw', init: 0, },
     },
+    methods: {
+        bump: function() {
+            var ret = this.meta.instantiate();
+            ret.vars = this.vars;
+            ret.setDepth(this.getDepth()+1);
+            return ret;
+        },
+    }
 });
 Class('ABC_Path.Solver.Move.LastRemainingCellForLetter', {
     isa: ABC_Path.Solver.Move
@@ -192,7 +232,7 @@ Class('ABC_Path.Solver.Board', {
                 var ret = {};
                 var l = this.letters();
                 for (var i in l) {
-                    ret[l[i]] = i;
+                    ret[l[i]] = parseInt(i);
                 }
                 return ret;
             },
@@ -258,7 +298,7 @@ Class('ABC_Path.Solver.Board', {
         },
         get_successful_layouts: function() {
             // slice(0) performs a shallow copy.
-            return this.getSuccesful_layouts().slice(0);
+            return this.getSuccessful_layouts().slice(0);
         },
         _l_indexes: function() {
             return this._perl_range(0, this.ABCP_MAX_LETTER());
@@ -316,41 +356,41 @@ Class('ABC_Path.Solver.Board', {
             return '' + x + ',' + y;
         },
         _set_verdicts_for_letter_sets: function(letter_list, maybe_list) {
+            var board = this;
 
             var cell_is_maybe = new Array();
 
-            for (var maybe_idx in maybe_list) {
-                var m = maybe_list[maybe_idx];
-                cell_is_maybe[this._xy_to_s(m[0], m[1])] = true;
-            }
+            maybe_list.forEach(function (m) { 
+                cell_is_maybe[board._xy_to_s(m[0], m[1])] = true;
+            });
 
-            for (var letter_ascii_idx in letter_list) {
-                var letter = this._get_letter_numeric(
-                    letter_list[letter_ascii_idx]
-                );
+            letter_list.forEach(function (l) {
+                var letter = board._get_letter_numeric(l);
 
-                this._xy_loop(function(x,y) {
-                    this._set_verdict(letter, x, y,
+                board._xy_loop(function(x,y) {
+                    board._set_verdict(letter, x, y,
                         (
-                             (this._xy_to_s(x,y) in cell_is_maybe) 
-                                ? this.ABCP_VERDICT_MAYBE()
-                                : this.ABCP_VERDICT_NO()
+                             (board._xy_to_s(x,y) in cell_is_maybe) 
+                                ? board.ABCP_VERDICT_MAYBE()
+                                : board.ABCP_VERDICT_NO()
                         )
                     );
                 });
-            }
+            });
+
             return;
         },
         _set_conclusive_verdict_for_letter: function(letter, xy_) {
             var xy = xy_.slice(0);
-            var l_x = xy.shift;
-            var l_y = xy.shift;
+            var l_x = xy.shift();
+            var l_y = xy.shift();
 
+            var board = this;
             this._xy_loop(function (x,y) {
-                this._set_verdict(letter, x, y,
+                board._set_verdict(letter, x, y,
                     (((l_x == x) && (l_y == y))
-                        ? this.ABCP_VERDICT_YES()
-                        : this.ABCP_VERDICT_NO()
+                        ? board.ABCP_VERDICT_YES()
+                        : board.ABCP_VERDICT_NO()
                     )
                     );
             });
@@ -360,19 +400,21 @@ Class('ABC_Path.Solver.Board', {
                 var other_letter = _l_indexes[i];
                 if (other_letter != letter)
                 {
-                    this._set_verdict(other_letter, l_x, l_y, ABCP_VERDICT_NO);
+                    this._set_verdict(other_letter, l_x, l_y, board.ABCP_VERDICT_NO());
                 }
             }
             return;
         },
         _get_possible_letter_indexes: function(x, y) {
-            return this._l_indexes().filter(function (l) {
-                return (this._get_verdict(l, x, y) != this.ABCP_VERDICT_NO());
+            var board = this;
+            return board._l_indexes().filter(function (l) {
+                return (board._get_verdict(l, x, y) != board.ABCP_VERDICT_NO());
             });
         },
         get_possible_letters_for_cell: function(x, y) {
+            var board = this;
             return this._get_possible_letter_indexes(x,y).map(function (l) {
-                return this.letters()[l];
+                return board.letters()[l];
             });
         },
         _get_possible_letters_string: function(x, y) {
@@ -380,39 +422,40 @@ Class('ABC_Path.Solver.Board', {
         },
         _infer_letters: function() {
             
-            var _l_indexes = this._l_indexes();
-            for (var l_i in _l_indexes) {
-                var letter = _l_indexes[l_i];
+            var board = this;
+            try {
+                board._l_indexes().forEach(function (letter) {
 
-                var true_cells = [];
+                    var true_cells = [];
 
-                this._xy_loop(function(cx, cy) {
-                    var ver = this._get_verdict(letter, x, y);
+                    board._xy_loop(function(cx, cy) {
+                        var ver = board._get_verdict(letter, cx, cy);
 
-                    if ((ver == this.ABCP_VERDICT_YES())
-                         || (ver == this.ABCP_VERDICT_MAYBE())) {
-                        true_cells.push([x,y]);
+                        if ((ver == board.ABCP_VERDICT_YES())
+                            || (ver == board.ABCP_VERDICT_MAYBE())) {
+                                true_cells.push([cx,cy]);
+                            }
+                    });
+
+                    if (true_cells.length == 0) {
+                        board.setError(['letter', letter]);
+                        throw 'letter_error';
                     }
-                });
-
-                if (true_cells.length == 0) {
-                    this.setError(['letter', letter]);
-                }
-                else if (true_cells.length == 1) {
-                    var xy = true_cells[0];
-                    if (this._get_verdict(letter, xy[0], xy[1]) ==
-                            this.ABCP_VERDICT_MAYBE()) {
-                        this._set_conclusive_verdict_for_letter(letter, xy);
-                        this._add_move(
-                                new ABC_Path.Solver.Move.LastRemainingCellForLetter({
-                                    vars: { letter: letter, coords: xy },
-                                })
-                        );
+                    else if (true_cells.length == 1) {
+                        var xy = true_cells[0];
+                        if (board._get_verdict(letter, xy[0], xy[1]) ==
+                            board.ABCP_VERDICT_MAYBE()) {
+                                board._set_conclusive_verdict_for_letter(letter, xy);
+                                board._add_move(
+                                        new ABC_Path.Solver.Move.LastRemainingCellForLetter({
+                                            vars: { letter: letter, coords: xy },
+                                        })
+                                        );
+                            }
                     }
-                }
 
-                var neighbourhood = this._y_indexes.map(function(i) {
-                    return [false] * this.LEN();
+                var neighbourhood = board._y_indexes().map(function(i) {
+                    return _shlomif_repeat([false], board.LEN());
                 });
 
                 for (var t_i in true_cells) {
@@ -421,75 +464,82 @@ Class('ABC_Path.Solver.Board', {
                     for (var dx = -1; dx <= 1; dx++) {
                         for (var dy = -1; dy <= 1; dy++) {
                             var cx = true_cell[0] + dx;
-                            var cy = true_clel[1] + dy;
-                            
-                            if (this._x_in_range(cx) && this._y_in_range(cy))
+                            var cy = true_cell[1] + dy;
+
+                            if (board._x_in_range(cx) && board._y_in_range(cy))
                             {
                                 neighbourhood[cy][cx] = true;
                             }
                         }
                     }
                 }
-            }
 
-            var neighbour_letters = [];
-            if (letter > 0)
-            {
-                neighbour_letters.push(letter-1);
-            }
-            if (letter < this.ABCP_MAX_LETTER())
-            {
-                neighbour_letters.push(letter+1);
-            }
+                var neighbour_letters = [];
+                if (letter > 0)
+                {
+                    neighbour_letters.push(letter-1);
+                }
+                if (letter < board.ABCP_MAX_LETTER())
+                {
+                    neighbour_letters.push(letter+1);
+                }
 
-            for (var n_l_i in neighbour_letters) {
-                neighbour_letter = neighbour_letters[n_l_i];
-                
-                this._xy_loop(function (x, y) {
-                    if (neighbourhood[y][x]) {
-                        return;
-                    }
+                neighbour_letters.forEach(function (neighbour_letter) {
+                    board._xy_loop(function (x, y) {
+                        if (neighbourhood[y][x]) {
+                            return;
+                        }
 
-                    var existing_verdict = this._get_verdict(neighbour_letter, x, y);
+                        var existing_verdict = board._get_verdict(neighbour_letter, x, y);
 
-                    if (existing_verdict == this.ABCP_VERDICT_YES()) {
-                        this.setError(['mismatched_verdict', x, y]);
-                        return;
-                    }
-                    
-                    if (existing_verdict == this.ABCP_VERDICT_MAYBE()) {
-                        this._set_verdict(neighbour_letter, x, y, this.ABCP_VERDICT_NO());
+                        if (existing_verdict == board.ABCP_VERDICT_YES()) {
+                            board.setError(['mismatched_verdict', x, y]);
+                            return;
+                        }
 
-                        this._add_move(
-                            new ABC_Path.Solver.Move.LettersNotInVicinity({
-                                vars: {
-                                    target: neighbour_letter,
+                        if (existing_verdict == board.ABCP_VERDICT_MAYBE()) {
+                            board._set_verdict(neighbour_letter, x, y, board.ABCP_VERDICT_NO());
+
+                            board._add_move(
+                                new ABC_Path.Solver.Move.LettersNotInVicinity({
+                                    vars: {
+                                        target: neighbour_letter,
                                     coords: [x,y],
                                     source: letter,
-                                },
-                            })
-                        );
-                    }
+                                    },
+                                })
+                                );
+                        }
+                    });
+                });
                 });
             }
-            
+            catch (err)
+            {
+                if (err != 'letter_error')
+                {
+                    throw err;
+                }
+            }
+
             return;
         },
         _infer_cells: function() {
-            this._xy_loop(function (x, y) {
-                var letters_aref = this._get_possible_letter_indexes(x, y);
+            var board = this;
+            board._xy_loop(function (x, y) {
+                var letters_aref = board._get_possible_letter_indexes(x, y);
 
                 if (letters_aref.length == 0) {
-                    this.setError(['cell', [x, y]]);
+                    board.setError(['cell', [x, y]]);
                     return;
                 }
                 else if (letters_aref.length == 1) {
                     var letter = letters_aref[0];
 
-                    if (this._get_verdict(letter, x, y) == this.ABCP_VERDICT_MAYBE()) {
-                        this._set_conclusive_verdict_for_letter(letter, [x, y]);
+                    if (board._get_verdict(letter, x, y) == board.ABCP_VERDICT_MAYBE()) {
+                        board._set_conclusive_verdict_for_letter(letter, [x, y]);
 
-                        this._add_move(
+                        board._add_move(
                             new ABC_Path.Solver.Move.LastRemainingLetterForCell({
                                     vars: {
                                         coords: [x,y],
@@ -526,10 +576,17 @@ Class('ABC_Path.Solver.Board', {
             return num_changed;
         },
         _clone: function() {
-            return new ABC_Path.Solver.Board({ _layout: this.getLayout().slice(0), });
+            var ret = new ABC_Path.Solver.Board({});
+            ret.setLayout(this.getLayout().slice(0));
+            return ret;
+        },
+        get_moves: function() {
+            return this.getMoves().slice(0);
         },
         // Performs the actual solution. Should be called after input.
         solve: function() {
+            var board = this;
+
             this._neighbourhood_and_individuality_inferring();
 
             if (this.getError())
@@ -539,11 +596,11 @@ Class('ABC_Path.Solver.Board', {
             var min_coords;
             var min_options = [];
 
-            this._xy_loop(function (x,y) {
-                var letters_aref = this._get_possible_letter_indexes(x, y);
+            board._xy_loop(function (x,y) {
+                var letters_aref = board._get_possible_letter_indexes(x, y);
 
                 if (letters_aref.length == 0) {
-                    this.setError(['cell', [$x, $y]]);
+                    board.setError(['cell', [$x, $y]]);
                 }
                 else if (letters_aref.length > 1) {
                     if ((!min_coords) || 
@@ -556,9 +613,9 @@ Class('ABC_Path.Solver.Board', {
                 return;
             });
 
-            if (this.getError())
+            if (board.getError())
             {
-                return this.getError();
+                return board.getError();
             }
 
             if (min_coords)
@@ -567,9 +624,9 @@ Class('ABC_Path.Solver.Board', {
                 var y = min_coords.shift();
                 // We have at least one multiple rank cell. Let's recurse there:
                 min_options.forEach(function (letter) {
-                    var recurse_solver = this._clone();
+                    var recurse_solver = board._clone();
 
-                    this._add_move(
+                    board._add_move(
                         new ABC_Path.Solver.Move.TryingLetterForCell({
                             vars: { letter: letter, coords: [x, y], },
                         })
@@ -582,12 +639,12 @@ Class('ABC_Path.Solver.Board', {
                     recurse_solver.solve();
 
                     recurse_solver.get_moves().forEach(function (move) {
-                        this._add_move(move.bump());
+                        board._add_move(move.bump());
                     });
 
                     if (recurse_solver.getError())
                     {
-                        this._add_move(
+                        board._add_move(
                             new ABC_Path.Solver.Move.ResultsInAnError({
                                 vars: {
                                     letter: letter,
@@ -598,18 +655,18 @@ Class('ABC_Path.Solver.Board', {
                     }
                     else
                     {
-                        this._add_move(
+                        board._add_move(
                             new ABC_Path.Solver.Move.ResultsInASuccess({
                                 vars: { letter: letter, coords: [x,y],},
                             })
                         );
                         
-                        recurse_solver.getSuccesful_layouts().forEach(function (e) {
-                            this.getSuccesful_layouts().push(e);
+                        recurse_solver.getSuccessful_layouts().forEach(function (e) {
+                            board.getSuccessful_layouts().push(e);
                         });
                     }
                 });
-                var count = this.getSuccesful_layouts().length
+                var count = board.getSuccessful_layouts().length;
                 if (! count)
                 {
                     return ['all_options_bad'];
@@ -625,49 +682,51 @@ Class('ABC_Path.Solver.Board', {
             }
             else
             {
-                this.setSuccessful_layouts([this._clone()]);
+                board.setSuccessful_layouts([board._clone()]);
                 return ['success'];
             }
         },
         input_from_clues: function(clues) {
-            this._set_conclusive_verdict_for_letter(this._get_letter_numeric(clues.clue_letter),
+            var board = this;
+            board._set_conclusive_verdict_for_letter(board._get_letter_numeric(clues.clue_letter),
                 [clues.clue_letter_x, clues.clue_letter_y]
             );
 
-            this._set_verdicts_for_letter_sets(clues.major_diagonal,
-                [this._y_indexes.map(function(y) { [y,y] })]
+            board._set_verdicts_for_letter_sets(clues.major_diagonal,
+                board._y_indexes().map(function(y) { return [y,y]; })
             );
-            this._set_verdicts_for_letter_sets(clues.minor_diagonal,
-                [this._y_indexes.map(function(y) { [y,4-y] })]
+            board._set_verdicts_for_letter_sets(clues.minor_diagonal,
+                board._y_indexes().map(function(y) { return [y,4-y]; })
             );
-            this._x_indexes.forEach(function (x) {
-                this._set_verdicts_for_letter_sets(clues.columns[x],
-                    [this._y_indexes.map(function(y) { [x,y] })]
+            board._x_indexes().forEach(function (x) {
+                board._set_verdicts_for_letter_sets(clues.columns[x],
+                    board._y_indexes().map(function(y) { return [x,y]; })
                 );
             });
-            this._y_indexes.forEach(function (y) {
-                this._set_verdicts_for_letter_sets(clues.rows[y],
-                    [this._x_indexes.map(function(x) { [x,y] })]
+            board._y_indexes().forEach(function (y) {
+                board._set_verdicts_for_letter_sets(clues.rows[y],
+                    board._x_indexes().map(function(x) { return [x,y]; })
                 );
             });
             return;
         },
         _get_results_text_table: function() {
+            var board = this;
             var render_row = function(cols) {
                 return "| " + cols.map(function(s) {
                     return s.length == 1 ? ("  " + s + "  ") : s;
                 }).join(" | ") + " |\n";
             };
-            return [this._x_indexes.map(function (x) { 
+            return [board._x_indexes().map(function (x) { 
                 return "X = " + (x+1); })].concat(
-                    this._y_indexes.map(function(y) {
-                        return this._x_indexes.map(function (x) {
-                            return this._get_possible_letters_string(x,y);
+                    board._y_indexes().map(function(y) {
+                        return board._x_indexes().map(function (x) {
+                            return board._get_possible_letters_string(x,y);
                         })
                     })).map(render_row).join('');
         },
         get_successes_text_tables: function() {
-            return this.get_successful_layouts.map(function (l) { 
+            return this.get_successful_layouts().map(function (l) { 
                 return l._get_results_text_table();
             });
         },
