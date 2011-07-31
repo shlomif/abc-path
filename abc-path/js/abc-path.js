@@ -95,31 +95,10 @@ if ( !Array.prototype.forEach ) {
     }
   };
 }
-/*
- * Taken from:
- * http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-a-javascript-object
- * */
-function shlomif_clone(obj){
-    if(obj == null || obj == undefined || typeof(obj) != 'object')
-        return obj;
 
-    var temp = obj.constructor(); // changed
-
-    for(var key in obj)
-        temp[key] = shlomif_clone(obj[key]);
-    return temp;
-}
-function deepCopy(p,c) {
-var c = c||{};
-for (var i in p) {
-  if (typeof p[i] === 'object') {
-    c[i] = (p[i].constructor === Array)?[]:{};
-    deepCopy(p[i],c[i]);
-  } else c[i] = p[i];}
-return c;
-}
 Class('ABC_Path', {
 });
+
 Class('ABC_Path.Constants', {
     methods: {
         LEN : function () {
