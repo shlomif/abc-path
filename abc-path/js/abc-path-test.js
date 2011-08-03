@@ -313,4 +313,46 @@ function test_abc_path()
  "")
                 ], 'solves Brain-Bashers-2010-12-21');
     });
+
+    test("Solver.Board Brain Bashers 2010-12-22", function() {
+        expect(2);
+        // Brain Bashers 2010-12-22
+        var myboard = new ABC_Path.Solver.Board({});
+
+        myboard.input_from_clues({
+            clue_letter: 'A',
+            clue_letter_x: 1,
+            clue_letter_y: 2,
+            major_diagonal: ['P', 'N'],
+            minor_diagonal: ['K', 'T'],
+            columns: [
+            [ 'E', 'F', ],
+            ['I','C',],
+            ['R','M',],
+            ['Q','Y',],
+            ['X','V',],
+            ],
+            rows: [
+            ['D','S',],
+            ['B','U',],
+            ['O','G',],
+            ['W','H',],
+            ['J','L',],
+            ],
+            }
+        );
+
+        // TEST
+        deepEqual(myboard.solve(), ['success'], 'solved successfully.');
+        // TEST
+        deepEqual(myboard.get_successes_text_tables(), [
+("| X = 1 | X = 2 | X = 3 | X = 4 | X = 5 |\n" +
+ "|   E   |   D   |   R   |   S   |   T   |\n" +
+ "|   F   |   C   |   B   |   Q   |   U   |\n" +
+ "|   G   |   A   |   P   |   O   |   V   |\n" +
+ "|   H   |   K   |   M   |   N   |   W   |\n" +
+ "|   J   |   I   |   L   |   Y   |   X   |\n" +
+ "")
+                ], 'solves Brain-Bashers-2010-12-22');
+    });
 }
