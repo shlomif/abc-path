@@ -242,7 +242,7 @@ function test_abc_path()
             major_diagonal: ['Y', 'L'],
             minor_diagonal: ['T', 'H'],
             columns: [
-                [ 'G', 'E', ],
+            ['G','E',],
             ['B','X',],
             ['J','C',],
             ['N','Q',],
@@ -284,7 +284,7 @@ function test_abc_path()
             major_diagonal: ['O', 'H'],
             minor_diagonal: ['N', 'T'],
             columns: [
-                [ 'W', 'V', ],
+            ['W','V',],
             ['X','M',],
             ['I','G',],
             ['B','C',],
@@ -326,7 +326,7 @@ function test_abc_path()
             major_diagonal: ['P', 'N'],
             minor_diagonal: ['K', 'T'],
             columns: [
-            [ 'E', 'F', ],
+            ['E','F',],
             ['I','C',],
             ['R','M',],
             ['Q','Y',],
