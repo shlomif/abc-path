@@ -706,8 +706,8 @@ addEvent(window, "load", function() {
 			if ( filter.checked ) {
 				ol.className = ol.className + " hidepass";
 			} else {
-				var tmp = " " + ol.className.replace( /[\n\t\r]/g, " " ) + " ";
-				ol.className = tmp.replace(/ hidepass /, " ");
+				var tmp = " " + ol.className.replace( /\s+/g, "  " ) + " ";
+				ol.className = tmp.replace(/ hidepass /g, " ").replace(/\s+/g, " ");
 			}
 			if ( defined.sessionStorage ) {
 				if (filter.checked) {
