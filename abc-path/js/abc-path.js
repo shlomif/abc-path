@@ -716,4 +716,10 @@ Class('ABC_Path.MicrosoftRand', {
     has: {
         seed: { is: rw, },
     },
+    methods: {
+        rand: function() {
+            this.setSeed((this.getSeed() * 214013 + 2531011) & 0x7FFFFFFF);
+            return ((this.getSeed() >> 16) & 0x7fff);
+        },
+    },
 });
