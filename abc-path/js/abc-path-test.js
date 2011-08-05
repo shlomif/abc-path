@@ -350,4 +350,23 @@ function test_abc_path()
         // TEST
         equals (r.rand(), 6334, "3rd result for seed 1 is 6,334.");
     });
+
+    test("MicrosoftRand Shuffle", function() {
+        expect(2);
+
+        var r = new ABC_Path.MicrosoftRand({seed : 24 });
+
+        var myarr = [0,1,2,3,4,5,6,7,8,9];
+
+        var ret = r.shuffle(myarr);
+        // TEST
+        deepEqual(
+            myarr,
+            [1,7,9,8,4,5,3,2,0,6],
+            'Array was shuffled.'
+            );
+
+        // TEST
+        equals (ret, myarr, 'shuffle returns the same array.');
+    });
 }
