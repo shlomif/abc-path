@@ -334,7 +334,7 @@ function test_abc_path()
     module("MicrosoftRand");
 
     test("MicrosoftRand Seed 1", function() {
-        expect(2);
+        expect(4);
 
         var r = new ABC_Path.MicrosoftRand({seed : 1 });
 
@@ -343,5 +343,11 @@ function test_abc_path()
 
         // TEST
         equals(r.rand(), 41, "First result for seed 1 is 41.");
+
+        // TEST
+        equals (r.rand(), 18467, "2nd result for seed 1 is 18,467.");
+
+        // TEST
+        equals (r.rand(), 6334, "3rd result for seed 1 is 6,334.");
     });
 }
