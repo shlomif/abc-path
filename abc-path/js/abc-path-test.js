@@ -330,4 +330,15 @@ function test_abc_path()
  "")
                 ], 'solves Brain-Bashers-2010-12-22');
     });
+
+    module("MicrosofRand");
+
+    test("MicrosoftRand Seed 1", function() {
+        expect(1);
+
+        var r = new ABC_Path.MicrosoftRand({seed : 1 });
+
+        // TEST
+        ok (r, 'r was initialized.');
+    });
 }
