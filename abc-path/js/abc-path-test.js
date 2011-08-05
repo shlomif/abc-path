@@ -331,14 +331,17 @@ function test_abc_path()
                 ], 'solves Brain-Bashers-2010-12-22');
     });
 
-    module("MicrosofRand");
+    module("MicrosoftRand");
 
     test("MicrosoftRand Seed 1", function() {
-        expect(1);
+        expect(2);
 
         var r = new ABC_Path.MicrosoftRand({seed : 1 });
 
         // TEST
         ok (r, 'r was initialized.');
+
+        // TEST
+        equals(r.rand(), 41, "First result for seed 1 is 41.");
     });
 }
