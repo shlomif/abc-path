@@ -774,7 +774,7 @@ Class('ABC_Path.Generator.Generator', {
             return new ABC_Path.MicrosoftRand({ seed : this.seed });
         }
         },
-        get_next_cells_lookup: { is: ro, init: function() {
+        _get_next_cells_lookup: { is: ro, init: function() {
             var that = this;
             return this._perl_range(0, this.BOARD_SIZE() - 1).map(function (cell) {
                 var s = that._to_xy(cell);
@@ -792,7 +792,7 @@ Class('ABC_Path.Generator.Generator', {
             return this.rand.shuffle(deck);
         },
         _get_next_cells: function(l, init_idx) {
-            return this.get_next_cells_lookup[init_idx].filter(function (x)
+            return this._get_next_cells_lookup[init_idx].filter(function (x)
                 {
                     return (l.charCodeAt(x) == 0);
                 }
