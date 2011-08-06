@@ -373,7 +373,7 @@ function test_abc_path()
     module("FinalLayoutObj");
 
     test("FinalLayoutObj", function() {
-        expect(2);
+        expect(3);
 
         var myboard = new ABC_Path.Solver.Board({});
         // TEST
@@ -388,5 +388,7 @@ function test_abc_path()
 
         // TEST
         equal(obj.get_letter_at_pos({ y: 1, x: 0 }), 'F', 'L[0,1] = F');
+        // TEST
+        equal(obj.get_letter_at_pos({ y: 0, x: 2 }), 'C', 'L[2,0] = C');
     });
 }
