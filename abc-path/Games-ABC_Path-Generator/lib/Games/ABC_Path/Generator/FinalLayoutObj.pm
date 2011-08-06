@@ -29,34 +29,16 @@ our $VERSION = '0.1.0';
 
     my $gen = Games::ABC_Path::Generator->new({seed => 1});
 
-    # Returns a Games::ABC_Path::Generator::RiddleObj object.
-    my $riddle = $gen->calc_riddle();
+    # Returns a Games::ABC_Path::Generator::FinalLayoutObj object.
+    my $layout = $gen->calc_final_layout();
 
-    print $riddle->get_riddle_v1_string();
-    print $riddle->get_riddle_string_with_header();
-
+    my $A_xy = $layout->get_A_xy();
 
 =head1 SUBROUTINES/METHODS
 
-=head2 my $riddle = Games::ABC_Path::Generator::RiddleObj->new({%args}); 
+=head2 my $layout = Games::ABC_Path::Generator::FinalLayoutObj->new({%args}); 
 
-Initialised a new riddle. Arguments are:
-
-=over 4
-
-=item * solution
-
-The solution layout.
-
-=item * clues
-
-An array of the clues.
-
-=item * A_pos
-
-The position of the A cell.
-
-=back
+Initializes a new layout. B<For internal use.>.
 
 =cut
 
@@ -149,12 +131,6 @@ Represents the layout as string.
 
 =cut
 
-=head2 $layout->as_string($args);
-
-Represents the layout as string.
-
-=cut
-
 sub as_string
 {
     my ($l, $args) = @_;
@@ -171,6 +147,7 @@ sub as_string
 
     return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
 }
+
 =head1 AUTHOR
 
 Shlomi Fish, L<http://www.shlomifish.org/> .
