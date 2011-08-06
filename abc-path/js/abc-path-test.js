@@ -373,17 +373,20 @@ function test_abc_path()
     module("FinalLayoutObj");
 
     test("FinalLayoutObj", function() {
-        expect(1);
-        
+        expect(2);
+
         var myboard = new ABC_Path.Solver.Board({});
         // TEST
         var layout_string = myboard._perl_range(1,25).map(
             function (x) { return String.fromCharCode(x); }
         ).join('');
-        
+
         var obj = new ABC_Path.Generator.FinalLayoutObj({ s: layout_string });
 
         // TEST
         deepEqual (obj.get_A_xy(), {x : 0, y: 0}, 'A xy is OK.');
+
+        // TEST
+        equal(obj.get_letter_at_pos({ y: 1, x: 0 }), 'F', 'L[0,1] = F');
     });
 }

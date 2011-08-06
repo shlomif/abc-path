@@ -743,7 +743,7 @@ Class('ABC_Path.Generator', {
 Class('ABC_Path.Generator.FinalLayoutObj', {
     isa: ABC_Path.Solver.Base,
     has: {
-        _s: { is: ro },
+        s: { is: ro },
     },
     methods: {
         get_A_pos: function() {
@@ -752,6 +752,14 @@ Class('ABC_Path.Generator.FinalLayoutObj', {
         get_A_xy: function() {
             var xy = this._to_xy(this.get_A_pos());
             return {y : xy[this.Y()], x: xy[this.X()], };
+        },
+        get_cell_contents: function(ind) {
+            return this.getS().charCodeAt(ind);
+        },
+        get_letter_at_pos: function(mypos) {
+            return this.letters()[this.get_cell_contents(
+                this._xy_to_int([mypos.y, mypos.x])
+            ) - 1]; 
         },
     },
 });
