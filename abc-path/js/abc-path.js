@@ -738,3 +738,20 @@ Class('ABC_Path.MicrosoftRand', {
         },
     },
 });
+Class('ABC_Path.Generator', {
+});
+Class('ABC_Path.Generator.FinalLayoutObj', {
+    isa: ABC_Path.Solver.Base,
+    has: {
+        _s: { is: ro },
+    },
+    methods: {
+        get_A_pos: function() {
+            return this.getS().indexOf(String.fromCharCode(1));
+        },
+        get_A_xy: function() {
+            var xy = this._to_xy(this.get_A_pos());
+            return {y : xy[this.Y()], x: xy[this.X()], };
+        },
+    },
+});
