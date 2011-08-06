@@ -766,3 +766,37 @@ Class('ABC_Path.Generator.FinalLayoutObj', {
         },
     },
 });
+Class('ABC_Path.Generator.Generator', {
+    isa: ABC_Path.Solver.Base,
+    has: {
+        seed: { is: rw },
+        rand: { is: rw, init: function () {
+            return new ABC_Path.MicrosoftRand({ seed : this.seed });
+        }
+        },
+        get_next_cells_lookup: { is: ro, init: function() {
+            var that = this;
+            return this._perl_range(0, this.BOARD_SIZE() - 1).map(function (cell) {
+                var s = that._to_xy(cell);
+                return [].concat.apply([], ([ [-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1] ].map(function(offsets) {
+                    var y = s[that.Y()]+offsets[that.Y()];
+                    var x = s[that.X()]+offsets[that.X()];
+                    return ((that._x_in_range(x) && that._y_in_range(y)) ? [that._xy_to_int([y,x])] : []);
+                })));
+        });
+        },
+        },
+    },
+    methods: {
+        _shuffle: function(deck) {
+            return this.rand.shuffle(deck);
+        },
+        _get_next_cells: function(l, init_idx) {
+            return this.get_next_cells_lookup[init_idx].filter(function (x)
+                {
+                    return (l.charCodeAt(x) == 0);
+                }
+            );
+        },
+    }
+});
