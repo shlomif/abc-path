@@ -75,6 +75,16 @@ function test_abc_path()
         deepEqual(mybase._to_xy(3*5+4), [3,4], '_to_xy(3*5+4) -> [3,4]');
     });
 
+    test("Solver.Base _replaceSubstring", function() {
+        expect(1);
+
+        var mybase = new ABC_Path.Solver.Base({});
+        // TEST
+        equals(mybase._replaceSubstring('0123456789', 0, 1, 'foo'),
+            'foo123456789',
+            '_replaceSubstring simple test.');
+    });
+
     test("Solver.Base _y_indexes", function() {
         expect(4);
 

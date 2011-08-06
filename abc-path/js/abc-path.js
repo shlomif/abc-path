@@ -167,6 +167,9 @@ Class('ABC_Path.Solver.Base', {
         _y_in_range: function(y) {
             return this._x_in_range(y);
         },
+        _replaceSubstring: function(s, start, end, replacement) {
+            return s.substring(0, start) + replacement + s.substring(end);
+        },
     },
 });
 Class('ABC_Path.Solver.Move', {
