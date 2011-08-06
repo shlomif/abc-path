@@ -76,13 +76,17 @@ function test_abc_path()
     });
 
     test("Solver.Base _replaceSubstring", function() {
-        expect(1);
+        expect(2);
 
         var mybase = new ABC_Path.Solver.Base({});
         // TEST
         equals(mybase._replaceSubstring('0123456789', 0, 1, 'foo'),
             'foo123456789',
             '_replaceSubstring simple test.');
+        // TEST
+        equals(mybase._replaceSubstring('abcdef', 1, 3, 'REPLACE'),
+            'aREPLACEdef',
+            '_replaceSubstring second test.');
     });
 
     test("Solver.Base _y_indexes", function() {
