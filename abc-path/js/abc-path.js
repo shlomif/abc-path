@@ -1,4 +1,16 @@
 "use strict";
+// Taken from http://stackoverflow.com/questions/202605/repeat-string-javascript
+if (!String.prototype.repeat) {
+String.prototype.repeat = function(count) {
+    if (count < 1) return '';
+    var result = '', pattern = this.valueOf();
+    while (count > 0) {
+        if (count & 1) result += pattern;
+        count >>= 1, pattern += pattern;
+    };
+    return result;
+};
+}
 if (!Array.prototype.map)
 {
   Array.prototype.map = function(fun /*, thisp */)
@@ -828,6 +840,41 @@ Class('ABC_Path.Generator.Generator', {
             }
             
             return count;
+        },
+        calc_final_layout: function() {
+            var that = this;
+
+            var dfs_stack = [];
+            that._add_next_state(dfs_stack, '\0'.repeat(that.BOARD_SIZE()),
+                    that.rand.max_rand(that.BOARD_SIZE()));
+
+
+            while (dfs_stack.length > 0)
+            {
+                var dfs_top = dfs_stack[dfs_stack.length - 1];
+
+                var l = dfs_top[0];
+                var last_cells = dfs_top[1];
+
+                if (dfs_stack.length == that.BOARD_SIZE()) {
+                    return new ABC_Path.Generator.FinalLayoutObj(
+                        { s: l }
+                    );
+                }
+
+                var next_idx = last_cells.shift();
+
+                if ((typeof next_idx == 'undefined')
+                        ||
+                    (that._get_num_connected(l) !=
+                        that.BOARD_SIZE() - dfs_stack.length)) {
+
+                    dfs_stack.pop();
+                } else {
+                    that._add_next_state(dfs_stack, l, next_idx);
+                }
+            }
+            throw "Not found!";
         },
     }
 });
