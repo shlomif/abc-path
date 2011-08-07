@@ -141,8 +141,6 @@ sub _get_num_connected
     return scalar keys %connected;
 }
 
-use List::Util qw(first);
-
 =head2 $gen->calc_final_layout()
 
 Calculates the final, solved, layout of the board based on the current
