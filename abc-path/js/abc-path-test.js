@@ -405,4 +405,21 @@ function test_abc_path()
         // TEST
         equal(obj.get_letter_at_pos({ y: 0, x: 2 }), 'C', 'L[2,0] = C');
     });
+
+    module("ABC_Path.Generator.Generator");
+
+    test("_get_next_cells", function() {
+        var pos_array = _shlomif_repeat(['\0'], 5*5);
+        
+        pos_array[0*5+0] = String.fromCharCode(1);
+        pos_array[1*5+1] = String.fromCharCode(2);
+
+        var pos_s = pos_array.join('');
+
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+        deepEqual (gen._get_next_cells(pos_s, 1*5+1),
+            [0*5+1, 0*5+2, 1*5+0, 1*5+2, 2*5+0, 2*5+1, 2*5+2],
+            'get_next_cells for (1,1)'
+        );
+    });
 }
