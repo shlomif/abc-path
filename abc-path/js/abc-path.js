@@ -805,5 +805,29 @@ Class('ABC_Path.Generator.Generator', {
 
             return;
         },
+        _get_num_connected: function(l) {
+            
+            var connectivity_stack = [l.indexOf('\0')];
+
+            var connected = {};
+            var count = 0;
+
+            while (connectivity_stack.length > 0)
+            {
+                var myint = connectivity_stack.pop();
+                
+                if (! (myint in connected))
+                {
+                    count++;
+                    connected[myint] = true;
+                    connectivity_stack = connectivity_stack.concat(
+                            this._get_next_cells(l, myint).filter(function (x) {
+                                return (! (x in connected));
+                                }));
+                }
+            }
+            
+            return count;
+        },
     }
 });

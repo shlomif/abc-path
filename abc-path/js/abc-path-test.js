@@ -427,4 +427,20 @@ function test_abc_path()
             'get_next_cells for (0,1) - an edge cell.'
         );
     });
+
+    test("_get_num_connected", function() {
+        var pos_array = _shlomif_repeat(['\0'], 5*5);
+        
+        pos_array[0*5+0] = String.fromCharCode(1);
+        pos_array[1*5+0] = String.fromCharCode(2);
+        pos_array[1*5+1] = String.fromCharCode(3);
+        pos_array[1*5+2] = String.fromCharCode(4);
+        pos_array[1*5+3] = String.fromCharCode(4);
+        pos_array[0*5+3] = String.fromCharCode(5);
+
+        var pos_s = pos_array.join('');
+
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+        equal(gen._get_num_connected(pos_s), 2);
+    });
 }
