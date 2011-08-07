@@ -421,5 +421,10 @@ function test_abc_path()
             [0*5+1, 0*5+2, 1*5+0, 1*5+2, 2*5+0, 2*5+1, 2*5+2],
             'get_next_cells for (1,1)'
         );
+
+        deepEqual (gen._get_next_cells(pos_s, 0*5+1),
+            [0*5+2, 1*5+0, 1*5+2],
+            'get_next_cells for (0,1) - an edge cell.'
+        );
     });
 }
