@@ -798,5 +798,12 @@ Class('ABC_Path.Generator.Generator', {
                 }
             );
         },
+        _add_next_state: function(stack, orig_l, cell_int) {
+            var l = this._replaceSubstring(orig_l, cell_int, cell_int+1, String.fromCharCode(1+stack.length));
+
+            stack.push([l, this._shuffle(this._get_next_cells(l, cell_int))]);
+
+            return;
+        },
     }
 });
