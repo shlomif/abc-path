@@ -12,7 +12,15 @@
 
   <script type="text/javascript">
       $(document).ready(function () { 
-          test_abc_path();
+          try {
+              test_abc_path();
+          }
+          catch (err) {
+            module("Meta");
+            test("global_failure", function() {
+                ok (false, 'test_abc_path() has thrown an exception or is invalid.');
+            });
+          }
           // Hide passed tests by default.
           $('#qunit-tests').addClass('hidepass');
       });
