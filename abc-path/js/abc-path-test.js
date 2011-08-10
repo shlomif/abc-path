@@ -443,4 +443,29 @@ function test_abc_path()
         var gen = new ABC_Path.Generator.Generator({seed : 1});
         equal(gen._get_num_connected(pos_s), 2);
     });
+
+    test("calc_final_layout seed 1.", function() {
+        expect(1);
+
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+        var final_layout = gen.calc_final_layout();
+        var expected_string =
+            'YXRST' +
+            'EDWQU' +
+            'FBCVP' +
+            'GAKLO' +
+            'HIJNM';
+
+        var got_matrix = final_layout._y_indexes().map(function (y) { 
+            return final_layout._x_indexes().map(function(x) {
+                return final_layout.get_letter_at_pos({y : y, x: x})
+            }
+            )
+            });
+
+        var got_string = [].concat.apply([], got_matrix).join('');
+
+        // TEST
+        equal(got_string, expected_string, 'Layout with seed 1 is right.');
+    });
 }
