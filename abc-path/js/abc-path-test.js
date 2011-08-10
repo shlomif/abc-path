@@ -390,7 +390,6 @@ function test_abc_path()
         expect(3);
 
         var myboard = new ABC_Path.Solver.Board({});
-        // TEST
         var layout_string = myboard._perl_range(1,25).map(
             function (x) { return String.fromCharCode(x); }
         ).join('');
@@ -409,6 +408,7 @@ function test_abc_path()
     module("ABC_Path.Generator.Generator");
 
     test("_get_next_cells", function() {
+        expect(2);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
         
         pos_array[0*5+0] = String.fromCharCode(1);
@@ -417,11 +417,13 @@ function test_abc_path()
         var pos_s = pos_array.join('');
 
         var gen = new ABC_Path.Generator.Generator({seed : 1});
+        // TEST
         deepEqual (gen._get_next_cells(pos_s, 1*5+1),
             [0*5+1, 0*5+2, 1*5+0, 1*5+2, 2*5+0, 2*5+1, 2*5+2],
             'get_next_cells for (1,1)'
         );
 
+        // TEST
         deepEqual (gen._get_next_cells(pos_s, 0*5+1),
             [0*5+2, 1*5+0, 1*5+2],
             'get_next_cells for (0,1) - an edge cell.'
@@ -429,6 +431,7 @@ function test_abc_path()
     });
 
     test("_get_num_connected", function() {
+        expect(1);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
         
         pos_array[0*5+0] = String.fromCharCode(1);
@@ -441,6 +444,7 @@ function test_abc_path()
         var pos_s = pos_array.join('');
 
         var gen = new ABC_Path.Generator.Generator({seed : 1});
+        // TEST
         equal(gen._get_num_connected(pos_s), 2);
     });
 
