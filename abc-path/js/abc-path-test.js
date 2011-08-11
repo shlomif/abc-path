@@ -396,7 +396,6 @@ function test_abc_path()
         expect(3);
 
         var myboard = new ABC_Path.Solver.Board({});
-        // TEST
         var layout_string = myboard._perl_range(1,25).map(
             function (x) { return String.fromCharCode(x); }
         ).join('');
@@ -415,6 +414,7 @@ function test_abc_path()
     module("ABC_Path.Generator.Generator");
 
     test("_get_next_cells", function() {
+        expect(2);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
         
         pos_array[0*5+0] = String.fromCharCode(1);
@@ -423,11 +423,13 @@ function test_abc_path()
         var pos_s = pos_array.join('');
 
         var gen = new ABC_Path.Generator.Generator({seed : 1});
+        // TEST
         deepEqual (gen._get_next_cells(pos_s, 1*5+1),
             [0*5+1, 0*5+2, 1*5+0, 1*5+2, 2*5+0, 2*5+1, 2*5+2],
             'get_next_cells for (1,1)'
         );
 
+        // TEST
         deepEqual (gen._get_next_cells(pos_s, 0*5+1),
             [0*5+2, 1*5+0, 1*5+2],
             'get_next_cells for (0,1) - an edge cell.'
@@ -435,6 +437,7 @@ function test_abc_path()
     });
 
     test("_get_num_connected", function() {
+        expect(1);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
         
         pos_array[0*5+0] = String.fromCharCode(1);
@@ -447,6 +450,32 @@ function test_abc_path()
         var pos_s = pos_array.join('');
 
         var gen = new ABC_Path.Generator.Generator({seed : 1});
+        // TEST
         equal(gen._get_num_connected(pos_s), 2);
+    });
+
+    test("calc_final_layout seed 1.", function() {
+        expect(1);
+
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+        var final_layout = gen.calc_final_layout();
+        var expected_string =
+            'YXRST' +
+            'EDWQU' +
+            'FBCVP' +
+            'GAKLO' +
+            'HIJNM';
+
+        var got_matrix = final_layout._y_indexes().map(function (y) { 
+            return final_layout._x_indexes().map(function(x) {
+                return final_layout.get_letter_at_pos({y : y, x: x})
+            }
+            )
+            });
+
+        var got_string = [].concat.apply([], got_matrix).join('');
+
+        // TEST
+        equal(got_string, expected_string, 'Layout with seed 1 is right.');
     });
 }
