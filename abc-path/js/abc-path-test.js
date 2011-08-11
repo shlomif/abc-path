@@ -1,4 +1,10 @@
 "use strict";
+/*
+ * Tests for the ABC Path Solver and Generator.
+ * Copyright by Shlomi Fish, 2011.
+ * Released under the MIT/X11 License 
+ * ( http://en.wikipedia.org/wiki/MIT_License ).
+ * */
 function test_abc_path()
 {
     module("Constants");

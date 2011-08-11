@@ -1,4 +1,10 @@
 "use strict";
+/*
+ * ABC Path Solver and Generator.
+ * Copyright by Shlomi Fish, 2011.
+ * Released under the MIT/X11 License 
+ * ( http://en.wikipedia.org/wiki/MIT_License ).
+ * */
 // Taken from http://stackoverflow.com/questions/202605/repeat-string-javascript
 if (!String.prototype.repeat) {
 String.prototype.repeat = function(count) {
