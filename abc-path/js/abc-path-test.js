@@ -477,4 +477,21 @@ function test_abc_path()
         equal(calc_final_layout_string(final_layout), expected_string,
             'Layout with seed 1 is right.');
     });
+
+    test("calc_final_layout seed 25.", function() {
+        expect(1);
+
+        var gen = new ABC_Path.Generator.Generator({seed : 25});
+        var final_layout = gen.calc_final_layout();
+        var expected_string =
+            'HIFUV' +
+            'JGETW' +
+            'KDSRX' +
+            'LBCQY' +
+            'AMNOP';
+
+        // TEST
+        equal(calc_final_layout_string(final_layout), expected_string,
+            'Layout with seed 25 is right.');
+    });
 }
