@@ -804,6 +804,32 @@ Class('ABC_Path.Generator.Generator', {
         });
         },
         },
+        _clues_positions: { is: ro, init: function () {
+            var that = this;
+
+            var _gen_clue_positions = function (cb) {
+                return that._x_indexes().map(cb);
+            };
+
+            var _gen_clue_int_positions = function (cb) {
+                return _gen_clue_positions(cb).map(function (xy) { 
+                    return that._xy_to_int(xy); 
+                });
+            };
+
+            var callbacks = [].concat.apply([], [
+                    [function (i) { return [i,i]; }],
+                    [function (i) { return [i,4-i]; }],
+                    that._y_indexes().map(function (y) { 
+                        return function (x) { return [y,x]; };
+                    }),
+                    that._x_indexes().map(function (x) { 
+                        return function (y) { return [y,x]; };
+                    })]);
+
+            return callbacks.map(_gen_clue_int_positions);
+        }
+        },
     },
     methods: {
         _shuffle: function(deck) {

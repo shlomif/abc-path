@@ -500,4 +500,20 @@ function test_abc_path()
         equal(calc_final_layout_string(final_layout), expected_string,
             'Layout with seed 25 is right.');
     });
+
+    test("_clues_positions", function() {
+        expect(1);
+
+        // The seed does not matter.
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+
+        var map_clue = function(clue) { return clue.map(function (i) { 
+            return gen._to_xy(i);
+        }) };
+
+        // TEST
+        deepEqual(map_clue(gen._clues_positions[0]), [[0,0],[1,1],[2,2],[3,3],[4,4]],
+            'clue No. 0 (diagonal) is OK.'
+        );
+    });
 }
