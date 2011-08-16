@@ -502,7 +502,7 @@ function test_abc_path()
     });
 
     test("_clues_positions", function() {
-        expect(2);
+        expect(3);
 
         // The seed does not matter.
         var gen = new ABC_Path.Generator.Generator({seed : 1});
@@ -518,6 +518,11 @@ function test_abc_path()
         // TEST
         deepEqual(map_clue(gen._clues_positions[1]), [[0,4],[1,3],[2,2],[3,1],[4,0]],
             'clue No. 1 (anti-diagonal) is OK.'
+        );
+
+        // TEST
+        deepEqual(map_clue(gen._clues_positions[2]), [[0,0],[0,1],[0,2],[0,3],[0,4]],
+            'clue No. 2 (y=0) is OK.'
         );
     });
 }
