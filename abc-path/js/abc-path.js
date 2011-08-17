@@ -1030,7 +1030,37 @@ Class('ABC_Path.Generator.Generator', {
 
                     last_state.pos_pairs = that._shuffle(pairs);
                 }
+
+                var chosen_clue = last_state.chosen_clue;
+                var next_pair = last_state.pos_pairs.shift();
+
+                if (! next_pair) {
+                    dfs_stack.pop();
+                    continue DFS;
+                }
+
+                var new_state = {};
+                new_state.pos_taken = last_state.pos_taken;
+                new_state.clues = last_state.clues.map(function (clue) { 
+                    var copy = {};
+                    copy.num_remaining = clue.num_remaining;
+                    if (clue.cells) {
+                        copy.cells = clue.cells;
+                    }
+                    return copy;
+                });
+
+                next_pair.forEach(function (pos) {
+                    mark(new_state, pos);
+                    return ;
+                });
+
+                new_state.clues[chosen_clue].cells = next_pair.slice(0);
+
+                dfs_stack.push(new_state);
             }
+
+            throw "Not found!";
         },
     }
 });

@@ -322,6 +322,7 @@ sub calc_riddle
                     return $riddle;
                 }
             }
+
             # Not enough for the clues there.
             if ($clues[0][1]->{num_remaining} < 2)
             {
