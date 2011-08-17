@@ -784,6 +784,28 @@ Class('ABC_Path.Generator.FinalLayoutObj', {
         },
     },
 });
+Class('ABC_Path.Generator.RiddleObj', {
+    isa: ABC_Path.Solver.Base,
+    has: {
+        solution: { is: ro },
+        clues: { is: ro },
+        A_pos: { is: ro },
+    },
+    methods: {
+        get_clues_for_input_to_board: function() {
+            var that = this;
+            return {
+                clue_letter: 'A',
+                clue_letter_x: that.A_pos[that.X()],
+                clue_letter_y: that.A_pos[that.Y()],
+                major_diagonal: that.clues[0],
+                minor_diagonal: that.clues[1],
+                rows: that.clues.slice(2, 2+5),
+                columns: that.clues.slice(2+5, 2+5+5)
+            };
+        },
+    },
+});
 Class('ABC_Path.Generator.Generator', {
     isa: ABC_Path.Solver.Base,
     has: {
