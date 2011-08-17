@@ -794,14 +794,20 @@ Class('ABC_Path.Generator.RiddleObj', {
     methods: {
         get_clues_for_input_to_board: function() {
             var that = this;
+
+            // Letter clues.
+            var l_clues = that.clues.map(function (clue) { 
+                return clue.map(function (l_idx) { return that.letters()[l_idx-1];});
+            });
+
             return {
                 clue_letter: 'A',
                 clue_letter_x: that.A_pos[that.X()],
                 clue_letter_y: that.A_pos[that.Y()],
-                major_diagonal: that.clues[0],
-                minor_diagonal: that.clues[1],
-                rows: that.clues.slice(2, 2+5),
-                columns: that.clues.slice(2+5, 2+5+5)
+                major_diagonal: l_clues[0],
+                minor_diagonal: l_clues[1],
+                rows: l_clues.slice(2, 2+5),
+                columns: l_clues.slice(2+5, 2+5+5)
             };
         },
     },
@@ -978,11 +984,11 @@ Class('ABC_Path.Generator.Generator', {
             while (dfs_stack.length > 0) {
                 var last_state = dfs_stack[dfs_stack.length - 1];
 
-                if (! 'chosen_clue' in last_state) {
+                if (! ('chosen_clue' in last_state)) {
                     var clues = that._perl_range(0, that.NUM_CLUES()-1).map( function (idx) {
                         return [idx, last_state.clues[idx]];
                     }).filter( function (pair) {
-                        return (! 'cells' in pair[1]);
+                        return (! ('cells' in pair[1]));
                     }).sort( function (a,b) {
                         var aa = a[1].num_remaining ;
                         var bb = b[1].num_remaining ;
@@ -1009,7 +1015,7 @@ Class('ABC_Path.Generator.Generator', {
                                 return layout.get_cell_contents(idx);
                             });
                         };
-                        var riddle = ABC_Path.Generator.RiddleObj.new({
+                        var riddle = new ABC_Path.Generator.RiddleObj({
                             solution: layout,
                             clues: last_state.clues.map(handle_clue),
                             A_pos: that._to_xy(A_pos)
@@ -1038,7 +1044,7 @@ Class('ABC_Path.Generator.Generator', {
                     var clue_idx = clues[0][0];
                     last_state.chosen_clue = clue_idx;
 
-                    var positions = _clues_positions[clue_idx].filter ( function (x) {
+                    var positions = that._clues_positions[clue_idx].filter ( function (x) {
                         return ((last_state.pos_taken & (1 << x)) == 0);
                     });
 

@@ -529,4 +529,34 @@ function test_abc_path()
             'clue No. 2+5 (x=0) is OK.'
         );
     });
+
+    test("calc_riddle", function() {
+        expect(1);
+        var gen = new ABC_Path.Generator.Generator({seed : 1});
+        var riddle = gen.calc_riddle();
+
+        // TEST
+        deepEqual(riddle.get_clues_for_input_to_board(),
+            {
+            clue_letter: 'A',
+            clue_letter_x: 1,
+            clue_letter_y: 3,
+            major_diagonal: ['Y', 'L'],
+            minor_diagonal: ['T', 'H'],
+            columns: [
+            ['G','E',],
+            ['B','X',],
+            ['J','C',],
+            ['N','Q',],
+            ['U','P',],
+            ],
+            rows: [
+            ['S','R',],
+            ['D','W',],
+            ['F','V',],
+            ['O','K',],
+            ['M','I',],
+            ],
+            }, 'clues for layout No. 1 are OK.');
+    });
 }
