@@ -908,5 +908,129 @@ Class('ABC_Path.Generator.Generator', {
             }
             throw "Not found!";
         },
+        calc_riddle: function() {
+            var that = this;
+
+            var layout = that.calc_final_layout();
+
+            var A_pos = layout.get_A_pos();
+
+            var init_state = { pos_taken: 0, 
+                clues: that._perl_range(1, that.NUM_CLUES()).map(function (x) {
+                    return { num_remaining: 5 };
+                })
+            };
+
+            var mark = function (state, pos) {
+                state.pos_taken |= (1 << pos);
+
+                var xy = that._to_xy(pos);
+                var y = xy[that.Y()];
+                var x = xy[that.X()];
+
+                var clues_indexes = [];
+                if (y == x)
+                {
+                    clues_indexes.push(0);
+                }
+                if (y == (that.LEN()-1-x))
+                {
+                    clues_indexes.push(1);
+                }
+                clues_indexes.push(2+y);
+                clues_indexes.push((2+5)+x);
+
+                clues_indexes.forEach( function (clue) {
+                    state.clues[clue].num_remaining--;
+                    return;
+                });
+
+                return;
+            };
+
+            mark(init_state, A_pos);
+
+            var dfs_stack = [init_state];
+
+            DFS:
+            while (dfs_stack.length > 0) {
+                var last_state = dfs_stack[dfs_stack.length - 1];
+
+                if (! 'chosen_clue' in last_state) {
+                    var clues = that._perl_range(0, that.NUM_CLUES()-1).map( function (idx) {
+                        return [idx, last_state.clues[idx]];
+                    }).filter( function (pair) {
+                        return (! 'cells' in pair[1]);
+                    }).sort( function (a,b) {
+                        var aa = a[1].num_remaining ;
+                        var bb = b[1].num_remaining ;
+
+                        if (aa < bb)
+                    {
+                        return -1;
+                    }
+                        else if (aa > bb)
+                    {
+                        return 1;
+                    }
+                        else
+                    {
+                        return a[0] - b[0];
+                    }
+                    });
+
+                    if (clues.length == 0) {
+                        // Yay! We found a configuration.
+                        var handle_clue = function(clue) {
+                            var cells = clue.cells;
+                            return that._shuffle(cells).map( function (idx) {
+                                return layout.get_cell_contents(idx);
+                            });
+                        };
+                        var riddle = ABC_Path.Generator.RiddleObj.new({
+                            solution: layout,
+                            clues: last_state.clues.map(handle_clue),
+                            A_pos: that._to_xy(A_pos)
+                        });
+
+                        var solver = new ABC_Path.Solver.Board({});
+                        solver.input_from_clues(riddle.get_clues_for_input_to_board());
+                        solver.solve();
+
+                        if (solver.get_successes_text_tables().length != 1) {
+                            // The solution is ambiguous
+                            dfs_stack.pop();
+                            continue DFS;
+                        } else {
+                            return riddle;
+                        }
+                    }
+
+                    // Not enough for the clues there.
+                    if (clues[0][1].num_remaining < 2)
+                    {
+                        dfs_stack.pop();
+                        continue DFS;
+                    }
+
+                    var clue_idx = clues[0][0];
+                    last_state.chosen_clue = clue_idx;
+
+                    var positions = _clues_positions[clue_idx].filter ( function (x) {
+                        return ((last_state.pos_taken & (1 << x)) == 0);
+                    });
+
+                    var pairs = [];
+
+                    for (var first_idx = 0; first_idx < positions.length - 1 ; first_idx++) {
+                        for (var second_idx = first_idx+1 ; second_idx < positions.length ; second_idx++ ) {
+                            pairs.push([positions[first_idx], positions[second_idx]]);
+                        }
+                    }
+
+                    last_state.pos_pairs = that._shuffle(pairs);
+                }
+            }
+        },
     }
 });
