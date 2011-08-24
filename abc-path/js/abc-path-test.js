@@ -559,4 +559,35 @@ function test_abc_path()
             ],
             }, 'clues for layout No. 1 are OK.');
     });
+
+    test("calc_riddle for another seed", function() {
+        expect(1);
+        var gen = new ABC_Path.Generator.Generator({seed : 251});
+        var riddle = gen.calc_riddle();
+
+        // TEST
+        deepEqual(riddle.get_clues_for_input_to_board(),
+            {
+            clue_letter: 'A',
+            clue_letter_x: 3,
+            clue_letter_y: 1,
+            major_diagonal: ['K', 'C'],
+            minor_diagonal: ['G', 'R'],
+            columns: [
+            ['V','X',],
+            ['D','F',],
+            ['E','I',],
+            ['S','L',],
+            ['O','Q',],
+            ],
+            rows: [
+            ['B','U',],
+            ['T','W',],
+            ['P','N',],
+            ['Y','M',],
+            ['H','J',],
+            ],
+            }, 'clues for layout No. 1 are OK.');
+    });
+
 }
