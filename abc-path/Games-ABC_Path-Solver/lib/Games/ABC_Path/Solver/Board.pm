@@ -304,7 +304,7 @@ sub _set_conclusive_verdict_for_letter
 
             $self->_set_verdict($letter, $xy,
                 # TODO : extract a method for coords equality
-                ((($l_xy->x == $xy->x) && ($l_xy->y == $xy->y))
+                ($l_xy->_equal($xy)
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
                 )
