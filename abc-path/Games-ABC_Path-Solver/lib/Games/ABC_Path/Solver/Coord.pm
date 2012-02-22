@@ -69,6 +69,13 @@ sub y
     return $self->{'y'};
 }
 
+sub _to_s
+{
+    my $self = shift;
+
+    return sprintf("%d,%d", $self->x, $self->y);
+}
+
 sub _init
 {
     my ($self,$args) = @_;

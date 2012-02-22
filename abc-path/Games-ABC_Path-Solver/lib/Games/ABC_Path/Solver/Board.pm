@@ -261,7 +261,7 @@ sub _xy_loop
             {
                 return;
             }
-            $sub_ref->($x,$y);
+            $sub_ref->(Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}));
         }
     }
     return;
@@ -281,10 +281,10 @@ sub _set_verdicts_for_letter_sets
 
         $self->_xy_loop(
             sub {
-                my ($x, $y) = @_;
+                my ($xy) = @_;
 
-                $self->_set_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
-                    ((exists $cell_is_maybe{"$x,$y"})
+                $self->_set_verdict($letter, $xy,
+                    ((exists $cell_is_maybe{$xy->_to_s()})
                         ? $ABCP_VERDICT_MAYBE
                         : $ABCP_VERDICT_NO
                     )
@@ -303,10 +303,10 @@ sub _set_conclusive_verdict_for_letter
     my ($l_x, $l_y) = @$xy;
 
     $self->_xy_loop(sub {
-            my ($x, $y) = @_;
+            my ($xy) = @_;
 
-            $self->_set_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
-                ((($l_x == $x) && ($l_y == $y))
+            $self->_set_verdict($letter, $xy,
+                ((($l_x == $xy->x) && ($l_y == $xy->y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
                 )
@@ -368,13 +368,14 @@ sub _infer_letters
         my @true_cells;
 
         $self->_xy_loop(sub {
-            my @c = @_;
+            my ($xy) = @_;
 
-            my $ver = $self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $c[0], y => $c[1]}));
+            my $ver = $self->_get_verdict($letter, $xy);
             if (    ($ver == $ABCP_VERDICT_YES) 
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
-                push @true_cells, [@c]; 
+                # TODO : Put the coordinates themselves in @true_cells instead of pairs-as-array-refs.
+                push @true_cells, [$xy->x,$xy->y]; 
             }
         });
 
@@ -428,32 +429,32 @@ sub _infer_letters
         )
         {
             $self->_xy_loop(sub {
-                my ($x, $y) = @_;
+                my ($xy) = @_;
 
-                if ($neighbourhood[$y][$x])
+                if ($neighbourhood[$xy->y][$xy->x])
                 {
                     return;
                 }
 
                 my $existing_verdict =
-                    $self->_get_verdict($neighbour_letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}));
+                    $self->_get_verdict($neighbour_letter, $xy);
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
-                    $self->_error(['mismatched_verdict', $x, $y]);
+                    $self->_error(['mismatched_verdict', $xy->x, $xy->y]);
                     return;
                 }
 
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                 {
-                    $self->_set_verdict($neighbour_letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}), $ABCP_VERDICT_NO);
+                    $self->_set_verdict($neighbour_letter, $xy, $ABCP_VERDICT_NO);
                     $self->_add_move(
                         Games::ABC_Path::Solver::Move::LettersNotInVicinity->new(
                             {
                                 vars =>
                                 {
                                     target => $neighbour_letter,
-                                    coords => [$x,$y],
+                                    coords => [$xy->x,$xy->y],
                                     source => $letter,
                                 },
                             }
@@ -472,28 +473,28 @@ sub _infer_cells
     my ($self) = @_;
 
     $self->_xy_loop(sub {
-        my ($x, $y) = @_;
+        my ($xy) = @_;
 
-        my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
+        my $letters_aref = $self->_get_possible_letter_indexes($xy->x, $xy->y);
 
         if (! @$letters_aref)
         {
-            $self->_error(['cell', [$x, $y]]);
+            $self->_error(['cell', [$xy->x, $xy->y]]);
             return;
         }
         elsif (@$letters_aref == 1)
         {
             my $letter = $letters_aref->[0];
 
-            if ($self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y,})) == $ABCP_VERDICT_MAYBE)
+            if ($self->_get_verdict($letter, $xy) == $ABCP_VERDICT_MAYBE)
             {
-                $self->_set_conclusive_verdict_for_letter($letter, [$x, $y]);
+                $self->_set_conclusive_verdict_for_letter($letter, [$xy->x, $xy->y]);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::LastRemainingLetterForCell->new(
                         {
                             vars =>
                             {
-                                coords => [$x,$y],
+                                coords => [$xy->x,$xy->y],
                                 letter => $letter,
                             },
                         },
@@ -569,20 +570,21 @@ sub solve
     my @min_options;
 
     $self->_xy_loop(sub {
-        my ($x, $y) = @_;
+        my ($xy) = @_;
 
-        my $letters_aref = $self->_get_possible_letter_indexes($x, $y);
+        my $letters_aref = $self->_get_possible_letter_indexes($xy->x, $xy->y);
 
         if (! @$letters_aref)
         {
-            $self->_error(['cell', [$x, $y]]);
+            $self->_error(['cell', [$xy->x, $xy->y]]);
         }
         elsif (@$letters_aref > 1)
         {
             if ((!@min_coords) or (@$letters_aref < @min_options))
             {
                 @min_options = @$letters_aref;
-                @min_coords = ($x,$y);
+                # TODO : Convert to a ::Coord object.
+                @min_coords = ($xy->x,$xy->y);
             }
         }
 
