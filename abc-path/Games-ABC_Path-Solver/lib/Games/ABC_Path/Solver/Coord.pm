@@ -86,6 +86,13 @@ sub _init
     return;
 }
 
+sub _equal
+{
+    my ($self,$other_xy) = @_;
+
+    return (($self->x == $other_xy->x) && ($self->y == $other_xy->y));
+}
+
 =head1 AUTHOR
 
 Shlomi Fish, L<http://www.shlomifish.org/>
