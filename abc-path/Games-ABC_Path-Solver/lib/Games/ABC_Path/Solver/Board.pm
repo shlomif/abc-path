@@ -208,7 +208,7 @@ sub _calc_offset
         confess "Letter $letter out of range.";
     }
 
-    return $letter * $BOARD_SIZE + $self->_xy_to_int([$xy->y,$xy->x]);
+    return $letter * $BOARD_SIZE + $self->_xy_to_int([$xy->y, $xy->x]);
 }
 
 sub _get_verdict
@@ -241,7 +241,7 @@ sub _set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec(${$self->_layout}, $self->_calc_offset($letter,$xy), 2)
+    vec(${$self->_layout}, $self->_calc_offset($letter, $xy), 2)
         = $verdict;
 
     return;
@@ -453,7 +453,7 @@ sub _infer_letters
                                 vars =>
                                 {
                                     target => $neighbour_letter,
-                                    coords => [$xy->x,$xy->y],
+                                    coords => [$xy->x, $xy->y],
                                     source => $letter,
                                 },
                             }
@@ -493,7 +493,7 @@ sub _infer_cells
                         {
                             vars =>
                             {
-                                coords => [$xy->x,$xy->y],
+                                coords => [$xy->x, $xy->y],
                                 letter => $letter,
                             },
                         },
@@ -596,8 +596,7 @@ sub _solve_wrapper
             if ((!@min_coords) or (@$letters_aref < @min_options))
             {
                 @min_options = @$letters_aref;
-                # TODO : Convert to a ::Coord object.
-                @min_coords = ($xy->x,$xy->y);
+                @min_coords = ($xy);
             }
         }
 
@@ -611,7 +610,7 @@ sub _solve_wrapper
 
     if (@min_coords)
     {
-        my ($x, $y) = @min_coords;
+        my ($xy) = @min_coords;
         # We have at least one multiple rank cell. Let's recurse there:
         foreach my $letter (@min_options)
         {
@@ -620,13 +619,13 @@ sub _solve_wrapper
             $self->_add_move(
                 Games::ABC_Path::Solver::Move::TryingLetterForCell->new(
                     {
-                        vars => { letter => $letter, coords => [$x, $y], },
+                        vars => { letter => $letter, coords => [$xy->x, $xy->y], },
                     }
                 ),
             );
 
             $recurse_solver->_set_conclusive_verdict_for_letter(
-                $letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
+                $letter, $xy
             );
 
             $recurse_solver->_solve_wrapper;
@@ -644,7 +643,7 @@ sub _solve_wrapper
                         vars =>
                         {
                             letter => $letter,
-                            coords => [$x,$y],
+                            coords => [$xy->x, $xy->y],
                         },
                     }
                     )
@@ -655,7 +654,7 @@ sub _solve_wrapper
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::ResultsInASuccess->new(
                         {
-                            vars => { letter => $letter, coords => [$x,$y],},
+                            vars => { letter => $letter, coords => [$xy->x, $xy->y],},
                         }
                     )
                 );
