@@ -2,6 +2,8 @@ Revision history for Games-ABC_Path-Generator
 
     - Fix the documentation of FinalLayoutObj - it had some remnants of
     the RiddleObj documentation.
+    - Got rid of lib/Games/ABC_Path/Generator/Constants.pm - it was no
+    longer used.
 
 0.1.0       Sat Jul 23 21:34:59 IDT 2011
     - Improved lib/Games/ABC_Path/Generator.pm with acknowldgements, a 
