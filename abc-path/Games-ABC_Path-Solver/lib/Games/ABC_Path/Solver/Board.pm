@@ -57,6 +57,8 @@ use Games::ABC_Path::Solver::Move::ResultsInAnError;
 use Games::ABC_Path::Solver::Move::ResultsInASuccess;
 use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 
+use Games::ABC_Path::Solver::Coord;
+
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
@@ -197,21 +199,25 @@ sub _init
 
 sub _calc_offset
 {
-    my ($self, $letter, $x, $y) = @_;
+    my ($self, $letter, $xy) = @_;
 
     if (($letter < 0) or ($letter >= 25))
     {
         confess "Letter $letter out of range.";
     }
 
-    return $letter * $BOARD_SIZE + $self->_xy_to_int([$y,$x]);
+    return $letter * $BOARD_SIZE + $self->_xy_to_int([$xy->y,$xy->x]);
 }
 
 sub _get_verdict
 {
     my ($self, $letter, $x, $y) = @_;
 
-    return vec(${$self->_layout}, $self->_calc_offset($letter, $x, $y), 2);
+    return vec(${$self->_layout}, 
+        $self->_calc_offset(
+            $letter, 
+            Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
+        ), 2);
 }
 
 sub _set_verdict
@@ -227,7 +233,7 @@ sub _set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec(${$self->_layout}, $self->_calc_offset($letter,$x,$y), 2)
+    vec(${$self->_layout}, $self->_calc_offset($letter,Games::ABC_Path::Solver::Coord->new({x => $x, y => $y})), 2)
         = $verdict;
 
     return;
