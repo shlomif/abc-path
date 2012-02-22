@@ -1,5 +1,10 @@
 Revision history for Games-ABC_Path-Solver
 
+        - Extract the class lib/Games/ABC_Path/Solver/Coord.pm .
+            - Backwards incompatible change: get_var for 'coords'/etc.
+            in Games::ABC_Path::Solver::Move now returns them instead of
+            an [x,y] array ref.
+
 0.2.0   Sat Jul 23 21:22:17 IDT 2011
         - Create lib/Games/ABC_Path/Solver/Constants.pm based on the one 
         from Games::ABC_Path::Generator.
