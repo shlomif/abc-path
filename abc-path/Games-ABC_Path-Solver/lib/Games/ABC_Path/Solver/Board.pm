@@ -351,9 +351,9 @@ sub get_possible_letters_for_cell
 
 sub _get_possible_letters_string
 {
-    my ($self, $x, $y) = @_;
+    my ($self, $xy) = @_;
 
-    return join(',', @{$self->get_possible_letters_for_cell($x,$y)});
+    return join(',', @{$self->get_possible_letters_for_cell($xy->x, $xy->y)});
 }
 
 
@@ -859,8 +859,8 @@ sub _get_results_text_table
         [map { sprintf("X = %d", $_+1) } $self->_x_indexes ],
         map { my $y = $_; 
             [ 
-                map 
-                { $self->_get_possible_letters_string($_, $y) }
+                map
+                { $self->_get_possible_letters_string(Games::ABC_Path::Solver::Coord->new({x => $_, y => $y})) }
                 $self->_x_indexes
             ]
             }
