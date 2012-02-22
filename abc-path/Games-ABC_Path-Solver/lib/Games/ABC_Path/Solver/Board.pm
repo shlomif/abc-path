@@ -272,8 +272,7 @@ sub _set_verdicts_for_letter_sets
 {
     my ($self, $letter_list, $maybe_list) = @_;
 
-    my %cell_is_maybe =
-        (map {; sprintf("%d,%d", @$_) => 1; } @$maybe_list);
+    my %cell_is_maybe = (map { $_->_to_s() => 1 } @$maybe_list);
 
     foreach my $letter_ascii (@$letter_list)
     {
@@ -710,7 +709,10 @@ sub _process_major_diagonal
 
     $self->_set_verdicts_for_letter_sets(
         \@major_diagonal_letters, 
-        [map { [$_,$_] } $self->_y_indexes],
+        [map
+            { Games::ABC_Path::Solver::Coord->new({x => $_, y => $_}) }
+            $self->_y_indexes
+        ],
     );
 
     return;
@@ -732,7 +734,7 @@ sub _process_minor_diagonal
 
     $self->_set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
-        [map { [$_, 4-$_] } ($self->_y_indexes)]
+        [map { Games::ABC_Path::Solver::Coord->new({x => $_, y => 4-$_}) } ($self->_y_indexes)]
     );
 
     return;
@@ -749,7 +751,7 @@ sub _process_input_columns
     {
         $self->_set_verdicts_for_letter_sets(
             [substr($top_row, $x+1, 1), substr($bottom_row, $x+1, 1),],
-            [map { [$x,$_] } $self->_y_indexes],
+            [map { Games::ABC_Path::Solver::Coord->new({x =>$x, y => $_}) } $self->_y_indexes],
         );
     }
 
@@ -769,7 +771,7 @@ sub _process_input_rows_and_initial_letter_clue
         my $row = $rows->[$y];
         $self->_set_verdicts_for_letter_sets(
             [substr($row, 0, 1), substr($row, -1),],
-            [map { [$_,$y] } $self->_x_indexes],
+            [map { Games::ABC_Path::Solver::Coord->new({x => $_,y => $y}) } $self->_x_indexes],
         );
 
         my $s = substr($row, 1, -1);
