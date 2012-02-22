@@ -222,7 +222,13 @@ sub _get_verdict
 
 sub _set_verdict
 {
-    my ($self, $letter, $x, $y, $verdict) = @_;
+    my ($self, $letter, $xy, $verdict) = @_;
+
+    # Temporary - remove later.
+    if (@_ != 4)
+    {
+        confess "_set_verdict has wrong number of args.";
+    }
 
     if (not
         (($verdict == $ABCP_VERDICT_NO)
@@ -233,7 +239,7 @@ sub _set_verdict
         confess "Invalid verdict $verdict .";
     }
 
-    vec(${$self->_layout}, $self->_calc_offset($letter,Games::ABC_Path::Solver::Coord->new({x => $x, y => $y})), 2)
+    vec(${$self->_layout}, $self->_calc_offset($letter,$xy), 2)
         = $verdict;
 
     return;
@@ -277,7 +283,7 @@ sub _set_verdicts_for_letter_sets
             sub {
                 my ($x, $y) = @_;
 
-                $self->_set_verdict($letter, $x, $y,
+                $self->_set_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
                     ((exists $cell_is_maybe{"$x,$y"})
                         ? $ABCP_VERDICT_MAYBE
                         : $ABCP_VERDICT_NO
@@ -299,7 +305,7 @@ sub _set_conclusive_verdict_for_letter
     $self->_xy_loop(sub {
             my ($x, $y) = @_;
 
-            $self->_set_verdict($letter, $x, $y,
+            $self->_set_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
                 ((($l_x == $x) && ($l_y == $y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
@@ -314,7 +320,7 @@ sub _set_conclusive_verdict_for_letter
         {
             next OTHER_LETTER;
         }
-        $self->_set_verdict($other_letter, $l_x, $l_y, $ABCP_VERDICT_NO);
+        $self->_set_verdict($other_letter, Games::ABC_Path::Solver::Coord->new({x => $l_x, y => $l_y}), $ABCP_VERDICT_NO);
     }
 
     return;
@@ -440,7 +446,7 @@ sub _infer_letters
 
                 if ($existing_verdict == $ABCP_VERDICT_MAYBE)
                 {
-                    $self->_set_verdict($neighbour_letter, $x, $y, $ABCP_VERDICT_NO);
+                    $self->_set_verdict($neighbour_letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}), $ABCP_VERDICT_NO);
                     $self->_add_move(
                         Games::ABC_Path::Solver::Move::LettersNotInVicinity->new(
                             {
