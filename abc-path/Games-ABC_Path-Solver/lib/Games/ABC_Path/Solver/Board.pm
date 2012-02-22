@@ -326,11 +326,11 @@ sub _set_conclusive_verdict_for_letter
 
 sub _get_possible_letter_indexes
 {
-    my ($self, $x, $y) = @_;
+    my ($self, $xy) = @_;
 
     return 
     [
-        grep { $self->_get_verdict($_, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y})) != $ABCP_VERDICT_NO }
+        grep { $self->_get_verdict($_, $xy) != $ABCP_VERDICT_NO }
         $self->_l_indexes()
     ];
 }
@@ -346,7 +346,7 @@ sub get_possible_letters_for_cell
 {
     my ($self, $x, $y) = @_;
 
-    return [@letters[@{$self->_get_possible_letter_indexes($x,$y)}]];
+    return [@letters[@{$self->_get_possible_letter_indexes(Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}))}]];
 }
 
 sub _get_possible_letters_string
@@ -474,7 +474,7 @@ sub _infer_cells
     $self->_xy_loop(sub {
         my ($xy) = @_;
 
-        my $letters_aref = $self->_get_possible_letter_indexes($xy->x, $xy->y);
+        my $letters_aref = $self->_get_possible_letter_indexes($xy);
 
         if (! @$letters_aref)
         {
@@ -571,7 +571,7 @@ sub solve
     $self->_xy_loop(sub {
         my ($xy) = @_;
 
-        my $letters_aref = $self->_get_possible_letter_indexes($xy->x, $xy->y);
+        my $letters_aref = $self->_get_possible_letter_indexes($xy);
 
         if (! @$letters_aref)
         {
