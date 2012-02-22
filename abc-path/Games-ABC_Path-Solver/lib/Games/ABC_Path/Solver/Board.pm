@@ -211,13 +211,13 @@ sub _calc_offset
 
 sub _get_verdict
 {
-    my ($self, $letter, $x, $y) = @_;
+    my ($self, $letter, $xy) = @_;
 
-    return vec(${$self->_layout}, 
-        $self->_calc_offset(
-            $letter, 
-            Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
-        ), 2);
+    return vec(
+        ${$self->_layout},
+        $self->_calc_offset($letter, $xy,),
+        2
+    );
 }
 
 sub _set_verdict
@@ -326,7 +326,7 @@ sub _get_possible_letter_indexes
 
     return 
     [
-        grep { $self->_get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
+        grep { $self->_get_verdict($_, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y})) != $ABCP_VERDICT_NO }
         $self->_l_indexes()
     ];
 }
@@ -364,7 +364,7 @@ sub _infer_letters
         $self->_xy_loop(sub {
             my @c = @_;
 
-            my $ver = $self->_get_verdict($letter, @c);
+            my $ver = $self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $c[0], y => $c[1]}));
             if (    ($ver == $ABCP_VERDICT_YES) 
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
@@ -380,7 +380,7 @@ sub _infer_letters
         elsif (@true_cells == 1)
         {
             my $xy = $true_cells[0];
-            if ($self->_get_verdict($letter, @$xy) ==
+            if ($self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $xy->[0], y => $xy->[1]})) ==
                 $ABCP_VERDICT_MAYBE)
             {
                 $self->_set_conclusive_verdict_for_letter($letter, $xy);
@@ -430,7 +430,7 @@ sub _infer_letters
                 }
 
                 my $existing_verdict =
-                    $self->_get_verdict($neighbour_letter, $x, $y);
+                    $self->_get_verdict($neighbour_letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}));
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
@@ -479,7 +479,7 @@ sub _infer_cells
         {
             my $letter = $letters_aref->[0];
 
-            if ($self->_get_verdict($letter, $x, $y) == $ABCP_VERDICT_MAYBE)
+            if ($self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y,})) == $ABCP_VERDICT_MAYBE)
             {
                 $self->_set_conclusive_verdict_for_letter($letter, [$x, $y]);
                 $self->_add_move(
