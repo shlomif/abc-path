@@ -372,8 +372,7 @@ sub _infer_letters
             if (    ($ver == $ABCP_VERDICT_YES) 
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
-                # TODO : Put the coordinates themselves in @true_cells instead of pairs-as-array-refs.
-                push @true_cells, [$xy->x,$xy->y]; 
+                push @true_cells, $xy; 
             }
         });
 
@@ -385,18 +384,17 @@ sub _infer_letters
         elsif (@true_cells == 1)
         {
             my $xy = $true_cells[0];
-            if ($self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $xy->[0], y => $xy->[1]})) ==
+            if ($self->_get_verdict($letter, $xy) ==
                 $ABCP_VERDICT_MAYBE)
             {
-                $self->_set_conclusive_verdict_for_letter($letter, 
-                    Games::ABC_Path::Solver::Coord->new({x => $xy->[0], y => $xy->[1]}));
+                $self->_set_conclusive_verdict_for_letter($letter, $xy);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::LastRemainingCellForLetter->new(
                         {
                             vars =>
                             {
                                 letter => $letter,
-                                coords => $xy,
+                                coords => [$xy->x, $xy->y],
                             },
                         }
                     )
@@ -413,7 +411,7 @@ sub _infer_letters
                 grep {
                     $self->_x_in_range($_->[0]) and $self->_y_in_range($_->[1])
                 }
-                map { [$true->[0] + $_->[0], $true->[1] + $_->[1]] }
+                map { [$true->x + $_->[0], $true->y + $_->[1]] }
                 map { my $d = $_; map { [$_, $d] } (-1 .. 1) }
                 (-1 .. 1)
             )
