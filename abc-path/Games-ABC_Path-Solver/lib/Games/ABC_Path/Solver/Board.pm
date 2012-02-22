@@ -297,21 +297,21 @@ sub _set_verdicts_for_letter_sets
 
 sub _set_conclusive_verdict_for_letter
 {
-    my ($self, $letter, $xy) = @_;
-
-    my ($l_x, $l_y) = @$xy;
+    my ($self, $letter, $l_xy) = @_;
 
     $self->_xy_loop(sub {
             my ($xy) = @_;
 
             $self->_set_verdict($letter, $xy,
-                ((($l_x == $xy->x) && ($l_y == $xy->y))
+                # TODO : extract a method for coords equality
+                ((($l_xy->x == $xy->x) && ($l_xy->y == $xy->y))
                     ? $ABCP_VERDICT_YES
                     : $ABCP_VERDICT_NO
                 )
             );
         }
     );
+
     OTHER_LETTER:
     foreach my $other_letter ($self->_l_indexes)
     {
@@ -319,7 +319,7 @@ sub _set_conclusive_verdict_for_letter
         {
             next OTHER_LETTER;
         }
-        $self->_set_verdict($other_letter, Games::ABC_Path::Solver::Coord->new({x => $l_x, y => $l_y}), $ABCP_VERDICT_NO);
+        $self->_set_verdict($other_letter, $l_xy, $ABCP_VERDICT_NO);
     }
 
     return;
@@ -389,7 +389,8 @@ sub _infer_letters
             if ($self->_get_verdict($letter, Games::ABC_Path::Solver::Coord->new({x => $xy->[0], y => $xy->[1]})) ==
                 $ABCP_VERDICT_MAYBE)
             {
-                $self->_set_conclusive_verdict_for_letter($letter, $xy);
+                $self->_set_conclusive_verdict_for_letter($letter, 
+                    Games::ABC_Path::Solver::Coord->new({x => $xy->[0], y => $xy->[1]}));
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::LastRemainingCellForLetter->new(
                         {
@@ -487,7 +488,7 @@ sub _infer_cells
 
             if ($self->_get_verdict($letter, $xy) == $ABCP_VERDICT_MAYBE)
             {
-                $self->_set_conclusive_verdict_for_letter($letter, [$xy->x, $xy->y]);
+                $self->_set_conclusive_verdict_for_letter($letter, $xy);
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::LastRemainingLetterForCell->new(
                         {
@@ -612,7 +613,7 @@ sub solve
             );
 
             $recurse_solver->_set_conclusive_verdict_for_letter(
-                $letter, [$x,$y]
+                $letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
             );
 
             $recurse_solver->solve;
@@ -793,7 +794,7 @@ sub _process_input_rows_and_initial_letter_clue
 
     $self->_set_conclusive_verdict_for_letter(
         $self->_get_letter_numeric($clue_letter),
-        [$clue_x, $clue_y],
+        Games::ABC_Path::Solver::Coord->new({x => $clue_x, y => $clue_y}),
     );
 
     return;
