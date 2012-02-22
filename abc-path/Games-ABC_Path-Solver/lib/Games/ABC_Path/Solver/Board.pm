@@ -59,6 +59,8 @@ use Games::ABC_Path::Solver::Move::TryingLetterForCell;
 
 use Games::ABC_Path::Solver::Coord;
 
+use Scalar::Util qw(blessed);
+
 my $ABCP_VERDICT_NO = 0;
 my $ABCP_VERDICT_MAYBE = 1;
 my $ABCP_VERDICT_YES = 2;
@@ -438,7 +440,7 @@ sub _infer_letters
 
                 if ($existing_verdict == $ABCP_VERDICT_YES)
                 {
-                    $self->_error(['mismatched_verdict', $xy->x, $xy->y]);
+                    $self->_error(['mismatched_verdict', $xy]);
                     return;
                 }
 
@@ -476,7 +478,7 @@ sub _infer_cells
 
         if (! @$letters_aref)
         {
-            $self->_error(['cell', [$xy->x, $xy->y]]);
+            $self->_error(['cell', $xy]);
             return;
         }
         elsif (@$letters_aref == 1)
@@ -556,6 +558,20 @@ sub solve
 {
     my ($self) = @_;
 
+    my $error = $self->_solve_wrapper;
+
+    return [map {
+        my $obj = $_;
+        (blessed($obj) && $obj->isa('Games::ABC_Path::Solver::Coord'))
+            ? ($obj->x, $obj->y)
+            : ($obj)
+        } @$error];
+}
+
+sub _solve_wrapper
+{
+    my ($self) = @_;
+
     $self->_neighbourhood_and_individuality_inferring;
 
     if ($self->_error)
@@ -573,7 +589,7 @@ sub solve
 
         if (! @$letters_aref)
         {
-            $self->_error(['cell', [$xy->x, $xy->y]]);
+            $self->_error(['cell', $xy]);
         }
         elsif (@$letters_aref > 1)
         {
@@ -613,7 +629,7 @@ sub solve
                 $letter, Games::ABC_Path::Solver::Coord->new({x => $x, y => $y}),
             );
 
-            $recurse_solver->solve;
+            $recurse_solver->_solve_wrapper;
 
             foreach my $move (@{ $recurse_solver->get_moves })
             {
