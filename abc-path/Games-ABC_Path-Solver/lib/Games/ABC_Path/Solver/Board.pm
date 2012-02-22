@@ -396,7 +396,7 @@ sub _infer_letters
                             vars =>
                             {
                                 letter => $letter,
-                                coords => [$xy->x, $xy->y],
+                                coords => $xy,
                             },
                         }
                     )
@@ -453,7 +453,7 @@ sub _infer_letters
                                 vars =>
                                 {
                                     target => $neighbour_letter,
-                                    coords => [$xy->x, $xy->y],
+                                    coords => $xy,
                                     source => $letter,
                                 },
                             }
@@ -493,7 +493,7 @@ sub _infer_cells
                         {
                             vars =>
                             {
-                                coords => [$xy->x, $xy->y],
+                                coords => $xy,
                                 letter => $letter,
                             },
                         },
@@ -619,7 +619,7 @@ sub _solve_wrapper
             $self->_add_move(
                 Games::ABC_Path::Solver::Move::TryingLetterForCell->new(
                     {
-                        vars => { letter => $letter, coords => [$xy->x, $xy->y], },
+                        vars => { letter => $letter, coords => $xy, },
                     }
                 ),
             );
@@ -643,7 +643,7 @@ sub _solve_wrapper
                         vars =>
                         {
                             letter => $letter,
-                            coords => [$xy->x, $xy->y],
+                            coords => $xy,
                         },
                     }
                     )
@@ -654,7 +654,7 @@ sub _solve_wrapper
                 $self->_add_move(
                     Games::ABC_Path::Solver::Move::ResultsInASuccess->new(
                         {
-                            vars => { letter => $letter, coords => [$xy->x, $xy->y],},
+                            vars => { letter => $letter, coords => $xy,},
                         }
                     )
                 );

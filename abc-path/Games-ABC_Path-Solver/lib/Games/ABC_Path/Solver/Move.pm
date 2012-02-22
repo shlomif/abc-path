@@ -133,7 +133,7 @@ sub _expand_format
     }
     elsif ($type eq "coords")
     {
-        return sprintf("(%d,%d)", $value->[0]+1, $value->[1]+1);
+        return sprintf("(%d,%d)", $value->x()+1, $value->y()+1);
     }
     else
     {
