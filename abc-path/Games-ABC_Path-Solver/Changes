@@ -1,5 +1,6 @@
 Revision history for Games-ABC_Path-Solver
 
+0.3.0   Thu Feb 23 18:53:51 IST 2012
         - Extract the class lib/Games/ABC_Path/Solver/Coord.pm .
             - Backwards incompatible change: get_var for 'coords'/etc.
             in Games::ABC_Path::Solver::Move now returns them instead of
