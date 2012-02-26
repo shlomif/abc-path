@@ -3,6 +3,7 @@ Changes
 inc/Test/Run/Builder.pm
 lib/Games/ABC_Path/Generator/App.pm
 lib/Games/ABC_Path/Generator/Base.pm
+lib/Games/ABC_Path/Generator/Coord.pm
 lib/Games/ABC_Path/Generator/FinalLayoutObj.pm
 lib/Games/ABC_Path/Generator.pm
 lib/Games/ABC_Path/Generator/RiddleObj.pm

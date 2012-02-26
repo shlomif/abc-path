@@ -17,6 +17,7 @@ use Games::ABC_Path::MicrosoftRand;
 
 use Games::ABC_Path::Generator::RiddleObj;
 use Games::ABC_Path::Generator::FinalLayoutObj;
+use Games::ABC_Path::Generator::Coord;
 
 =head1 NAME
 
@@ -84,9 +85,9 @@ sub _shuffle {
 my @get_next_cells_lookup =
 (
     map {
-        my ($sy, $sx) = __PACKAGE__->_to_xy($_);
+        my $start = Games::ABC_Path::Generator::Coord->_from_int($_);
         [ map {
-            my ($y,$x) = ($sy+$_->[$Y], $sx+$_->[$X]);
+            my ($y,$x) = ($start->y() + $_->[$Y], $start->x() + $_->[$X]);
             (
                 (__PACKAGE__->_x_in_range($x) && __PACKAGE__->_y_in_range($y))
                 ? (__PACKAGE__->_xy_to_int([$y,$x])) : ()
