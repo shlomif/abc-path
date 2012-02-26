@@ -245,12 +245,13 @@ sub calc_riddle
         
         vec($state->{pos_taken}, $pos, 1) = 1;
         
-        my ($y,$x) = $self->_to_xy($pos);
+        my $coord = Games::ABC_Path::Generator::Coord->_from_int($pos);
+
         foreach my $clue (
-            (($y == $x) ? 0 : ()),
-            (($y == (5-1)-$x) ? 1 : ()),
-            (2+$y),
-            ((2+5)+$x),
+            (($coord->y == $coord->x) ? 0 : ()),
+            (($coord->y == (5-1)-$coord->x) ? 1 : ()),
+            (2+$coord->y),
+            ((2+5)+$coord->x),
         )
         {
             $state->{clues}->[$clue]->{num_remaining}--;
