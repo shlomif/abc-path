@@ -300,7 +300,7 @@ sub calc_riddle
                         [
                             map { $handle_clue->($_) } @{$last_state->{clues}}
                         ],
-                        A_pos => [$self->_to_xy($A_pos)],
+                        A_pos => Games::ABC_Path::Generator::Coord->_from_int($A_pos),
                     }
                 );
                 

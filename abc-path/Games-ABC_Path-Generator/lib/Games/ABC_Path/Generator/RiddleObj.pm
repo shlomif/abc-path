@@ -199,7 +199,7 @@ sub get_riddle_v1_string
 
     my $s = ((' ' x 7)."\n")x7;
 
-    substr($s, ($self->_A_pos()->[$Y]+1) * 8 + $self->_A_pos->[$X]+1, 1) = 'A';
+    substr($s, ($self->_A_pos->y + 1) * 8 + $self->_A_pos->x + 1, 1) = 'A';
 
     my $clues = $self->_clues();
     foreach my $clue_idx (0 .. $NUM_CLUES-1)
