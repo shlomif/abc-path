@@ -9,6 +9,7 @@ use Test::Run::Builder;
 my $builder = Test::Run::Builder->new(
     module_name         => 'Games::ABC_Path::Solver',
     license             => 'mit',
+    dist_abstract       => 'A Solver for ABC Path',
     dist_author         => 'Shlomi Fish <shlomif@cpan.org>',
     configure_requires => {
         'Module::Build' => '0.36',

@@ -32,7 +32,7 @@ our $VERSION = '0.3.0';
 =head2 new
 
 The constructor. Accepts a hash ref of named arguments. Currently only C<'argv'>
-which should point to an array ref of command-line arguments. 
+which should point to an array ref of command-line arguments.
 
 =head2 run
 

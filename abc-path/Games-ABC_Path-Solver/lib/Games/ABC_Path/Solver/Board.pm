@@ -330,7 +330,7 @@ sub _get_possible_letter_indexes
 {
     my ($self, $xy) = @_;
 
-    return 
+    return
     [
         grep { $self->_get_verdict($_, $xy) != $ABCP_VERDICT_NO }
         $self->_l_indexes()
@@ -371,10 +371,10 @@ sub _infer_letters
             my ($xy) = @_;
 
             my $ver = $self->_get_verdict($letter, $xy);
-            if (    ($ver == $ABCP_VERDICT_YES) 
+            if (    ($ver == $ABCP_VERDICT_YES)
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
-                push @true_cells, $xy; 
+                push @true_cells, $xy;
             }
         });
 
@@ -658,7 +658,7 @@ sub _solve_wrapper
                         }
                     )
                 );
-                push @{$self->_successful_layouts}, 
+                push @{$self->_successful_layouts},
                     @{$recurse_solver->get_successful_layouts()};
             }
         }
@@ -721,7 +721,7 @@ sub _process_major_diagonal
     push @major_diagonal_letters, $1;
 
     $self->_set_verdicts_for_letter_sets(
-        \@major_diagonal_letters, 
+        \@major_diagonal_letters,
         [map
             { Games::ABC_Path::Solver::Coord->new({x => $_, y => $_}) }
             $self->_y_indexes
@@ -858,10 +858,10 @@ sub _get_results_text_table
     my $render_row = sub {
         my $cols = shift;
 
-        return 
+        return
             "| " .
             join(
-                " | ", 
+                " | ",
                 map { length($_) == 1 ? "  $_  " : $_ } @$cols
             ) . " |\n";
     };
@@ -870,8 +870,8 @@ sub _get_results_text_table
         map { $render_row->($_) }
         (
         [map { sprintf("X = %d", $_+1) } $self->_x_indexes ],
-        map { my $y = $_; 
-            [ 
+        map { my $y = $_;
+            [
                 map
                 { $self->_get_possible_letters_string(Games::ABC_Path::Solver::Coord->new({x => $_, y => $y})) }
                 $self->_x_indexes
@@ -905,8 +905,8 @@ Sample boards can be found in the distribution under C<t/layouts/> .
 Here is the description of their formats. The first line should be the
 magic string C<ABC Path Solver Layout Version 1:> , and the next line should
 be a row of 7 letters, the first being a hint for the top-left-to-bottom-right
-perpendicular, the last being a hint for the top-right-to-bottom-left 
-perpendicular and the rest of the letters being vertical hints. 
+perpendicular, the last being a hint for the top-right-to-bottom-left
+perpendicular and the rest of the letters being vertical hints.
 
 After that, there are 5 rows of horizontal hints being a letter, 5 spaces
 and another letter. On one of the squares one can put a letter instead of a
@@ -945,7 +945,7 @@ sub input_from_file
 
 =head2 my $board = Games::ABC_Path::Solver::Board->input_from_v1_string($layout_string)
 
-This is a class method that inputs a version 1 string (as specified in 
+This is a class method that inputs a version 1 string (as specified in
 L<input_from_file> only without the opening magic line.)
 
 =cut

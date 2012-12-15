@@ -31,4 +31,5 @@ t/pod.t
 t/results/brain-bashers.2010-12-21.abc-path-sol
 t/results/brain-bashers.2010-12-22.abc-path-sol
 t/solver-output-system-test.t
+t/style-trailing-space.t
 META.json
