@@ -18,22 +18,22 @@ function test_abc_path()
         ok (myconst, "myconst was initialized.");
 
         // TEST
-        equals (myconst.LEN(), 5, "LEN is 5.");
+        equal (myconst.LEN(), 5, "LEN is 5.");
 
         // TEST
-        equals (myconst.LEN_LIM(), 4, "LEN_LIM is 4 - one less than LEN.");
+        equal (myconst.LEN_LIM(), 4, "LEN_LIM is 4 - one less than LEN.");
 
         // TEST
-        equals (myconst.BOARD_SIZE(), 25, "BOARD_SIZE is 25 - LEN*LEN.");
+        equal (myconst.BOARD_SIZE(), 25, "BOARD_SIZE is 25 - LEN*LEN.");
 
         // TEST
-        equals(myconst.Y(), 0, "Y is 0.");
+        equal(myconst.Y(), 0, "Y is 0.");
 
         // TEST
-        equals(myconst.X(), 1, "X is 1, because coordinates are (Y,X)");
+        equal(myconst.X(), 1, "X is 1, because coordinates are (Y,X)");
 
         // TEST
-        equals(myconst.letters()[0], 'A', "First letter is A.");
+        equal(myconst.letters()[0], 'A', "First letter is A.");
 
         // TEST
         deepEqual(myconst.letters(), [
@@ -43,7 +43,7 @@ function test_abc_path()
             );
 
         // TEST
-        equals(myconst.ABCP_MAX_LETTER(), 24, 'ABCP_MAX_LETTER is ok.');
+        equal(myconst.ABCP_MAX_LETTER(), 24, 'ABCP_MAX_LETTER is ok.');
     });
 
     module("Solver.Base");
@@ -57,13 +57,13 @@ function test_abc_path()
         ok (mybase, "myconst was initialized.");
 
         // TEST
-        equals(mybase._xy_to_int([0,0]), 0, 'int of (Y,X) = [0,0] is 0.');
+        equal(mybase._xy_to_int([0,0]), 0, 'int of (Y,X) = [0,0] is 0.');
         // TEST
-        equals(mybase._xy_to_int([0,1]), 1, 'int of (Y,X) = [0,1] is 1.');
+        equal(mybase._xy_to_int([0,1]), 1, 'int of (Y,X) = [0,1] is 1.');
         // TEST
-        equals(mybase._xy_to_int([1,0]), 1*5+0, 'int of (Y,X) = [1,0] is 5.');
+        equal(mybase._xy_to_int([1,0]), 1*5+0, 'int of (Y,X) = [1,0] is 5.');
         // TEST
-        equals(mybase._xy_to_int([2,3]), 2*5+3, 'int of (Y,X) = [2,3] is 2*5+3.');
+        equal(mybase._xy_to_int([2,3]), 2*5+3, 'int of (Y,X) = [2,3] is 2*5+3.');
     });
 
     test("Solver.Base _to_xy", function() {
@@ -86,11 +86,11 @@ function test_abc_path()
 
         var mybase = new ABC_Path.Solver.Base({});
         // TEST
-        equals(mybase._replaceSubstring('0123456789', 0, 1, 'foo'),
+        equal(mybase._replaceSubstring('0123456789', 0, 1, 'foo'),
             'foo123456789',
             '_replaceSubstring simple test.');
         // TEST
-        equals(mybase._replaceSubstring('abcdef', 1, 3, 'REPLACE'),
+        equal(mybase._replaceSubstring('abcdef', 1, 3, 'REPLACE'),
             'aREPLACEdef',
             '_replaceSubstring second test.');
     });
@@ -142,21 +142,21 @@ function test_abc_path()
         var myboard = new ABC_Path.Solver.Board({});
 
         // TEST
-        equals(myboard.getIter_changed(), 0, 'iter_changed is initialised to 0.');
+        equal(myboard.getIter_changed(), 0, 'iter_changed is initialised to 0.');
 
         myboard._inc_changed();
         // TEST
-        equals(myboard.getIter_changed(), 1, 'iter_changed is now 1.');
+        equal(myboard.getIter_changed(), 1, 'iter_changed is now 1.');
 
         myboard._inc_changed();
         // TEST
-        equals(myboard.getIter_changed(), 2, 'iter_changed is now 2.');
+        equal(myboard.getIter_changed(), 2, 'iter_changed is now 2.');
 
         // TEST
-        equals(myboard._flush_changed(), 2, 'flush_changed returned 2.');
+        equal(myboard._flush_changed(), 2, 'flush_changed returned 2.');
 
         // TEST
-        equals(myboard.getIter_changed(), 0, 'iter_changed was reset to 0 after flush.');
+        equal(myboard.getIter_changed(), 0, 'iter_changed was reset to 0 after flush.');
     });
 
     test("Solver.Board _add_move", function() {
@@ -172,7 +172,7 @@ function test_abc_path()
         );
 
         // TEST
-        equals(myboard.getIter_changed(), 1, 'iter_changed is 1 after _add_move.');
+        equal(myboard.getIter_changed(), 1, 'iter_changed is 1 after _add_move.');
 
         myboard._add_move("SecondToken");
         // TEST
@@ -181,7 +181,7 @@ function test_abc_path()
         );
 
         // TEST
-        equals(myboard.getIter_changed(), 2, 'iter_changed is 2 after two _add_move-s.');
+        equal(myboard.getIter_changed(), 2, 'iter_changed is 2 after two _add_move-s.');
     });
 
     test("Solver.Board _calc_offset", function() {
@@ -190,12 +190,12 @@ function test_abc_path()
         var myboard = new ABC_Path.Solver.Board({});
 
         // TEST
-        equals(myboard._calc_offset(0, 0, 0), 0*25+0*5+0, 
+        equal(myboard._calc_offset(0, 0, 0), 0*25+0*5+0, 
             '_calc_offset(0,0,0)'
         );
 
         // TEST
-        equals(myboard._calc_offset(20, 3, 2), 20*25+2*5+3, 
+        equal(myboard._calc_offset(20, 3, 2), 20*25+2*5+3, 
             '_calc_offset(20,3,2)'
         );
     });
@@ -362,13 +362,13 @@ function test_abc_path()
         ok (r, 'r was initialized.');
 
         // TEST
-        equals(r.rand(), 41, "First result for seed 1 is 41.");
+        equal(r.rand(), 41, "First result for seed 1 is 41.");
 
         // TEST
-        equals (r.rand(), 18467, "2nd result for seed 1 is 18,467.");
+        equal (r.rand(), 18467, "2nd result for seed 1 is 18,467.");
 
         // TEST
-        equals (r.rand(), 6334, "3rd result for seed 1 is 6,334.");
+        equal (r.rand(), 6334, "3rd result for seed 1 is 6,334.");
     });
 
     test("MicrosoftRand Shuffle", function() {
@@ -387,7 +387,7 @@ function test_abc_path()
             );
 
         // TEST
-        equals (ret, myarr, 'shuffle returns the same array.');
+        equal (ret, myarr, 'shuffle returns the same array.');
     });
 
     module("FinalLayoutObj");
