@@ -95,8 +95,8 @@ sub bump
     my ($self) = @_;
 
     return ref($self)->new(
-        { 
-            text => $self->get_text(), 
+        {
+            text => $self->get_text(),
             depth => ($self->get_depth+1),
             vars => { %{$self->{_vars}}, },
         }
@@ -105,7 +105,7 @@ sub bump
 
 =head2 $self->get_var($name)
 
-This method returns the raw, unformatted value of the move's variable (or its 
+This method returns the raw, unformatted value of the move's variable (or its
 parameter) called $name. Each move class contains several parameters that can
 be accessed programatically.
 
