@@ -2,7 +2,7 @@
 /*
  * ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
- * Released under the MIT/X11 License 
+ * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
 // Taken from http://stackoverflow.com/questions/202605/repeat-string-javascript
@@ -128,7 +128,7 @@ Class('ABC_Path.Constants', {
         BOARD_SIZE : function() {
             return this.LEN() * this.LEN();
         },
-        
+
         Y : function() {
             return 0;
         },
@@ -166,7 +166,7 @@ Class('ABC_Path.Solver.Base', {
         },
         _perl_range: function(start, end) {
             var ret = [];
-            
+
             for (var i = start; i <= end; i++) {
                 ret.push(i);
             }
@@ -177,7 +177,7 @@ Class('ABC_Path.Solver.Base', {
             return this._perl_range(0,this.LEN_LIM());
         },
         _x_indexes: function() {
-            return this._y_indexes(); 
+            return this._y_indexes();
         },
         _x_in_range: function(x) {
             return ((x >= 0) && (x < this.LEN()));
@@ -193,7 +193,7 @@ Class('ABC_Path.Solver.Base', {
 Class('ABC_Path.Solver.Move', {
     isa: ABC_Path.Solver.Base,
     has: {
-        vars: { is: 'rw' }, 
+        vars: { is: 'rw' },
         depth: { is: 'rw', init: 0, },
     },
     methods: {
@@ -228,7 +228,7 @@ Class('ABC_Path.Solver.Board', {
     has: {
         letters_map: {
             is: 'ro',
-            init: function(){ 
+            init: function(){
                 var ret = {};
                 var l = this.letters();
                 for (var i in l) {
@@ -284,7 +284,7 @@ Class('ABC_Path.Solver.Board', {
             return;
         },
         _flush_changed: function() {
-            
+
             var ret = this.getIter_changed();
 
             this.setIter_changed(0);
@@ -311,7 +311,7 @@ Class('ABC_Path.Solver.Board', {
         },
         _set_verdict: function(letter, x, y, verdict) {
 
-            if (! ( 
+            if (! (
                         ( verdict == this.ABCP_VERDICT_NO() )
                     ||
                     (verdict == this.ABCP_VERDICT_MAYBE())
@@ -346,7 +346,7 @@ Class('ABC_Path.Solver.Board', {
                     {
                         return;
                     }
-                    
+
                     sub_ref(x,y);
                 }
             }
@@ -360,7 +360,7 @@ Class('ABC_Path.Solver.Board', {
 
             var cell_is_maybe = new Array();
 
-            maybe_list.forEach(function (m) { 
+            maybe_list.forEach(function (m) {
                 cell_is_maybe[board._xy_to_s(m[0], m[1])] = true;
             });
 
@@ -370,7 +370,7 @@ Class('ABC_Path.Solver.Board', {
                 board._xy_loop(function(x,y) {
                     board._set_verdict(letter, x, y,
                         (
-                             (board._xy_to_s(x,y) in cell_is_maybe) 
+                             (board._xy_to_s(x,y) in cell_is_maybe)
                                 ? board.ABCP_VERDICT_MAYBE()
                                 : board.ABCP_VERDICT_NO()
                         )
@@ -421,7 +421,7 @@ Class('ABC_Path.Solver.Board', {
             return this.get_possible_letters_for_cell(x,y).join(',');
         },
         _infer_letters: function() {
-            
+
             var board = this;
             try {
                 board._l_indexes().forEach(function (letter) {
@@ -603,7 +603,7 @@ Class('ABC_Path.Solver.Board', {
                     board.setError(['cell', [$x, $y]]);
                 }
                 else if (letters_aref.length > 1) {
-                    if ((!min_coords) || 
+                    if ((!min_coords) ||
                         (letters_aref.length < min_options.length)) {
                         min_options = letters_aref.slice(0);
                         min_coords = [x,y];
@@ -660,7 +660,7 @@ Class('ABC_Path.Solver.Board', {
                                 vars: { letter: letter, coords: [x,y],},
                             })
                         );
-                        
+
                         recurse_solver.getSuccessful_layouts().forEach(function (e) {
                             board.getSuccessful_layouts().push(e);
                         });
@@ -717,7 +717,7 @@ Class('ABC_Path.Solver.Board', {
                     return s.length == 1 ? ("  " + s + "  ") : s;
                 }).join(" | ") + " |\n";
             };
-            return [board._x_indexes().map(function (x) { 
+            return [board._x_indexes().map(function (x) {
                 return "X = " + (x+1); })].concat(
                     board._y_indexes().map(function(y) {
                         return board._x_indexes().map(function (x) {
@@ -726,7 +726,7 @@ Class('ABC_Path.Solver.Board', {
                     })).map(render_row).join('');
         },
         get_successes_text_tables: function() {
-            return this.get_successful_layouts().map(function (l) { 
+            return this.get_successful_layouts().map(function (l) {
                 return l._get_results_text_table();
             });
         },
@@ -780,7 +780,7 @@ Class('ABC_Path.Generator.FinalLayoutObj', {
         get_letter_at_pos: function(mypos) {
             return this.letters()[this.get_cell_contents(
                 this._xy_to_int([mypos.y, mypos.x])
-            ) - 1]; 
+            ) - 1];
         },
     },
 });
@@ -796,7 +796,7 @@ Class('ABC_Path.Generator.RiddleObj', {
             var that = this;
 
             // Letter clues.
-            var l_clues = that.clues.map(function (clue) { 
+            var l_clues = that.clues.map(function (clue) {
                 return clue.map(function (l_idx) { return that.letters()[l_idx-1];});
             });
 
@@ -840,18 +840,18 @@ Class('ABC_Path.Generator.Generator', {
             };
 
             var _gen_clue_int_positions = function (cb) {
-                return _gen_clue_positions(cb).map(function (xy) { 
-                    return that._xy_to_int(xy); 
+                return _gen_clue_positions(cb).map(function (xy) {
+                    return that._xy_to_int(xy);
                 });
             };
 
             var callbacks = [].concat.apply([], [
                     [function (i) { return [i,i]; }],
                     [function (i) { return [i,4-i]; }],
-                    that._y_indexes().map(function (y) { 
+                    that._y_indexes().map(function (y) {
                         return function (x) { return [y,x]; };
                     }),
-                    that._x_indexes().map(function (x) { 
+                    that._x_indexes().map(function (x) {
                         return function (y) { return [y,x]; };
                     })]);
 
@@ -878,7 +878,7 @@ Class('ABC_Path.Generator.Generator', {
             return;
         },
         _get_num_connected: function(l) {
-            
+
             var connectivity_stack = [l.indexOf('\0')];
 
             var connected = {};
@@ -887,7 +887,7 @@ Class('ABC_Path.Generator.Generator', {
             while (connectivity_stack.length > 0)
             {
                 var myint = connectivity_stack.pop();
-                
+
                 if (! (myint in connected))
                 {
                     count++;
@@ -898,7 +898,7 @@ Class('ABC_Path.Generator.Generator', {
                                 }));
                 }
             }
-            
+
             return count;
         },
         calc_final_layout: function() {
@@ -943,7 +943,7 @@ Class('ABC_Path.Generator.Generator', {
 
             var A_pos = layout.get_A_pos();
 
-            var init_state = { pos_taken: 0, 
+            var init_state = { pos_taken: 0,
                 clues: that._perl_range(1, that.NUM_CLUES()).map(function (x) {
                     return { num_remaining: 5 };
                 })
@@ -1069,7 +1069,7 @@ Class('ABC_Path.Generator.Generator', {
 
                 var new_state = {};
                 new_state.pos_taken = last_state.pos_taken;
-                new_state.clues = last_state.clues.map(function (clue) { 
+                new_state.clues = last_state.clues.map(function (clue) {
                     var copy = {};
                     copy.num_remaining = clue.num_remaining;
                     if (clue.cells) {
