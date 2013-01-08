@@ -733,7 +733,6 @@ Class('ABC_Path.Solver.Board', {
     },
 });
 Class('ABC_Path.MicrosoftRand', {
-    isa: ABC_Path.Solver.Base,
     has: {
         seed: { is: rw, },
     },
