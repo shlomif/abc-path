@@ -6,6 +6,8 @@ Revision history for Games-ABC_Path-Generator
     - Got rid of lib/Games/ABC_Path/Generator/Constants.pm - it was no
     longer used.
     - Add t/style-trailing-space.t .
+    - Add t/cpan-changes.t .
+    - Correct the URL.
 
 0.1.0   2011-07-23
     - Improved lib/Games/ABC_Path/Generator.pm with acknowldgements, a
