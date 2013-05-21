@@ -10,7 +10,7 @@ use Test::Run::Builder;
 my $builder = Test::Run::Builder->new(
     module_name         => 'Games::ABC_Path::Generator',
     license             => 'mit',
-    dist_abstract => q{A generator for ABC Path puzzle games},
+    # dist_abstract => q{A generator for ABC Path puzzle games},
     dist_author         => q{Shlomi Fish <shlomif@cpan.org>},
     dist_version_from   => 'lib/Games/ABC_Path/Generator.pm',
     configure_requires => {
