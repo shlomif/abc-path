@@ -40,7 +40,7 @@ our $VERSION = '0.1.0';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 my $riddle = Games::ABC_Path::Generator::RiddleObj->new({%args}); 
+=head2 my $riddle = Games::ABC_Path::Generator::RiddleObj->new({%args});
 
 Initialised a new riddle. Arguments are:
 
@@ -112,7 +112,7 @@ sub _init
 
 =head2 my [$letter1, $letter2] = $riddle->get_letters_of_clue({ type => $type, index => $index, })
 
-Returns the two letters (as an array reference) associated with the 
+Returns the two letters (as an array reference) associated with the
 clue represented by the hash reference. Type can be:
 
 =over 4
@@ -182,7 +182,7 @@ sub get_letters_of_clue
     {
         Carp::confess ("Unknown type $type.");
     }
-    
+
     return [map { $letters[$_-1] } @{$self->_clues->[$clue_idx]}];
 }
 
@@ -204,8 +204,8 @@ sub get_riddle_v1_string
     my $clues = $self->_clues();
     foreach my $clue_idx (0 .. $NUM_CLUES-1)
     {
-        my @pos = 
-            ($clue_idx == 0) ? ([0,0],[6,6]) 
+        my @pos =
+            ($clue_idx == 0) ? ([0,0],[6,6])
             : ($clue_idx == 1) ? ([0,6],[6,0])
             : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
             : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])

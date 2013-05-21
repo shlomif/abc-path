@@ -36,7 +36,7 @@ our $VERSION = '0.1.0';
 
 =head1 SUBROUTINES/METHODS
 
-=head2 my $layout = Games::ABC_Path::Generator::FinalLayoutObj->new({%args}); 
+=head2 my $layout = Games::ABC_Path::Generator::FinalLayoutObj->new({%args});
 
 Initializes a new layout. B<For internal use.>.
 
@@ -138,9 +138,9 @@ sub as_string
     my $render_row = sub {
         my $y = shift;
 
-        return join(" | ", 
+        return join(" | ",
             map {
-                my $x = $_; 
+                my $x = $_;
                 my $v = $l->get_cell_contents($l->_xy_to_int([$y,$x]));
             $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
     };

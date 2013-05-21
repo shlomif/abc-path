@@ -45,8 +45,8 @@ our $VERSION = '0.1.0';
 
 ABC Path puzzle games are puzzle games where one is given a 5*5 grid which
 should contain a consecutive path of the letters from 'A' to 'Y' (with vertical,
-horizontal, diagonal, or anti-diagonal steps). The position of the letter 'A' 
-is given, and two letters are given for each of the columns, rows, main 
+horizontal, diagonal, or anti-diagonal steps). The position of the letter 'A'
+is given, and two letters are given for each of the columns, rows, main
 diagonal and main anti-diagonal, which can appear anywhere there.
 
 ABC Path can be played online at L<http://www.brainbashers.com/abcpath.asp> .
@@ -56,7 +56,7 @@ layout with different clues for every random number generator seed.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 my $gen = Games::ABC_Path::Generator->new({seed => $seed}); 
+=head2 my $gen = Games::ABC_Path::Generator->new({seed => $seed});
 
 Initialised a new generator with the random number generator seed $seed .
 
@@ -132,8 +132,8 @@ sub _get_num_connected
         my $int = pop(@connectivity_stack);
         if (!$connected{$int}++)
         {
-            push @connectivity_stack, 
-            (grep { !exists($connected{$_}) } 
+            push @connectivity_stack,
+            (grep { !exists($connected{$_}) }
                 @{ $self->_get_next_cells($l, $int) }
             );
         }
@@ -179,7 +179,7 @@ sub calc_final_layout
 
         if ( ( ! defined($next_idx) )
                 or
-            ($self->_get_num_connected($l) != 
+            ($self->_get_num_connected($l) !=
                 ($BOARD_SIZE - scalar(@dfs_stack))
             )
         )
@@ -232,9 +232,9 @@ sub calc_riddle
 
     my $A_pos = $layout->get_A_pos;
 
-    my %init_state = (pos_taken => '', 
+    my %init_state = (pos_taken => '',
         clues =>
-        [ 
+        [
             map { +{ num_remaining => 5, } }
             (1 .. $NUM_CLUES),
         ]
@@ -242,9 +242,9 @@ sub calc_riddle
 
     my $mark = sub {
         my ($state, $pos) = @_;
-        
+
         vec($state->{pos_taken}, $pos, 1) = 1;
-        
+
         my $coord = Games::ABC_Path::Generator::Coord->_from_int($pos);
 
         foreach my $clue (
@@ -288,7 +288,7 @@ sub calc_riddle
                     my @cells = @{shift->{cells}};
                     return
                     [
-                        map { $layout->get_cell_contents($_) } 
+                        map { $layout->get_cell_contents($_) }
                         @{$self->_shuffle(\@cells)}
                     ];
                 };
@@ -303,14 +303,14 @@ sub calc_riddle
                         A_pos => Games::ABC_Path::Generator::Coord->_from_int($A_pos),
                     }
                 );
-                
+
                 my $riddle_string = $riddle->get_riddle_v1_string();
 
-                my $solver = 
+                my $solver =
                     Games::ABC_Path::Solver::Board->input_from_v1_string(
                         $riddle_string
                     );
-                
+
                 $solver->solve();
 
                 if (@{$solver->get_successes_text_tables()} != 1)
@@ -338,7 +338,7 @@ sub calc_riddle
 
             my @positions =
             (
-                grep { !vec($last_state->{pos_taken}, $_, 1) } 
+                grep { !vec($last_state->{pos_taken}, $_, 1) }
                 @{$_clues_positions[$clue_idx]}
             );
 
