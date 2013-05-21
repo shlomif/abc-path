@@ -20,3 +20,4 @@ abc-path/Games-ABC_Path-Solver/blib
 syntax: regexp
 
 ^abc-path/Games-ABC_Path-Solver/Games-ABC_Path-Solver-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
+^abc-path/Games-ABC_Path-Generator/Games-ABC_Path-Generator-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
