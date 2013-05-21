@@ -9,11 +9,11 @@ Games::ABC_Path::Solver::Board - handles an ABC Path board.
 
 =head1 VERSION
 
-Version 0.3.0
+Version 0.3.1
 
 =cut
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.3.1';
 
 =head1 SYNOPSIS
 
