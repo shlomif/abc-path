@@ -19,10 +19,9 @@ if (!defined ($version))
 my $mini_repos_base = 'https://svn.berlios.de/svnroot/repos/fc-solve/abc-path';
 
 my @cmd = (
-    "svn", "copy", "-m",
-    "Tagging the XML-Grammar-Fiction release as $version",
-    "$mini_repos_base/trunk",
-    "$mini_repos_base/tags/Games-ABC_Path-Generator-cpan-releases/$version",
+    "hg", "tag", "-m",
+    "Tagging the Games-ABC_Path-Generator release as $version",
+    "Games-ABC_Path-Generator-$version"
 );
 
 print join(" ", map { /\s/ ? qq{"$_"} : $_ } @cmd), "\n";
