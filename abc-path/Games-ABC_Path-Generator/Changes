@@ -1,12 +1,13 @@
 Revision history for Games-ABC_Path-Generator
 
+0.1.1   2013-05-21
     - Fix the documentation of FinalLayoutObj - it had some remnants of
     the RiddleObj documentation.
     - Got rid of lib/Games/ABC_Path/Generator/Constants.pm - it was no
     longer used.
     - Add t/style-trailing-space.t .
 
-0.1.0       Sat Jul 23 21:34:59 IDT 2011
+0.1.0   2011-07-23
     - Improved lib/Games/ABC_Path/Generator.pm with acknowldgements, a
     "SEE ALSO" section and a "DESCRIPTION" section.
     - Add the shuffle method to lib/Games/ABC_Path/MicrosoftRand.pm .
@@ -16,6 +17,6 @@ Revision history for Games-ABC_Path-Generator
     - Convert to the methods of Games::ABC_Path::Solver::Base .
         - Now requires Games::ABC_Path::Solver version 0.2.0.
 
-0.0.1       Thu Jul 21 19:02:11 IDT 2011
+0.0.1   2011-07-21
     - First version, released on an unsuspecting world.
 
