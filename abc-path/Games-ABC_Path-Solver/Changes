@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Solver
 
+0.3.2   2013-05-21
+        - Correct scripts/tag-release.pl
+
 0.3.1   2013-05-21
         - Remove trailing space.
             - With a test at t/style-trailing-space.t

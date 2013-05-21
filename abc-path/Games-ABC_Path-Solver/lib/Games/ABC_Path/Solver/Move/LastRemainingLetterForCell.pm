@@ -12,11 +12,11 @@ that indicates it's the last remaining letter for a given cell.
 
 =head1 VERSION
 
-Version 0.3.1
+Version 0.3.2
 
 =cut
 
-our $VERSION = '0.3.1';
+our $VERSION = '0.3.2';
 
 =head1 SYNOPSIS
 
