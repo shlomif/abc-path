@@ -3,6 +3,8 @@ package Games::ABC_Path::Solver;
 use warnings;
 use strict;
 
+use 5.008;
+
 =head1 NAME
 
 Games::ABC_Path::Solver - a solver for ABC Path
