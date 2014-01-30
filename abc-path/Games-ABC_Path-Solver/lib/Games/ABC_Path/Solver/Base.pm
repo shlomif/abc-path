@@ -11,11 +11,11 @@ Games::ABC_Path::Solver::Base - base class for Games::ABC_Path::Solver classes.
 
 =head1 VERSION
 
-Version 0.3.2
+Version 0.3.3
 
 =cut
 
-our $VERSION = '0.3.2';
+our $VERSION = '0.3.3';
 
 =head1 SYNOPSIS
 
