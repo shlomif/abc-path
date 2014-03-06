@@ -1,5 +1,9 @@
 Revision history for Games-ABC_Path-Solver
 
+0.3.3   2014-01-30
+        - Explicit minimal perl version - 5.8 (CPANTS Kwalitee)
+        - Add LICENSE file.
+
 0.3.2   2013-05-21
         - Correct scripts/tag-release.pl
 
