@@ -15,6 +15,8 @@ abc-path-solve - a solver for ABC Path
 
 B<abc-path-solve> /path/to/board
 
+B<abc-path-solve> --gen-v1-template
+
 =head1 DESCRIPTION
 
 This is a solver for ABC Path ( L<http://www.brainbashers.com/abcpath.asp> ).
@@ -23,11 +25,11 @@ This is a solver for ABC Path ( L<http://www.brainbashers.com/abcpath.asp> ).
 
 Sample boards can be found in the distribution under C<t/layouts/> .
 
-Here is the description of their formats. The first line should be the
+Here is the description of their format. The first line should be the
 magic string C<ABC Path Solver Layout Version 1:> , and the next line should
 be a row of 7 letters, the first being a hint for the top-left-to-bottom-right
-perpendicular, the last being a hint for the top-right-to-bottom-left 
-perpendicular and the rest of the letters being vertical hints. 
+perpendicular, the last being a hint for the top-right-to-bottom-left
+perpendicular and the rest of the letters being vertical hints.
 
 After that, there are 5 rows of horizontal hints being a letter, 5 spaces
 and another letter. On one of the squares one can put a letter instead of a
@@ -45,6 +47,9 @@ Here's an example:
     Y     P
     R     S
     TVMGCDH
+
+One can also generate a skeleton for such a layout using the
+B<--gen-v1-template> flag.
 
 =cut
 

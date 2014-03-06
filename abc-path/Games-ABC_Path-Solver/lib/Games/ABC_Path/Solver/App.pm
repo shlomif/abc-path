@@ -76,37 +76,57 @@ sub run
 
     my $man = 0;
     my $help = 0;
-    GetOptions('help|h' => \$help, man => \$man)
+    my $gen_template = 0;
+    GetOptions(
+        'help|h' => \$help,
+        man => \$man,
+        'gen-v1-template' => \$gen_template,
+    )
         or pod2usage(2);
 
     if ($help)
     {
         pod2usage(1);
     }
-
-    if ($man)
+    elsif ($man)
     {
         pod2usage(-verbose => 2);
     }
-
-    my $board_fn = shift(@ARGV);
-
-    if (!defined ($board_fn))
+    elsif ($gen_template)
     {
-        die "Filename not specified - usage: abc-path-solver.pl [filename]!";
+        print <<'EOF';
+ABC Path Solver Layout Version 1:
+???????
+?     ?
+?     ?
+?     ?
+?   A ?
+?     ?
+???????
+EOF
     }
-
-    my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
-    # Now let's do a neighbourhood inferring of the board.
-
-    $solver->solve;
-
-    foreach my $move (@{$solver->get_moves})
+    else
     {
-        print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
-    }
 
-    print @{$solver->get_successes_text_tables};
+        my $board_fn = shift(@ARGV);
+
+        if (!defined ($board_fn))
+        {
+            die "Filename not specified - usage: abc-path-solver.pl [filename]!";
+        }
+
+        my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
+        # Now let's do a neighbourhood inferring of the board.
+
+        $solver->solve;
+
+        foreach my $move (@{$solver->get_moves})
+        {
+            print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
+        }
+
+        print @{$solver->get_successes_text_tables};
+    }
 
     exit(0);
 }

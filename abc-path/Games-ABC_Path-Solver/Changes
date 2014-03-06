@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Solver
 
+0.4.0   2014-03-06
+        - Add the --gen-v1-template flag to generate a skeleton file.
+
 0.3.3   2014-01-30
         - Explicit minimal perl version - 5.8 (CPANTS Kwalitee)
         - Add LICENSE file.
