@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Test::Differences qw( eq_or_diff );
 
 sub _slurp
@@ -58,6 +58,34 @@ sub _slurp
         "Output is OK.",
     );
 }
+
+{
+    my $got_results =
+        `$^X -Mblib scripts/abc-path-solve --gen-v1-template`
+        ;
+
+    # TEST
+    ok ((!$?), "Process ended successfully.");
+
+    my $v1_template__exp_results = <<'EOF';
+ABC Path Solver Layout Version 1:
+???????
+?     ?
+?     ?
+?     ?
+?   A ?
+?     ?
+???????
+EOF
+
+    # TEST
+    eq_or_diff(
+        $got_results,
+        $v1_template__exp_results,
+        "Output of --gen-v1-template is OK.",
+    );
+}
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (c) 2010 Shlomi Fish
