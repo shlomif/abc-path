@@ -16,11 +16,11 @@ Games::ABC_Path::Generator::Coord - a coordinate class.
 
 =head1 VERSION
 
-Version 0.1.1
+Version 0.2.0
 
 =cut
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.2.0';
 
 sub _from_int
 {
