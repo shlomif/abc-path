@@ -11,11 +11,11 @@ Games::ABC_Path::Solver::Coord - X/Y coordinate class for the ABC Path classes.
 
 =head1 VERSION
 
-Version 0.3.3
+Version 0.4.0
 
 =cut
 
-our $VERSION = '0.3.3';
+our $VERSION = '0.4.0';
 
 =head1 SYNOPSIS
 
