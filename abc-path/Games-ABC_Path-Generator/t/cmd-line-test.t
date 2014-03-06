@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use Test::Differences;
 
@@ -61,5 +61,15 @@ M     I
 HEXCQPL
 EOF
         'Default is riddle mode (for seed #1)',
+    );
+}
+
+{
+    my $got_output = `$^X -Mblib $prog_path --help`;
+
+    # TEST
+    like ($got_output,
+        qr/--help/,
+        "Help output is relatively sane.",
     );
 }
