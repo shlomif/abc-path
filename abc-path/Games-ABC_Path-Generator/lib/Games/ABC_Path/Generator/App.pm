@@ -4,6 +4,8 @@ use 5.006;
 use strict;
 use warnings;
 
+use Pod::Usage qw(pod2usage);
+
 use base 'Games::ABC_Path::Generator::Base';
 
 use Getopt::Long qw(GetOptionsFromArray);
@@ -71,40 +73,54 @@ sub run
 
     my $seed;
     my $mode = 'riddle';
+    my $man = 0;
+    my $help = 0;
     if (!GetOptionsFromArray(
             $self->_argv(),
             'seed=i' => \$seed,
             'mode=s' => \$mode,
+            'help|h' => \$help,
+            man => \$man,
         ))
     {
-        die "Could not get options for program!";
+        pod2usage(2);
     }
 
-    if (!defined($seed))
+    if ($help)
     {
-        die "Seed not specified!";
+        pod2usage(1);
     }
-
-    my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
-
-    if ($mode eq 'final')
+    elsif ($man)
     {
-        print $gen->calc_final_layout()->as_string({});
+        pod2usage(-verbose => 2);
     }
-    elsif ($mode eq 'riddle')
+    elsif (!defined($seed))
     {
-        my $riddle = $gen->calc_riddle();
-
-        my $layout_string = $riddle->get_final_layout_as_string({});
-
-        my $riddle_string = $riddle->get_riddle_v1_string;
-
-        print sprintf(
-            "ABC Path Solver Layout Version 1:\n%s",
-            $riddle_string,
-        );
+        die "Seed not specified! See --help.";
     }
+    else
+    {
+        my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
 
+        if ($mode eq 'final')
+        {
+            print $gen->calc_final_layout()->as_string({});
+        }
+        elsif ($mode eq 'riddle')
+        {
+            my $riddle = $gen->calc_riddle();
+
+            my $layout_string = $riddle->get_final_layout_as_string({});
+
+            my $riddle_string = $riddle->get_riddle_v1_string;
+
+            print sprintf(
+                "ABC Path Solver Layout Version 1:\n%s",
+                $riddle_string,
+            );
+        }
+
+    }
     return;
 }
 
