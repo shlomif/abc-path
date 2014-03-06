@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 4;
-use Test::Differences;
+use Test::Differences qw( eq_or_diff );
 
 sub _slurp
 {
