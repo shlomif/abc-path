@@ -82,9 +82,9 @@ For C only (3,1) is possible.
 For F only (3,2) is possible.
 For H only (1,1) is possible.
 For V only (0,3) is possible.
- | X = 0 | X = 1 | X = 2 | X = 3 | X = 4 | 
- | K     | J     | I     | B     | A     | 
- | L     | H     | G     | C     | E     | 
- | U     | M     | N     | F     | D     | 
- | V     | T     | Y     | O     | P     | 
- | W     | X     | S     | R     | Q     | 
+ | X = 0 | X = 1 | X = 2 | X = 3 | X = 4 |
+ | K     | J     | I     | B     | A     |
+ | L     | H     | G     | C     | E     |
+ | U     | M     | N     | F     | D     |
+ | V     | T     | Y     | O     | P     |
+ | W     | X     | S     | R     | Q     |

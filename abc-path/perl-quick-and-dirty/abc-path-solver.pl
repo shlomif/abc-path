@@ -26,7 +26,7 @@ our @ISA = qw(Games::ABC_Path::Solver::Base);
 sub get_text
 {
     my ($self) = @_;
-    
+
     return $self->{_text};
 }
 
@@ -62,8 +62,8 @@ sub bump
     my ($self) = @_;
 
     return ref($self)->new(
-        { 
-            text => $self->get_text(), 
+        {
+            text => $self->get_text(),
             depth => ($self->get_depth+1),
         }
     );
@@ -368,7 +368,7 @@ sub _get_possible_letter_indexes
 {
     my ($self, $x, $y) = @_;
 
-    return 
+    return
     [
         grep { $self->get_verdict($_, $x, $y) != $ABCP_VERDICT_NO }
         $self->_l_indexes()
@@ -402,10 +402,10 @@ sub _infer_letters
             my @c = @_;
 
             my $ver = $self->get_verdict($letter, @c);
-            if (    ($ver == $ABCP_VERDICT_YES) 
+            if (    ($ver == $ABCP_VERDICT_YES)
                 || ($ver == $ABCP_VERDICT_MAYBE))
             {
-                push @true_cells, [@c]; 
+                push @true_cells, [@c];
             }
         });
 
@@ -432,7 +432,7 @@ sub _infer_letters
         }
 
         my @neighbourhood = (map { [(0) x $BOARD_LEN] } ($self->_y_indexes));
-        
+
         foreach my $true (@true_cells)
         {
             foreach my $coords
@@ -651,7 +651,7 @@ sub solve
                         }
                     )
                 );
-                push @{$self->_successful_layouts}, 
+                push @{$self->_successful_layouts},
                     @{$recurse_solver->get_successful_layouts()};
             }
         }
@@ -714,7 +714,7 @@ sub _process_major_diagonal
     push @major_diagonal_letters, $1;
 
     $self->set_verdicts_for_letter_sets(
-        \@major_diagonal_letters, 
+        \@major_diagonal_letters,
         [map { [$_,$_] } $self->_y_indexes],
     );
 
@@ -855,8 +855,8 @@ sub _get_results_text_table
     foreach my $y ($self->_y_indexes)
     {
         $tb->add(
-            map 
-            { $self->_get_possible_letters_string($_, $y) } 
+            map
+            { $self->_get_possible_letters_string($_, $y) }
             $self->_x_indexes
         );
     }
@@ -935,7 +935,7 @@ foreach my $move (@{$solver->get_moves})
     print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
 }
 
-print @{$solver->get_successes_text_tables};
+print map { my $s = $_; $s =~ s/ +$//gms; $s } @{$solver->get_successes_text_tables};
 
 =head1 COPYRIGHT AND LICENSE
 
