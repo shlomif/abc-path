@@ -95,9 +95,9 @@ We have non-conclusive cells. Trying K for (1,3)
  => For L only (2,4) is possible.
  => The only letter that can be at (0,4) is J. Invalidating it for all other cells.
 Trying K for (1,3) returns a success.
- | X = 0 | X = 1 | X = 2 | X = 3 | X = 4 | 
- | E     | D     | R     | S     | T     | 
- | F     | C     | B     | Q     | U     | 
- | G     | A     | P     | O     | V     | 
- | H     | K     | M     | N     | W     | 
- | J     | I     | L     | Y     | X     | 
+ | X = 0 | X = 1 | X = 2 | X = 3 | X = 4 |
+ | E     | D     | R     | S     | T     |
+ | F     | C     | B     | Q     | U     |
+ | G     | A     | P     | O     | V     |
+ | H     | K     | M     | N     | W     |
+ | J     | I     | L     | Y     | X     |
