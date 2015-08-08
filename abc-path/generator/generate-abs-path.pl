@@ -142,8 +142,8 @@ sub _get_num_connected
         my $int = pop(@connectivity_stack);
         if (!$connected{$int}++)
         {
-            push @connectivity_stack, 
-            (grep { !exists($connected{$_}) } 
+            push @connectivity_stack,
+            (grep { !exists($connected{$_}) }
                 @{ $self->_get_next_cells($l, $int) }
             );
         }
@@ -179,7 +179,7 @@ sub calc_final_layout
 
         if ( ( ! defined($next_idx) )
                 or
-            ($self->_get_num_connected($l) != 
+            ($self->_get_num_connected($l) !=
                 ($BOARD_SIZE - scalar(@dfs_stack))
             )
         )
@@ -202,7 +202,7 @@ sub get_layout_as_string
     my $render_row = sub {
         my $y = shift;
 
-        return join(" | ", 
+        return join(" | ",
             map { my $x = $_; my $v = vec($l, $self->_xy_to_int([$y,$x]), 8);
             $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
     };
@@ -220,9 +220,9 @@ sub calc_riddle
 
     my $A_pos = index($layout, chr(1));
 
-    my %init_state = (pos_taken => '', 
+    my %init_state = (pos_taken => '',
         clues =>
-        [ 
+        [
             map { +{ num_remaining => 5, } }
             (1 .. $NUM_CLUES),
         ]
@@ -230,9 +230,9 @@ sub calc_riddle
 
     my $mark = sub {
         my ($state, $pos) = @_;
-        
+
         vec($state->{pos_taken}, $pos, 1) = 1;
-        
+
         my ($y,$x) = $self->_to_xy($pos);
         foreach my $clue (
             (($y == $x) ? 0 : ()),
@@ -285,14 +285,14 @@ sub calc_riddle
                     ],
                     A_pos => [$self->_to_xy($A_pos)],
                 };
-                
+
                 my $riddle_string = $self->_get_riddle_only_as_string($riddle);
 
-                my $solver = 
+                my $solver =
                     Games::ABC_Path::Solver::Board->input_from_v1_string(
                         $riddle_string
                     );
-                
+
                 $solver->solve();
 
                 if (@{$solver->get_successes_text_tables()} != 1)
@@ -319,7 +319,7 @@ sub calc_riddle
 
             my @positions =
             (
-                grep { !vec($last_state->{pos_taken}, $_, 1) } 
+                grep { !vec($last_state->{pos_taken}, $_, 1) }
                 (
                     map { $self->_xy_to_int($_) }
                     (($clue_idx == 0)
@@ -375,7 +375,7 @@ sub get_riddle_as_string
     my ($self,$riddle) = @_;
 
     my $layout_string = $self->get_layout_as_string($riddle->{solution});
-    
+
     my $riddle_string = $self->_get_riddle_only_as_string($riddle);
 
     return sprintf(
@@ -395,8 +395,8 @@ sub _get_riddle_only_as_string
     my $clues = $riddle->{clues};
     foreach my $clue_idx (0 .. $NUM_CLUES-1)
     {
-        my @pos = 
-            ($clue_idx == 0) ? ([0,0],[6,6]) 
+        my @pos =
+            ($clue_idx == 0) ? ([0,0],[6,6])
             : ($clue_idx == 1) ? ([0,6],[6,0])
             : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
             : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])
