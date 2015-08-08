@@ -2,7 +2,7 @@
 /*
  * Tests for the ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
- * Released under the MIT/X11 License 
+ * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
 function test_abc_path()
@@ -107,11 +107,11 @@ function test_abc_path()
         deepEqual(mybase._perl_range(2,6), [2,3,4,5,6], '_perl_range #2');
 
         // TEST
-        deepEqual(mybase._y_indexes(), mybase._perl_range(0, 4), 
+        deepEqual(mybase._y_indexes(), mybase._perl_range(0, 4),
             '_y_indexes returns right value.'
         );
         // TEST
-        deepEqual(mybase._x_indexes(), mybase._perl_range(0, 4), 
+        deepEqual(mybase._x_indexes(), mybase._perl_range(0, 4),
             '_x_indexes returns right value.'
         );
     });
@@ -167,7 +167,7 @@ function test_abc_path()
         myboard._add_move("Token");
 
         // TEST
-        deepEqual(myboard.getMoves(), ["Token"], 
+        deepEqual(myboard.getMoves(), ["Token"],
             '_add_move works.'
         );
 
@@ -190,12 +190,12 @@ function test_abc_path()
         var myboard = new ABC_Path.Solver.Board({});
 
         // TEST
-        equal(myboard._calc_offset(0, 0, 0), 0*25+0*5+0, 
+        equal(myboard._calc_offset(0, 0, 0), 0*25+0*5+0,
             '_calc_offset(0,0,0)'
         );
 
         // TEST
-        equal(myboard._calc_offset(20, 3, 2), 20*25+2*5+3, 
+        equal(myboard._calc_offset(20, 3, 2), 20*25+2*5+3,
             '_calc_offset(20,3,2)'
         );
     });
@@ -416,7 +416,7 @@ function test_abc_path()
     test("_get_next_cells", function() {
         expect(2);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
-        
+
         pos_array[0*5+0] = String.fromCharCode(1);
         pos_array[1*5+1] = String.fromCharCode(2);
 
@@ -439,7 +439,7 @@ function test_abc_path()
     test("_get_num_connected", function() {
         expect(1);
         var pos_array = _shlomif_repeat(['\0'], 5*5);
-        
+
         pos_array[0*5+0] = String.fromCharCode(1);
         pos_array[1*5+0] = String.fromCharCode(2);
         pos_array[1*5+1] = String.fromCharCode(3);
@@ -455,7 +455,7 @@ function test_abc_path()
     });
 
     var calc_final_layout_string = function (final_layout) {
-        var got_matrix = final_layout._y_indexes().map(function (y) { 
+        var got_matrix = final_layout._y_indexes().map(function (y) {
             return final_layout._x_indexes().map(function(x) {
                 return final_layout.get_letter_at_pos({y : y, x: x})
             }
@@ -507,7 +507,7 @@ function test_abc_path()
         // The seed does not matter.
         var gen = new ABC_Path.Generator.Generator({seed : 1});
 
-        var map_clue = function(clue) { return clue.map(function (i) { 
+        var map_clue = function(clue) { return clue.map(function (i) {
             return gen._to_xy(i);
         }) };
 
