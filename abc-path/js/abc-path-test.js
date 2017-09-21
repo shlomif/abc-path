@@ -351,12 +351,12 @@ function test_abc_path()
                 ], 'solves Brain-Bashers-2010-12-22');
     });
 
-    module("MicrosoftRand");
+    module("MSRand");
 
-    test("MicrosoftRand Seed 1", function() {
+    test("MSRand Seed 1", function() {
         expect(4);
 
-        var r = new ABC_Path.MicrosoftRand({seed : 1 });
+        var r = new MSRand({seed : 1 });
 
         // TEST
         ok (r, 'r was initialized.');
@@ -371,10 +371,10 @@ function test_abc_path()
         equal (r.rand(), 6334, "3rd result for seed 1 is 6,334.");
     });
 
-    test("MicrosoftRand Shuffle", function() {
+    test("MSRand Shuffle", function() {
         expect(2);
 
-        var r = new ABC_Path.MicrosoftRand({seed : 24 });
+        var r = new MSRand({seed : 24 });
 
         var myarr = [0,1,2,3,4,5,6,7,8,9];
 
