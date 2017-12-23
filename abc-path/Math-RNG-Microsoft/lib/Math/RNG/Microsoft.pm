@@ -9,15 +9,6 @@ use warnings;
 Math::RNG::Microsoft - a pseudo-random number generator compatible
 with Visual C.
 
-=head1 VERSION
-
-Version 0.0.3
-
-=cut
-
-our $VERSION = '0.0.3';
-
-
 =head1 SYNOPSIS
 
     use Math::RNG::Microsoft;
