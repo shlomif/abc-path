@@ -9,21 +9,13 @@ use Carp;
 
 use integer;
 
-use base 'Games::ABC_Path::Solver::Base';
+use parent 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Constants;
 
 =head1 NAME
 
 Games::ABC_Path::Generator::RiddleObj - represents a riddle.
-
-=head1 VERSION
-
-Version 0.2.1
-
-=cut
-
-our $VERSION = '0.2.1';
 
 =head1 SYNOPSIS
 

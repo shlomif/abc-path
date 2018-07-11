@@ -10,7 +10,7 @@ use Test::Differences;
 use File::Spec;
 
 my $prog_path = File::Spec->catfile(
-    File::Spec->curdir(), 'scripts', 'abc-path-gen'
+    File::Spec->curdir(), 'bin', 'abc-path-gen'
 );
 
 {

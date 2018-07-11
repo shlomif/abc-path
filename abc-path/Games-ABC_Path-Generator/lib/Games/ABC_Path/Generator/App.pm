@@ -6,7 +6,7 @@ use warnings;
 
 use Pod::Usage qw(pod2usage);
 
-use base 'Games::ABC_Path::Generator::Base';
+use parent 'Games::ABC_Path::Generator::Base';
 
 use Getopt::Long qw(GetOptionsFromArray);
 
@@ -15,15 +15,6 @@ use Games::ABC_Path::Generator;
 =head1 NAME
 
 Games::ABC_Path::Generator::App - command line application for the ABC Path generator.
-
-=head1 VERSION
-
-Version 0.2.1
-
-=cut
-
-our $VERSION = '0.2.1';
-
 
 =head1 SYNOPSIS
 

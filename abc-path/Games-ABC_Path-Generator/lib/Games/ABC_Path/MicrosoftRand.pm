@@ -9,15 +9,6 @@ use warnings;
 Games::ABC_Path::MicrosoftRand - a pseudo-random number generator compatible
 with Visual C.
 
-=head1 VERSION
-
-Version 0.2.1
-
-=cut
-
-our $VERSION = '0.2.1';
-
-
 =head1 SYNOPSIS
 
     use Games::ABC_Path::MicrosoftRand;
@@ -28,7 +19,7 @@ our $VERSION = '0.2.1';
 
 =head1 DESCRIPTION
 
-This is a random number generator use by Games::ABC_Path::Generator, which
+This is a random number generator used by Games::ABC_Path::Generator, which
 emulates the one found in Microsoft's Visual C++. It was utilised here, out
 of familiarity and accessibility, because it is commonly used to generate
 Freecell layouts in the Freecell world (see

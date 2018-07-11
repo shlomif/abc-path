@@ -7,20 +7,14 @@ use warnings;
 
 use integer;
 
-use base 'Games::ABC_Path::Solver::Coord';
+use parent 'Games::ABC_Path::Solver::Coord';
 
 use Games::ABC_Path::Solver::Constants;
 =head1 NAME
 
 Games::ABC_Path::Generator::Coord - a coordinate class.
 
-=head1 VERSION
-
-Version 0.2.1
-
 =cut
-
-our $VERSION = '0.2.1';
 
 sub _from_int
 {

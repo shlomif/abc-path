@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Generator
 
+0.4.0   2018-07-11
+        - Convert to Dist-Zilla.
+
 0.2.1   2017-12-24
     - Switch the repository to GitHub.
 

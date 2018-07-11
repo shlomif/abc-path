@@ -7,14 +7,11 @@ use warnings;
 
 use integer;
 
-use base 'Games::ABC_Path::Generator::Base';
+use parent 'Games::ABC_Path::Generator::Base';
 
 use Games::ABC_Path::Solver::Constants;
-
 use Games::ABC_Path::Solver::Board '0.1.0';
-
 use Games::ABC_Path::MicrosoftRand;
-
 use Games::ABC_Path::Generator::RiddleObj;
 use Games::ABC_Path::Generator::FinalLayoutObj;
 use Games::ABC_Path::Generator::Coord;
@@ -22,15 +19,6 @@ use Games::ABC_Path::Generator::Coord;
 =head1 NAME
 
 Games::ABC_Path::Generator - a generator for ABC Path puzzle games.
-
-=head1 VERSION
-
-Version 0.2.1
-
-=cut
-
-our $VERSION = '0.2.1';
-
 
 =head1 SYNOPSIS
 
