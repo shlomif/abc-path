@@ -18,9 +18,10 @@ install:
     - cpanm --quiet --skip-satisfied Dist::Zilla Module::Build Pod::Weaver::Section::Support
     - "(cd abc-path/Math-RNG-Microsoft/ && dzil authordeps          --missing | grep -vP '[^\\w:]' | xargs -n 5 -P 10 cpanm --quiet --notest)"
     - "(cd abc-path/Math-RNG-Microsoft/ && dzil listdeps   --author --missing | grep -vP '[^\\w:]' | cpanm --verbose)"
-    - "(cd abc-path/Games-ABC_Path-Solver/ && cpanm --quiet --installdeps --notest .)"
+    - "(cd abc-path/Games-ABC_Path-Solver/ && dzil authordeps          --missing | grep -vP '[^\\w:]' | xargs -n 5 -P 10 cpanm --quiet --notest)"
+    - "(cd abc-path/Games-ABC_Path-Solver/ && dzil listdeps   --author --missing | grep -vP '[^\\w:]' | cpanm --verbose)"
     - "(cd abc-path/Games-ABC_Path-Generator/ && cpanm --quiet --installdeps --notest .)"
 script:
     - "(cd abc-path/Math-RNG-Microsoft/ && dzil smoke --release --author)"
-    - "(cd abc-path/Games-ABC_Path-Solver/ && ./Build disttest)"
+    - "(cd abc-path/Games-ABC_Path-Solver/ && dzil smoke --release --author)"
     - "(cd abc-path/Games-ABC_Path-Generator/ && ./Build disttest)"
