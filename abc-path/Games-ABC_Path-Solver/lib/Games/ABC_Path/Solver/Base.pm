@@ -9,17 +9,9 @@ use Games::ABC_Path::Solver::Constants;
 
 Games::ABC_Path::Solver::Base - base class for Games::ABC_Path::Solver classes.
 
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
-
 =head1 SYNOPSIS
 
-    use base 'Games::ABC_Path::Solver::Base';
+    use parent 'Games::ABC_Path::Solver::Base';
 
     sub _init
     {

@@ -49,7 +49,7 @@ The constructor.
 
 use Carp;
 
-use base 'Games::ABC_Path::Solver::Base';
+use parent 'Games::ABC_Path::Solver::Base';
 
 use Games::ABC_Path::Solver::Constants;
 use Games::ABC_Path::Solver::Move::LastRemainingCellForLetter;

@@ -7,14 +7,6 @@ use strict;
 
 Games::ABC_Path::Solver::Move - an ABC Path move.
 
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
-
 =head1 SYNOPSIS
 
     use Games::ABC_Path::Solver::Move;
@@ -29,7 +21,7 @@ The constructor.
 
 =cut
 
-use base 'Games::ABC_Path::Solver::Base';
+use parent 'Games::ABC_Path::Solver::Base';
 
 =head2 get_text()
 

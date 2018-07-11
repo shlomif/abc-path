@@ -10,16 +10,7 @@ B<FOR INTERNAL USE!>.
 
 =cut
 
-our $VERSION = '0.4.1';
-
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-
-use base 'Exporter';
+use parent 'Exporter';
 
 our $LEN = 5;
 our $LEN_LIM = $LEN-1;

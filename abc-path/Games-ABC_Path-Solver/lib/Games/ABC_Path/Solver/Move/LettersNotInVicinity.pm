@@ -3,21 +3,13 @@ package Games::ABC_Path::Solver::Move::LettersNotInVicinity;
 use strict;
 use warnings;
 
-use base 'Games::ABC_Path::Solver::Move';
+use parent 'Games::ABC_Path::Solver::Move';
 
 =head1 NAME
 
 Games::ABC_Path::Solver::Move::LettersNotInVicinity - an ABC Path move
 that indicates that letters are not in vicinity to one another in a certain
 cell.
-
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
 
 =head1 SYNOPSIS
 

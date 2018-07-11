@@ -40,7 +40,7 @@ Run the application based on the arguments in the constructor.
 
 =cut
 
-use base 'Games::ABC_Path::Solver::Base';
+use parent 'Games::ABC_Path::Solver::Base';
 
 use Carp;
 use Getopt::Long;

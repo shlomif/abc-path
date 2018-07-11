@@ -3,20 +3,12 @@ package Games::ABC_Path::Solver::Move::LastRemainingLetterForCell;
 use strict;
 use warnings;
 
-use base 'Games::ABC_Path::Solver::Move';
+use parent 'Games::ABC_Path::Solver::Move';
 
 =head1 NAME
 
 Games::ABC_Path::Solver::Move::LastRemainingLetterForCell - an ABC Path move
 that indicates it's the last remaining letter for a given cell.
-
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
 
 =head1 SYNOPSIS
 

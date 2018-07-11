@@ -23,7 +23,7 @@ sub _slurp
 
 {
     my $got_results =
-        `$^X -Mblib scripts/abc-path-solve t/layouts/brain-bashers.2010-12-21.abc-path`
+        `$^X -Mblib bin/abc-path-solve t/layouts/brain-bashers.2010-12-21.abc-path`
         ;
 
     # TEST
@@ -42,7 +42,7 @@ sub _slurp
 
 {
     my $got_results =
-        `$^X -Mblib scripts/abc-path-solve t/layouts/brain-bashers.2010-12-22.abc-path`
+        `$^X -Mblib bin/abc-path-solve t/layouts/brain-bashers.2010-12-22.abc-path`
         ;
 
     # TEST
@@ -61,7 +61,7 @@ sub _slurp
 
 {
     my $got_results =
-        `$^X -Mblib scripts/abc-path-solve --gen-v1-template`
+        `$^X -Mblib bin/abc-path-solve --gen-v1-template`
         ;
 
     # TEST

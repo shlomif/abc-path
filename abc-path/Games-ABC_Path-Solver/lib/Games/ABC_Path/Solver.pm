@@ -9,15 +9,6 @@ use 5.008;
 
 Games::ABC_Path::Solver - a solver for ABC Path
 
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
-
-
 =head1 SYNOPSIS
 
 See L<Games::ABC_Path::Solver::Board> for more information.
