@@ -8,14 +8,6 @@ use strict;
 Games::ABC_Path::Solver::App - a class wrapping a command line app for
 solving ABC Path
 
-=head1 VERSION
-
-Version 0.4.1
-
-=cut
-
-our $VERSION = '0.4.1';
-
 =head1 SYNOPSIS
 
     #!/usr/bin/perl

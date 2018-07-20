@@ -1,5 +1,9 @@
 Revision history for Games-ABC_Path-Solver
 
+0.6.1   2018-07-20
+        - Fix the link to the bugtracker.
+            - Thanks to ANDK.
+
 0.6.0   2018-07-11
         - Convert to Dist-Zilla.
 
