@@ -7,6 +7,7 @@ use Test::More tests => 4;
 
 BEGIN
 {
+    # TEST*4
     use_ok('Games::ABC_Path::Solver::Base');
     use_ok('Games::ABC_Path::Solver');
     use_ok('Games::ABC_Path::Solver::Move');
