@@ -20,12 +20,12 @@ Games::ABC_Path::Generator::App - command line application for the ABC Path gene
 
     use Games::ABC_Path::Generator::App;
 
-    my $app = Games::ABC_Path::Generator::App->new({ argv => [@ARGV], },);
+    my $app = Games::ABC_Path::Generator::App->new({ argv => \@ARGV, },);
     $app->run();
 
 =head1 SUBROUTINES/METHODS
 
-=head2 Games::ABC_Path::Generator::App->new({ argv => [@ARGV], },);
+=head2 Games::ABC_Path::Generator::App->new({ argv => \@ARGV, },);
 
 Initialize from @ARGV .
 
