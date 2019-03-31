@@ -35,7 +35,7 @@ Run the application based on the arguments in the constructor.
 use parent 'Games::ABC_Path::Solver::Base';
 
 use Carp;
-use Getopt::Long;
+use Getopt::Long qw/ GetOptionsFromArray /;
 use Pod::Usage;
 
 use Games::ABC_Path::Solver::Board;
@@ -65,12 +65,11 @@ sub run
 {
     my $self = shift;
 
-    local @ARGV = @{ $self->_argv };
-
     my $man          = 0;
     my $help         = 0;
     my $gen_template = 0;
-    GetOptions(
+    GetOptionsFromArray(
+        $self->_argv,
         'help|h'          => \$help,
         man               => \$man,
         'gen-v1-template' => \$gen_template,
@@ -99,8 +98,7 @@ EOF
     }
     else
     {
-
-        my $board_fn = shift(@ARGV);
+        my $board_fn = shift( @{ $self->_argv } );
 
         if ( !defined($board_fn) )
         {
