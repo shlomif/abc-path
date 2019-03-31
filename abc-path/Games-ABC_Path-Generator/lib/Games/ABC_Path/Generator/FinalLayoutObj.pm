@@ -51,7 +51,7 @@ sub _init
     my $self = shift;
     my $args = shift;
 
-    $self->_s($args->{layout_string});
+    $self->_s( $args->{layout_string} );
 
     return;
 }
@@ -66,7 +66,7 @@ sub get_A_pos
 {
     my ($self) = @_;
 
-    return index($self->_s, chr(1));
+    return index( $self->_s, chr(1) );
 }
 
 =head2 $layout->get_A_xy()
@@ -80,9 +80,9 @@ sub get_A_xy
 {
     my ($self) = @_;
 
-    my ($y, $x) = $self->_to_xy($self->get_A_pos());
+    my ( $y, $x ) = $self->_to_xy( $self->get_A_pos() );
 
-    return {y => $y, x => $x,};
+    return { y => $y, x => $x, };
 }
 
 =head2 $layout->get_cell_contents($index)
@@ -93,9 +93,9 @@ Returns the cell at index L<$index> (where index is C< $Y*5 + $X>).
 
 sub get_cell_contents
 {
-    my ($self, $index) = @_;
+    my ( $self, $index ) = @_;
 
-    return vec($self->_s, $index, 8) ;
+    return vec( $self->_s, $index, 8 );
 }
 
 =head2 my $letter = $layout->get_letter_at_pos({y => $y, x => $x});
@@ -106,14 +106,11 @@ Returns the letter at $y and $x .
 
 sub get_letter_at_pos
 {
-    my ($self, $pos) = @_;
+    my ( $self, $pos ) = @_;
 
     return $letters[
         $self->get_cell_contents(
-            $self->_xy_to_int(
-                [$pos->{'y'},$pos->{'x'}],
-            )
-        )-1,
+            $self->_xy_to_int( [ $pos->{'y'}, $pos->{'x'} ], ) ) - 1,
     ];
 }
 
@@ -125,19 +122,22 @@ Represents the layout as string.
 
 sub as_string
 {
-    my ($l, $args) = @_;
+    my ( $l, $args ) = @_;
 
     my $render_row = sub {
         my $y = shift;
 
-        return join(" | ",
+        return join(
+            " | ",
             map {
                 my $x = $_;
-                my $v = $l->get_cell_contents($l->_xy_to_int([$y,$x]));
-            $v ? $letters[$v-1] : '*' } (0 .. $LEN - 1));
+                my $v = $l->get_cell_contents( $l->_xy_to_int( [ $y, $x ] ) );
+                $v ? $letters[ $v - 1 ] : '*'
+            } ( 0 .. $LEN - 1 )
+        );
     };
 
-    return join('', map { $render_row->($_) . "\n" } (0 .. $LEN-1));
+    return join( '', map { $render_row->($_) . "\n" } ( 0 .. $LEN - 1 ) );
 }
 
 =head1 AUTHOR
@@ -217,4 +217,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator
+1;    # End of Games::ABC_Path::Generator

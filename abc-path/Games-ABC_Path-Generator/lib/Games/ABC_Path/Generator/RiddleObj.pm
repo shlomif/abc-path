@@ -95,9 +95,9 @@ sub _init
     my $self = shift;
     my $args = shift;
 
-    $self->_solution($args->{solution});
-    $self->_clues($args->{clues});
-    $self->_A_pos($args->{A_pos});
+    $self->_solution( $args->{solution} );
+    $self->_clues( $args->{clues} );
+    $self->_A_pos( $args->{A_pos} );
 
     return;
 }
@@ -138,14 +138,14 @@ Some examples:
 
 sub get_letters_of_clue
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     my $get_index = sub {
         my $i = $args->{index};
 
-        if ($i !~ m{\A[01234]\z})
+        if ( $i !~ m{\A[01234]\z} )
         {
-            Carp::confess ('index must be in the range 0-4');
+            Carp::confess('index must be in the range 0-4');
         }
 
         return $i;
@@ -154,28 +154,28 @@ sub get_letters_of_clue
     my $clue_idx;
     my $type = $args->{type};
 
-    if ($type eq 'col')
+    if ( $type eq 'col' )
     {
         $clue_idx = 2 + $LEN + $get_index->();
     }
-    elsif ($type eq 'row')
+    elsif ( $type eq 'row' )
     {
         $clue_idx = 2 + $get_index->();
     }
-    elsif ($type eq 'diag')
+    elsif ( $type eq 'diag' )
     {
         $clue_idx = 0;
     }
-    elsif ($type eq 'antidiag')
+    elsif ( $type eq 'antidiag' )
     {
         $clue_idx = 1;
     }
     else
     {
-        Carp::confess ("Unknown type $type.");
+        Carp::confess("Unknown type $type.");
     }
 
-    return [map { $letters[$_-1] } @{$self->_clues->[$clue_idx]}];
+    return [ map { $letters[ $_ - 1 ] } @{ $self->_clues->[$clue_idx] } ];
 }
 
 =head2 my $string = $riddle->get_riddle_v1_string()
@@ -189,24 +189,27 @@ sub get_riddle_v1_string
 {
     my ($self) = @_;
 
-    my $s = ((' ' x 7)."\n")x7;
+    my $s = ( ( ' ' x 7 ) . "\n" ) x 7;
 
-    substr($s, ($self->_A_pos->y + 1) * 8 + $self->_A_pos->x + 1, 1) = 'A';
+    substr( $s, ( $self->_A_pos->y + 1 ) * 8 + $self->_A_pos->x + 1, 1 ) = 'A';
 
     my $clues = $self->_clues();
-    foreach my $clue_idx (0 .. $NUM_CLUES-1)
+    foreach my $clue_idx ( 0 .. $NUM_CLUES - 1 )
     {
         my @pos =
-            ($clue_idx == 0) ? ([0,0],[6,6])
-            : ($clue_idx == 1) ? ([0,6],[6,0])
-            : ($clue_idx < (2+5)) ? ([1+$clue_idx-(2), 0], [1+$clue_idx-(2), 6])
-            : ([0, 1+$clue_idx-(2+5)], [6, 1+$clue_idx-(2+5)])
-            ;
+              ( $clue_idx == 0 ) ? ( [ 0, 0 ], [ 6, 6 ] )
+            : ( $clue_idx == 1 ) ? ( [ 0, 6 ], [ 6, 0 ] )
+            : ( $clue_idx < ( 2 + 5 ) )
+            ? ( [ 1 + $clue_idx - (2), 0 ], [ 1 + $clue_idx - (2), 6 ] )
+            : (
+            [ 0, 1 + $clue_idx - ( 2 + 5 ) ],
+            [ 6, 1 + $clue_idx - ( 2 + 5 ) ]
+            );
 
-        foreach my $i (0 .. 1)
+        foreach my $i ( 0 .. 1 )
         {
-            substr ($s, $pos[$i][0] * 8 + $pos[$i][1], 1)
-                = $letters[$clues->[$clue_idx]->[$i] - 1];
+            substr( $s, $pos[$i][0] * 8 + $pos[$i][1], 1 ) =
+                $letters[ $clues->[$clue_idx]->[$i] - 1 ];
         }
     }
 
@@ -226,7 +229,6 @@ sub get_final_layout
     return $self->_solution;
 }
 
-
 =head2 my $string = $riddle->get_final_layout_as_string({%args})
 
 Returns the final layout as a string. %args is included for future extension.
@@ -235,7 +237,7 @@ Returns the final layout as a string. %args is included for future extension.
 
 sub get_final_layout_as_string
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     return $self->_solution->as_string($args);
 }
@@ -317,4 +319,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator
+1;    # End of Games::ABC_Path::Generator

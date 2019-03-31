@@ -10,6 +10,7 @@ use integer;
 use parent 'Games::ABC_Path::Solver::Coord';
 
 use Games::ABC_Path::Solver::Constants;
+
 =head1 NAME
 
 Games::ABC_Path::Generator::Coord - a coordinate class.
@@ -18,8 +19,8 @@ Games::ABC_Path::Generator::Coord - a coordinate class.
 
 sub _from_int
 {
-    my ($class, $int) = @_;
-    return $class->new({ y => ($int / $LEN), x => ($int % $LEN) });
+    my ( $class, $int ) = @_;
+    return $class->new( { y => ( $int / $LEN ), x => ( $int % $LEN ) } );
 }
 
 =head1 SYNOPSIS
@@ -104,4 +105,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator::Coord
+1;    # End of Games::ABC_Path::Generator::Coord

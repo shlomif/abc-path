@@ -45,9 +45,9 @@ sub _argv
 
 sub _init
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
-    $self->_argv($args->{argv});
+    $self->_argv( $args->{argv} );
 
     return;
 }
@@ -64,15 +64,17 @@ sub run
 
     my $seed;
     my $mode = 'riddle';
-    my $man = 0;
+    my $man  = 0;
     my $help = 0;
-    if (!GetOptionsFromArray(
+    if (
+        !GetOptionsFromArray(
             $self->_argv(),
             'seed=i' => \$seed,
             'mode=s' => \$mode,
             'help|h' => \$help,
-            man => \$man,
-        ))
+            man      => \$man,
+        )
+        )
     {
         pod2usage(2);
     }
@@ -83,32 +85,30 @@ sub run
     }
     elsif ($man)
     {
-        pod2usage(-verbose => 2);
+        pod2usage( -verbose => 2 );
     }
-    elsif (!defined($seed))
+    elsif ( !defined($seed) )
     {
         die "Seed not specified! See --help.";
     }
     else
     {
-        my $gen = Games::ABC_Path::Generator->new({ seed => $seed, });
+        my $gen = Games::ABC_Path::Generator->new( { seed => $seed, } );
 
-        if ($mode eq 'final')
+        if ( $mode eq 'final' )
         {
-            print $gen->calc_final_layout()->as_string({});
+            print $gen->calc_final_layout()->as_string( {} );
         }
-        elsif ($mode eq 'riddle')
+        elsif ( $mode eq 'riddle' )
         {
             my $riddle = $gen->calc_riddle();
 
-            my $layout_string = $riddle->get_final_layout_as_string({});
+            my $layout_string = $riddle->get_final_layout_as_string( {} );
 
             my $riddle_string = $riddle->get_riddle_v1_string;
 
-            print sprintf(
-                "ABC Path Solver Layout Version 1:\n%s",
-                $riddle_string,
-            );
+            print sprintf( "ABC Path Solver Layout Version 1:\n%s",
+                $riddle_string, );
         }
 
     }
@@ -192,4 +192,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator::App
+1;    # End of Games::ABC_Path::Generator::App

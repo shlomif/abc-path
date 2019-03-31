@@ -9,9 +9,8 @@ use Test::Differences;
 
 use File::Spec;
 
-my $prog_path = File::Spec->catfile(
-    File::Spec->curdir(), 'bin', 'abc-path-gen'
-);
+my $prog_path =
+    File::Spec->catfile( File::Spec->curdir(), 'bin', 'abc-path-gen' );
 
 {
     # TEST
@@ -68,8 +67,5 @@ EOF
     my $got_output = `$^X -Mblib $prog_path --help`;
 
     # TEST
-    like ($got_output,
-        qr/--help/,
-        "Help output is relatively sane.",
-    );
+    like( $got_output, qr/--help/, "Help output is relatively sane.", );
 }

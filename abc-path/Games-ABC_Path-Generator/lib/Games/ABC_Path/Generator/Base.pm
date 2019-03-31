@@ -95,4 +95,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator::Base
+1;    # End of Games::ABC_Path::Generator::Base

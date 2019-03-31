@@ -57,73 +57,77 @@ sub _init
 
     $self->{seed} = $args->{seed};
 
-    $self->{rand} = Games::ABC_Path::MicrosoftRand->new(seed => $self->{seed});
+    $self->{rand} =
+        Games::ABC_Path::MicrosoftRand->new( seed => $self->{seed} );
 
     return;
 }
 
-
-sub _shuffle {
-    my ($self, $deck) = @_;
+sub _shuffle
+{
+    my ( $self, $deck ) = @_;
 
     return $self->{'rand'}->shuffle($deck);
 }
 
 {
-my @get_next_cells_lookup =
-(
-    map {
-        my $start = Games::ABC_Path::Generator::Coord->_from_int($_);
-        [ map {
-            my ($y,$x) = ($start->y() + $_->[$Y], $start->x() + $_->[$X]);
-            (
-                (__PACKAGE__->_x_in_range($x) && __PACKAGE__->_y_in_range($y))
-                ? (__PACKAGE__->_xy_to_int([$y,$x])) : ()
-            )
-            }
-            ([-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1])
-        ]
-    } (0 .. $BOARD_SIZE - 1)
-);
+    my @get_next_cells_lookup = (
+        map {
+            my $start = Games::ABC_Path::Generator::Coord->_from_int($_);
+            [
+                map {
+                    my ( $y, $x ) =
+                        ( $start->y() + $_->[$Y], $start->x() + $_->[$X] );
+                    (
+                        (
+                                   __PACKAGE__->_x_in_range($x)
+                                && __PACKAGE__->_y_in_range($y)
+                        ) ? ( __PACKAGE__->_xy_to_int( [ $y, $x ] ) ) : ()
+                    )
+                } (
+                    [ -1, -1 ], [ -1, 0 ],  [ -1, 1 ], [ 0, -1 ],
+                    [ 0,  1 ],  [ 1,  -1 ], [ 1,  0 ], [ 1, 1 ]
+                )
+            ]
+        } ( 0 .. $BOARD_SIZE - 1 )
+    );
 
-sub _get_next_cells
-{
-    my ($self, $l, $init_idx) = @_;
+    sub _get_next_cells
+    {
+        my ( $self, $l, $init_idx ) = @_;
 
-    return [ grep { vec($l, $_, 8) == 0 }
-        @{$get_next_cells_lookup[$init_idx]}
-    ];
+        return [ grep { vec( $l, $_, 8 ) == 0 }
+                @{ $get_next_cells_lookup[$init_idx] } ];
+    }
 }
-}
-
 
 sub _add_next_state
 {
-    my ($self, $stack, $l, $cell_int) = @_;
+    my ( $self, $stack, $l, $cell_int ) = @_;
 
-    vec($l, $cell_int, 8) = 1+@$stack;
+    vec( $l, $cell_int, 8 ) = 1 + @$stack;
 
-    push @$stack, [$l, $self->_shuffle($self->_get_next_cells($l, $cell_int))];
+    push @$stack,
+        [ $l, $self->_shuffle( $self->_get_next_cells( $l, $cell_int ) ) ];
 
     return;
 }
 
 sub _get_num_connected
 {
-    my ($self, $l) = @_;
+    my ( $self, $l ) = @_;
 
-    my @connectivity_stack = (index($l, "\0"));
+    my @connectivity_stack = ( index( $l, "\0" ) );
 
     my %connected;
     while (@connectivity_stack)
     {
         my $int = pop(@connectivity_stack);
-        if (!$connected{$int}++)
+        if ( !$connected{$int}++ )
         {
             push @connectivity_stack,
-            (grep { !exists($connected{$_}) }
-                @{ $self->_get_next_cells($l, $int) }
-            );
+                ( grep { !exists( $connected{$_} ) }
+                    @{ $self->_get_next_cells( $l, $int ) } );
         }
     }
 
@@ -145,38 +149,38 @@ sub calc_final_layout
     my $self = shift;
 
     my @dfs_stack;
-    $self->_add_next_state(\@dfs_stack, '', $self->{rand}->max_rand($BOARD_SIZE));
+    $self->_add_next_state( \@dfs_stack, '',
+        $self->{rand}->max_rand($BOARD_SIZE) );
 
-    DFS:
+DFS:
     while (@dfs_stack)
     {
-        my ($l, $last_cells) = @{$dfs_stack[-1]};
+        my ( $l, $last_cells ) = @{ $dfs_stack[-1] };
 
-        if (@dfs_stack == $BOARD_SIZE)
+        if ( @dfs_stack == $BOARD_SIZE )
         {
             return Games::ABC_Path::Generator::FinalLayoutObj->new(
-                {layout_string => $l, },
+                { layout_string => $l, },
             );
         }
 
-        # print "Depth = " . scalar(@dfs_stack) . "\n";
-        # print "Last state = " . Dumper($last_state) . "\n";
-        # print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
+# print "Depth = " . scalar(@dfs_stack) . "\n";
+# print "Last state = " . Dumper($last_state) . "\n";
+# print "Layout = \n" . $self->get_layout_as_string($last_state->{layout}) . "\n";
 
         my $next_idx = shift(@$last_cells);
 
-        if ( ( ! defined($next_idx) )
-                or
-            ($self->_get_num_connected($l) !=
-                ($BOARD_SIZE - scalar(@dfs_stack))
+        if (
+            ( !defined($next_idx) )
+            or ( $self->_get_num_connected($l) !=
+                ( $BOARD_SIZE - scalar(@dfs_stack) ) )
             )
-        )
         {
             pop(@dfs_stack);
         }
         else
         {
-            $self->_add_next_state(\@dfs_stack, $l, $next_idx);
+            $self->_add_next_state( \@dfs_stack, $l, $next_idx );
         }
     }
 
@@ -189,28 +193,41 @@ Calculates the riddle (final state + initial hints) and returns it as an object.
 
 =cut
 
-sub _gen_clue_positions {
-    my ($self, $cb) = @_;
-    return [map { $cb->($_) } $self->_x_indexes()];
-};
-
-sub _calc_clue_positions {
-    my $self = shift;
-    return
-    [
-        map {
-        [map { $self->_xy_to_int($_) } @{$self->_gen_clue_positions($_)}]
-        }
-        (
-            sub { [$_,$_];   },
-            sub { [$_,4-$_]; },
-            (map { my $y = $_; sub { [$y,$_] }; } $self->_y_indexes()),
-            (map { my $x = $_; sub { [$_,$x] }; } $self->_x_indexes()),
-        )
-    ]
+sub _gen_clue_positions
+{
+    my ( $self, $cb ) = @_;
+    return [ map { $cb->($_) } $self->_x_indexes() ];
 }
 
-my @_clues_positions = @{__PACKAGE__->_calc_clue_positions()};
+sub _calc_clue_positions
+{
+    my $self = shift;
+    return [
+        map {
+            [ map { $self->_xy_to_int($_) }
+                    @{ $self->_gen_clue_positions($_) } ]
+        } (
+            sub { [ $_, $_ ]; },
+            sub { [ $_, 4 - $_ ]; },
+            (
+                map
+                {
+                    my $y = $_;
+                    sub { [ $y, $_ ] };
+                } $self->_y_indexes()
+            ),
+            (
+                map
+                {
+                    my $x = $_;
+                    sub { [ $_, $x ] };
+                } $self->_x_indexes()
+            ),
+        )
+    ];
+}
+
+my @_clues_positions = @{ __PACKAGE__->_calc_clue_positions() };
 
 sub calc_riddle
 {
@@ -220,75 +237,67 @@ sub calc_riddle
 
     my $A_pos = $layout->get_A_pos;
 
-    my %init_state = (pos_taken => '',
-        clues =>
-        [
-            map { +{ num_remaining => 5, } }
-            (1 .. $NUM_CLUES),
-        ]
+    my %init_state = (
+        pos_taken => '',
+        clues     => [ map { +{ num_remaining => 5, } } ( 1 .. $NUM_CLUES ), ]
     );
 
     my $mark = sub {
-        my ($state, $pos) = @_;
+        my ( $state, $pos ) = @_;
 
-        vec($state->{pos_taken}, $pos, 1) = 1;
+        vec( $state->{pos_taken}, $pos, 1 ) = 1;
 
         my $coord = Games::ABC_Path::Generator::Coord->_from_int($pos);
 
         foreach my $clue (
-            (($coord->y == $coord->x) ? 0 : ()),
-            (($coord->y == (5-1)-$coord->x) ? 1 : ()),
-            (2+$coord->y),
-            ((2+5)+$coord->x),
-        )
+            ( ( $coord->y == $coord->x ) ? 0 : () ),
+            ( ( $coord->y == ( 5 - 1 ) - $coord->x ) ? 1 : () ),
+            ( 2 + $coord->y ),
+            ( ( 2 + 5 ) + $coord->x ),
+            )
         {
             $state->{clues}->[$clue]->{num_remaining}--;
         }
     };
 
-    $mark->(\%init_state, $A_pos);
+    $mark->( \%init_state, $A_pos );
 
-    my @dfs_stack = (\%init_state);
+    my @dfs_stack = ( \%init_state );
 
-    DFS:
+DFS:
     while (@dfs_stack)
     {
         my $last_state = $dfs_stack[-1];
 
-        if (! exists($last_state->{chosen_clue}))
+        if ( !exists( $last_state->{chosen_clue} ) )
         {
-            my @clues =
-            (
+            my @clues = (
                 sort {
-                    ($a->[1]->{num_remaining} <=> $b->[1]->{num_remaining})
+                    ( $a->[1]->{num_remaining} <=> $b->[1]->{num_remaining} )
                         or
-                    ($a->[0] <=> $b->[0])
-                }
-                grep { !exists($_->[1]->{cells}) }
-                map { [$_, $last_state->{clues}->[$_]] }
-                (0 .. $NUM_CLUES-1)
+                        ( $a->[0] <=> $b->[0] )
+                    }
+                    grep { !exists( $_->[1]->{cells} ) }
+                    map { [ $_, $last_state->{clues}->[$_] ] }
+                    ( 0 .. $NUM_CLUES - 1 )
             );
 
-            if (!@clues)
+            if ( !@clues )
             {
                 # Yay! We found a configuration.
                 my $handle_clue = sub {
-                    my @cells = @{shift->{cells}};
-                    return
-                    [
-                        map { $layout->get_cell_contents($_) }
-                        @{$self->_shuffle(\@cells)}
-                    ];
+                    my @cells = @{ shift->{cells} };
+                    return [ map { $layout->get_cell_contents($_) }
+                            @{ $self->_shuffle( \@cells ) } ];
                 };
-                my $riddle =
-                Games::ABC_Path::Generator::RiddleObj->new(
+                my $riddle = Games::ABC_Path::Generator::RiddleObj->new(
                     {
                         solution => $layout,
-                        clues =>
-                        [
-                            map { $handle_clue->($_) } @{$last_state->{clues}}
+                        clues    => [
+                            map { $handle_clue->($_) } @{ $last_state->{clues} }
                         ],
-                        A_pos => Games::ABC_Path::Generator::Coord->_from_int($A_pos),
+                        A_pos => Games::ABC_Path::Generator::Coord->_from_int(
+                            $A_pos),
                     }
                 );
 
@@ -296,12 +305,11 @@ sub calc_riddle
 
                 my $solver =
                     Games::ABC_Path::Solver::Board->input_from_v1_string(
-                        $riddle_string
-                    );
+                    $riddle_string);
 
                 $solver->solve();
 
-                if (@{$solver->get_successes_text_tables()} != 1)
+                if ( @{ $solver->get_successes_text_tables() } != 1 )
                 {
                     # The solution is ambiguous
                     pop(@dfs_stack);
@@ -314,7 +322,7 @@ sub calc_riddle
             }
 
             # Not enough for the clues there.
-            if ($clues[0][1]->{num_remaining} < 2)
+            if ( $clues[0][1]->{num_remaining} < 2 )
             {
                 pop(@dfs_stack);
                 next DFS;
@@ -325,28 +333,26 @@ sub calc_riddle
             $last_state->{chosen_clue} = $clue_idx;
 
             my @positions =
-            (
-                grep { !vec($last_state->{pos_taken}, $_, 1) }
-                @{$_clues_positions[$clue_idx]}
-            );
+                ( grep { !vec( $last_state->{pos_taken}, $_, 1 ) }
+                    @{ $_clues_positions[$clue_idx] } );
 
             my @pairs;
 
-            foreach my $first_idx (0 .. $#positions-1)
+            foreach my $first_idx ( 0 .. $#positions - 1 )
             {
-                foreach my $second_idx ($first_idx+1 .. $#positions)
+                foreach my $second_idx ( $first_idx + 1 .. $#positions )
                 {
-                    push @pairs, [@positions[$first_idx, $second_idx]];
+                    push @pairs, [ @positions[ $first_idx, $second_idx ] ];
                 }
             }
 
-            $last_state->{pos_pairs} = $self->_shuffle(\@pairs);
+            $last_state->{pos_pairs} = $self->_shuffle( \@pairs );
         }
 
         my $chosen_clue = $last_state->{chosen_clue};
-        my $next_pair = shift(@{$last_state->{pos_pairs}});
+        my $next_pair   = shift( @{ $last_state->{pos_pairs} } );
 
-        if (!defined($next_pair))
+        if ( !defined($next_pair) )
         {
             pop(@dfs_stack);
             next DFS;
@@ -354,14 +360,14 @@ sub calc_riddle
 
         my %new_state;
         $new_state{pos_taken} = $last_state->{pos_taken};
-        $new_state{clues} = [map { +{ %{$_} } } @{$last_state->{clues}}];
+        $new_state{clues} = [ map { +{ %{$_} } } @{ $last_state->{clues} } ];
         foreach my $pos (@$next_pair)
         {
-            $mark->(\%new_state, $pos);
+            $mark->( \%new_state, $pos );
         }
         $new_state{clues}->[$chosen_clue]->{cells} = [@$next_pair];
 
-        push @dfs_stack, (\%new_state);
+        push @dfs_stack, ( \%new_state );
     }
 }
 
@@ -458,4 +464,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Generator
+1;    # End of Games::ABC_Path::Generator
