@@ -210,15 +210,13 @@ sub _calc_clue_positions
             sub { [ $_, $_ ]; },
             sub { [ $_, 4 - $_ ]; },
             (
-                map
-                {
+                map {
                     my $y = $_;
                     sub { [ $y, $_ ] };
                 } $self->_y_indexes()
             ),
             (
-                map
-                {
+                map {
                     my $x = $_;
                     sub { [ $_, $x ] };
                 } $self->_x_indexes()
