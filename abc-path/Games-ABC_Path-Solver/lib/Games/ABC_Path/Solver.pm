@@ -90,4 +90,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Solver
+1;    # End of Games::ABC_Path::Solver

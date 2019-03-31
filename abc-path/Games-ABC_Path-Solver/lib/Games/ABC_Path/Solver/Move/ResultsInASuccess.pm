@@ -30,7 +30,8 @@ This is a move that a branch resulted in an error.
 
 =cut
 
-sub _format {
+sub _format
+{
     return "Trying %(letter){letter} for %(coords){coords} returns a success.";
 }
 

@@ -41,7 +41,7 @@ use integer;
 
 sub _xy_to_int
 {
-    my ($self, $xy) = @_;
+    my ( $self, $xy ) = @_;
 
 =begin foo
 
@@ -66,31 +66,31 @@ sub _xy_to_int
 
 sub _to_xy
 {
-    my ($self, $int) = @_;
+    my ( $self, $int ) = @_;
 
-    return (($int / $LEN), ($int % $LEN));
+    return ( ( $int / $LEN ), ( $int % $LEN ) );
 }
 
 sub _y_indexes
 {
-    return (0 .. $LEN_LIM);
+    return ( 0 .. $LEN_LIM );
 }
 
 sub _x_indexes
 {
-    return (0 .. $LEN_LIM);
+    return ( 0 .. $LEN_LIM );
 }
 
 sub _x_in_range
 {
-    my ($self, $x) = @_;
+    my ( $self, $x ) = @_;
 
-    return ($x >= 0 and $x < $LEN);
+    return ( $x >= 0 and $x < $LEN );
 }
 
 sub _y_in_range
 {
-    my ($self, $y) = @_;
+    my ( $self, $y ) = @_;
 
     return $self->_x_in_range($y);
 }
@@ -172,4 +172,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Solver::Base
+1;    # End of Games::ABC_Path::Solver::Base

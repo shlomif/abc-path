@@ -42,10 +42,12 @@ sub get_text
     return $text;
 }
 
-sub _depth {
+sub _depth
+{
     my $self = shift;
 
-    if (@_) {
+    if (@_)
+    {
         $self->{_depth} = shift;
     }
 
@@ -67,11 +69,11 @@ sub get_depth
 
 sub _init
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
     $self->{_text} = $args->{text};
-    $self->_depth($args->{depth} || 0);
-    $self->{_vars} = ($args->{vars} || {});
+    $self->_depth( $args->{depth} || 0 );
+    $self->{_vars} = ( $args->{vars} || {} );
 
     return;
 }
@@ -88,9 +90,9 @@ sub bump
 
     return ref($self)->new(
         {
-            text => $self->get_text(),
-            depth => ($self->get_depth+1),
-            vars => { %{$self->{_vars}}, },
+            text  => $self->get_text(),
+            depth => ( $self->get_depth + 1 ),
+            vars  => { %{ $self->{_vars} }, },
         }
     );
 }
@@ -105,7 +107,7 @@ be accessed programatically.
 
 sub get_var
 {
-    my ($self, $name) = @_;
+    my ( $self, $name ) = @_;
 
     return $self->{_vars}->{$name};
 }
@@ -115,17 +117,17 @@ my @letters = (qw(A B C D E F G H I J K L M N O P Q R S T U V W X Y));
 
 sub _expand_format
 {
-    my ($self, $name, $type) = @_;
+    my ( $self, $name, $type ) = @_;
 
     my $value = $self->get_var($name);
 
-    if ($type eq "letter")
+    if ( $type eq "letter" )
     {
         return $letters[$value];
     }
-    elsif ($type eq "coords")
+    elsif ( $type eq "coords" )
     {
-        return sprintf("(%d,%d)", $value->x()+1, $value->y()+1);
+        return sprintf( "(%d,%d)", $value->x() + 1, $value->y() + 1 );
     }
     else
     {
@@ -210,4 +212,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Solver::Move
+1;    # End of Games::ABC_Path::Solver::Move

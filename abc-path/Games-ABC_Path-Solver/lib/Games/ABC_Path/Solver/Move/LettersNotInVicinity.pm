@@ -33,8 +33,10 @@ as C<'coords'>.
 
 =cut
 
-sub _format {
-    return "%(target){letter} cannot be at %(coords){coords} due to lack of vicinity from %(source){letter}.";
+sub _format
+{
+    return
+"%(target){letter} cannot be at %(coords){coords} due to lack of vicinity from %(source){letter}.";
 }
 
 =head1 AUTHOR

@@ -31,7 +31,8 @@ as C<'coords'>.
 
 =cut
 
-sub _format {
+sub _format
+{
     return "For %(letter){letter} only %(coords){coords} is possible.";
 }
 

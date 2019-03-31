@@ -44,7 +44,8 @@ sub _argv
 {
     my $self = shift;
 
-    if (@_) {
+    if (@_)
+    {
         $self->{_argv} = shift;
     }
 
@@ -53,9 +54,9 @@ sub _argv
 
 sub _init
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
-    $self->_argv([@{$args->{argv}}]);
+    $self->_argv( [ @{ $args->{argv} } ] );
 
     return;
 }
@@ -64,17 +65,16 @@ sub run
 {
     my $self = shift;
 
-    local @ARGV = @{$self->_argv};
+    local @ARGV = @{ $self->_argv };
 
-    my $man = 0;
-    my $help = 0;
+    my $man          = 0;
+    my $help         = 0;
     my $gen_template = 0;
     GetOptions(
-        'help|h' => \$help,
-        man => \$man,
+        'help|h'          => \$help,
+        man               => \$man,
         'gen-v1-template' => \$gen_template,
-    )
-        or pod2usage(2);
+    ) or pod2usage(2);
 
     if ($help)
     {
@@ -82,7 +82,7 @@ sub run
     }
     elsif ($man)
     {
-        pod2usage(-verbose => 2);
+        pod2usage( -verbose => 2 );
     }
     elsif ($gen_template)
     {
@@ -102,22 +102,24 @@ EOF
 
         my $board_fn = shift(@ARGV);
 
-        if (!defined ($board_fn))
+        if ( !defined($board_fn) )
         {
-            die "Filename not specified - usage: abc-path-solver.pl [filename]!";
+            die
+"Filename not specified - usage: abc-path-solver.pl [filename]!";
         }
 
         my $solver = Games::ABC_Path::Solver::Board->input_from_file($board_fn);
+
         # Now let's do a neighbourhood inferring of the board.
 
         $solver->solve;
 
-        foreach my $move (@{$solver->get_moves})
+        foreach my $move ( @{ $solver->get_moves } )
         {
-            print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
+            print +( ' => ' x $move->get_depth() ), $move->get_text(), "\n";
         }
 
-        print @{$solver->get_successes_text_tables};
+        print @{ $solver->get_successes_text_tables };
     }
 
     exit(0);
@@ -201,4 +203,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Solver::App
+1;    # End of Games::ABC_Path::Solver::App

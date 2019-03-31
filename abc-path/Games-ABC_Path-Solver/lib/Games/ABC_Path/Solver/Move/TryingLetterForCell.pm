@@ -31,8 +31,10 @@ trying to put the letter C<'letter'> in the coordinate C<'coords'>.
 
 =cut
 
-sub _format {
-    return "We have non-conclusive cells. Trying %(letter){letter} for %(coords){coords}.";
+sub _format
+{
+    return
+"We have non-conclusive cells. Trying %(letter){letter} for %(coords){coords}.";
 }
 
 =head1 AUTHOR

@@ -31,8 +31,10 @@ letter as C<'letter'>.
 
 =cut
 
-sub _format {
-    return "The only letter that can be at %(coords){coords} is %(letter){letter}. Invalidating it for all other cells.";
+sub _format
+{
+    return
+"The only letter that can be at %(coords){coords} is %(letter){letter}. Invalidating it for all other cells.";
 }
 
 =head1 AUTHOR

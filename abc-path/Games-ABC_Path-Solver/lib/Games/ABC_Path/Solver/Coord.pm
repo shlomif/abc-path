@@ -48,7 +48,6 @@ B<For internal use>.
 
 =cut
 
-
 sub y
 {
     my $self = shift;
@@ -65,24 +64,24 @@ sub _to_s
 {
     my $self = shift;
 
-    return sprintf("%d,%d", $self->x, $self->y);
+    return sprintf( "%d,%d", $self->x, $self->y );
 }
 
 sub _init
 {
-    my ($self,$args) = @_;
+    my ( $self, $args ) = @_;
 
-    $self->x($args->{x});
-    $self->y($args->{'y'});
+    $self->x( $args->{x} );
+    $self->y( $args->{'y'} );
 
     return;
 }
 
 sub _equal
 {
-    my ($self,$other_xy) = @_;
+    my ( $self, $other_xy ) = @_;
 
-    return (($self->x == $other_xy->x) && ($self->y == $other_xy->y));
+    return ( ( $self->x == $other_xy->x ) && ( $self->y == $other_xy->y ) );
 }
 
 =head1 AUTHOR
@@ -162,4 +161,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Games::ABC_Path::Solver::Base
+1;    # End of Games::ABC_Path::Solver::Base
