@@ -428,8 +428,7 @@ sub _infer_letters
                         and $self->_y_in_range( $_->[1] )
                 }
                 map { [ $true->x + $_->[0], $true->y + $_->[1] ] }
-                map
-                {
+                map {
                     my $d = $_;
                     map { [ $_, $d ] } ( -1 .. 1 )
                 } ( -1 .. 1 )
@@ -771,8 +770,7 @@ sub _process_minor_diagonal
     $self->_set_verdicts_for_letter_sets(
         \@minor_diagonal_letters,
         [
-            map
-            {
+            map {
                 Games::ABC_Path::Solver::Coord->new( { x => $_, y => 4 - $_ } )
             } ( $self->_y_indexes )
         ]
@@ -795,8 +793,7 @@ sub _process_input_columns
                 substr( $top_row, $x + 1, 1 ), substr( $bottom_row, $x + 1, 1 ),
             ],
             [
-                map
-                {
+                map {
                     Games::ABC_Path::Solver::Coord->new( { x => $x, y => $_ } )
                 } $self->_y_indexes
             ],
@@ -820,8 +817,7 @@ sub _process_input_rows_and_initial_letter_clue
         $self->_set_verdicts_for_letter_sets(
             [ substr( $row, 0, 1 ), substr( $row, -1 ), ],
             [
-                map
-                {
+                map {
                     Games::ABC_Path::Solver::Coord->new( { x => $_, y => $y } )
                 } $self->_x_indexes
             ],
@@ -911,8 +907,7 @@ sub _get_results_text_table
             map {
                 my $y = $_;
                 [
-                    map
-                    {
+                    map {
                         $self->_get_possible_letters_string(
                             Games::ABC_Path::Solver::Coord->new(
                                 { x => $_, y => $y }
