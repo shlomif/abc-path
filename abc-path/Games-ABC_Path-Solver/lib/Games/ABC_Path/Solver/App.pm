@@ -34,11 +34,10 @@ Run the application based on the arguments in the constructor.
 
 use parent 'Games::ABC_Path::Solver::Base';
 
-use Carp;
 use Getopt::Long qw/ GetOptionsFromArray /;
-use Pod::Usage;
+use Pod::Usage qw/ pod2usage /;
 
-use Games::ABC_Path::Solver::Board;
+use Games::ABC_Path::Solver::Board ();
 
 sub _argv
 {
