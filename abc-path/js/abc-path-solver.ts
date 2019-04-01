@@ -400,11 +400,9 @@ export class Board extends Base {
 
                             board._add_move(
                                 new LettersNotInVicinity({
-                                    vars: {
-                                        target: neighbour_letter,
-                                        coords: [x, y],
-                                        source: letter,
-                                    },
+                                    target: neighbour_letter,
+                                    coords: [x, y],
+                                    source: letter,
                                 }),
                             );
                         }
@@ -438,10 +436,8 @@ export class Board extends Base {
 
                     board._add_move(
                         new LastRemainingLetterForCell({
-                            vars: {
-                                coords: [x, y],
-                                letter: letter,
-                            },
+                            coords: [x, y],
+                            letter: letter,
                         }),
                     );
                 }
@@ -517,7 +513,8 @@ export class Board extends Base {
 
                 board._add_move(
                     new TryingLetterForCell({
-                        vars: { letter: letter, coords: [x, y] },
+                        letter: letter,
+                        coords: [x, y],
                     }),
                 );
 
@@ -535,16 +532,15 @@ export class Board extends Base {
                 if (recurse_solver.getError()) {
                     board._add_move(
                         new ResultsInAnError({
-                            vars: {
-                                letter: letter,
-                                coords: [x, y],
-                            },
+                            letter: letter,
+                            coords: [x, y],
                         }),
                     );
                 } else {
                     board._add_move(
                         new ResultsInASuccess({
-                            vars: { letter: letter, coords: [x, y] },
+                            letter: letter,
+                            coords: [x, y],
                         }),
                     );
 

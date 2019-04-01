@@ -7,4 +7,4 @@ test:
 	firefox abc-path-test.html
 
 abc-path.js: abc-path.ts
-	./node_modules/.bin/tsc --traceResolution --module amd $<
+	./node_modules/.bin/tsc --traceResolution --module amd --moduleResolution node *.ts
