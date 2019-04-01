@@ -5,7 +5,8 @@
  * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
-class MSRand {
+export class MSRand {
+    private seed: number;
     constructor(s) {
         this.seed = s.seed;
     }

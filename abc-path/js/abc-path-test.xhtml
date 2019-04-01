@@ -1,6 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-                    "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
 <!--
  ABC Path Solver and Generator.
  Copyright by Shlomi Fish, 2011.
@@ -9,14 +7,17 @@
  -->
 <head>
 <title>ABCPath Test</title>
+<meta charset="utf-8"/>
 <script src="jquery-latest.js"></script>
 <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
 <script type="text/javascript" src="qunit.js"></script>
-<script type="text/javascript" src="ms-rand.js"></script>
+<script type="text/javascript" src="require.js"></script>
 <script type="text/javascript" src="abc-path.js"></script>
 <script type="text/javascript" src="abc-path-test.js"></script>
 
   <script type="text/javascript">
+      require(['ms-rand'], function (ms) {
+      window.MSRand = ms.MSRand;
       $(document).ready(function () {
           try {
               test_abc_path();
@@ -29,6 +30,7 @@
           }
           // Hide passed tests by default.
           $('#qunit-tests').addClass('hidepass');
+      });
       });
   </script>
 
