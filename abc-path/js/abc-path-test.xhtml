@@ -10,17 +10,20 @@
 <meta charset="utf-8"/>
 <script src="jquery-latest.js"></script>
 <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
-<script type="text/javascript" src="qunit.js"></script>
 <script type="text/javascript" src="require.js"></script>
 <script type="text/javascript" src="abc-path.js"></script>
 <script type="text/javascript" src="abc-path-test.js"></script>
 
   <script type="text/javascript">
-      require(['ms-rand'], function (ms) {
+      require(['ms-rand', 'qunit'], function (ms, QUnit) {
       window.MSRand = ms.MSRand;
+      window.QUnit = QUnit;
+      alert($);
       $(document).ready(function () {
+          alert('ywto');
           try {
               test_abc_path();
+          alert('bwto');
           }
           catch (err) {
             QUnit.module("Meta");
@@ -29,18 +32,21 @@
             });
           }
           // Hide passed tests by default.
-          $('#qunit-tests').addClass('hidepass');
+          // $('#qunit-tests').addClass('hidepass');
       });
       });
   </script>
 
 </head>
 <body>
-  <h1 id="qunit-header">QUnit example</h1>
- <h2 id="qunit-banner"></h2>
- <div id="qunit-testrunner-toolbar"></div>
- <h2 id="qunit-userAgent"></h2>
- <ol id="qunit-tests"></ol>
- <div id="qunit-fixture">test markup, will be hidden</div>
+
+<h2 id="about">About</h2>
+
+
+<h1 id="qunit-header">QUnit example</h1>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent">User Agent</h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
 </body>
 </html>
