@@ -6,10 +6,14 @@
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
 function test_abc_path() {
+
+    alert('spj');
     QUnit.module("Constants");
+    alert('run');
 
     QUnit.test("Constants Test", function(a) {
         a.expect(9);
+        alert('mik');
 
         var myconst = new ABC_Path.Constants({});
 

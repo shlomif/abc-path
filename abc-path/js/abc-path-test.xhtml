@@ -18,14 +18,14 @@
       require(['ms-rand', 'qunit'], function (ms, QUnit) {
       window.MSRand = ms.MSRand;
       window.QUnit = QUnit;
-      alert($);
+      // alert($);
       $(document).ready(function () {
-          alert('ywto');
+          // alert('ywto');
           try {
+              QUnit.start();
               test_abc_path();
-          alert('bwto');
-          }
-          catch (err) {
+          // alert('bwto');
+          } catch (err) {
             QUnit.module("Meta");
             QUnit.test("global_failure", function(a) {
                 a.ok (false, err +' test_abc_path() has thrown an exception or is invalid.');
