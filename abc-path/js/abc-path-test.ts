@@ -1,12 +1,13 @@
 "use strict";
 import { MSRand } from "./ms-rand";
+import { FinalLayoutObj , Generator } from "./abc-path";
 /*
  * Tests for the ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
  * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
-export function test_abc_path(QUnit, abc, ABC_Path) {
+export function test_abc_path(QUnit, ABC_Path) {
     QUnit.module("Constants");
 
     QUnit.test("Constants Test", function(a) {
@@ -481,7 +482,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
             })
             .join("");
 
-        var obj = new abc.FinalLayoutObj({ s: layout_string });
+        var obj = new FinalLayoutObj({ s: layout_string });
 
         // TEST
         a.deepEqual(obj.get_A_xy(), { x: 0, y: 0 }, "A xy is OK.");
@@ -503,7 +504,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
 
         var pos_s = pos_array.join("");
 
-        var gen = new abc.Generator({ seed: 1 });
+        var gen = new Generator({ seed: 1 });
         // TEST
         a.deepEqual(
             gen._get_next_cells(pos_s, 1 * 5 + 1),
@@ -540,7 +541,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
 
         var pos_s = pos_array.join("");
 
-        var gen = new abc.Generator({ seed: 1 });
+        var gen = new Generator({ seed: 1 });
         // TEST
         a.equal(gen._get_num_connected(pos_s), 2);
     });
@@ -560,7 +561,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
     QUnit.test("calc_final_layout seed 1.", function(a) {
         a.expect(1);
 
-        var gen = new abc.Generator({ seed: 1 });
+        var gen = new Generator({ seed: 1 });
         var final_layout = gen.calc_final_layout();
         var expected_string = "YXRST" + "EDWQU" + "FBCVP" + "GAKLO" + "HIJNM";
 
@@ -575,7 +576,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
     QUnit.test("calc_final_layout seed 25.", function(a) {
         a.expect(1);
 
-        var gen = new abc.Generator({ seed: 25 });
+        var gen = new Generator({ seed: 25 });
         var final_layout = gen.calc_final_layout();
         var expected_string = "HIFUV" + "JGETW" + "KDSRX" + "LBCQY" + "AMNOP";
 
@@ -591,7 +592,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
         a.expect(4);
 
         // The seed does not matter.
-        var gen = new abc.Generator({ seed: 1 });
+        var gen = new Generator({ seed: 1 });
 
         var map_clue = function(clue) {
             return clue.map(function(i) {
@@ -628,7 +629,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
 
     QUnit.test("calc_riddle", function(a) {
         a.expect(1);
-        var gen = new abc.Generator({ seed: 1 });
+        var gen = new Generator({ seed: 1 });
         var riddle = gen.calc_riddle();
 
         // TEST
@@ -661,7 +662,7 @@ export function test_abc_path(QUnit, abc, ABC_Path) {
 
     QUnit.test("calc_riddle for another seed", function(a) {
         a.expect(1);
-        var gen = new abc.Generator({ seed: 251 });
+        var gen = new Generator({ seed: 251 });
         var riddle = gen.calc_riddle();
 
         // TEST

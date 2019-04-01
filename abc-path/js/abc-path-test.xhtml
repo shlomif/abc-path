@@ -13,13 +13,13 @@
 <script src="require.js"></script>
 
   <script>
-      require(['abc-path-test', 'abc-path', 'abc-path-solver', 'qunit'], function (test, abc, solver, QUnit) {
+      require(['abc-path-test', 'abc-path-solver', 'qunit'], function (test, solver, QUnit) {
       // alert($);
       $(document).ready(function () {
           // alert('ywto');
           try {
               QUnit.start();
-              test.test_abc_path(QUnit, abc, solver);
+              test.test_abc_path(QUnit, solver);
           // alert('bwto');
           } catch (err) {
             QUnit.module("Meta");

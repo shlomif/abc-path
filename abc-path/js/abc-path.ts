@@ -65,7 +65,7 @@ export class Generator extends Base {
     public seed: number;
     public rand;
     private _get_next_cells_lookup;
-    private _clues_positions;
+    public _clues_positions;
     constructor(r) {
         super();
         this.seed = r.seed;
