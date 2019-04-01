@@ -17,7 +17,7 @@ solving ABC Path
 
     use Games::ABC_Path::Solver::App;
 
-    Games::ABC_Path::Solver::App->new({argv => [@ARGV] })->run;
+    Games::ABC_Path::Solver::App->new({argv => \@ARGV, })->run;
 
 =head1 FUNCTIONS
 
