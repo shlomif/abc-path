@@ -11,17 +11,16 @@
 <script src="jquery-latest.js"></script>
 <link rel="stylesheet" href="qunit.css" media="screen" />
 <script src="require.js"></script>
-<script src="abc-path-test.js"></script>
 
   <script>
-      require(['abc-path', 'abc-path-solver', 'ms-rand', 'qunit'], function (abc, solver, ms, QUnit) {
+      require(['abc-path-test', 'abc-path', 'abc-path-solver', 'ms-rand', 'qunit'], function (test, abc, solver, ms, QUnit) {
       window.MSRand = ms.MSRand;
       // alert($);
       $(document).ready(function () {
           // alert('ywto');
           try {
               QUnit.start();
-              test_abc_path(QUnit, abc, solver);
+              test.test_abc_path(QUnit, abc, solver);
           // alert('bwto');
           } catch (err) {
             QUnit.module("Meta");

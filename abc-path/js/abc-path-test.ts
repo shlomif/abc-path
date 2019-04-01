@@ -1,11 +1,12 @@
 "use strict";
+import { MSRand } from "./ms-rand";
 /*
  * Tests for the ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
  * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
-function test_abc_path(QUnit, abc, ABC_Path) {
+export function test_abc_path(QUnit, abc, ABC_Path) {
     QUnit.module("Constants");
 
     QUnit.test("Constants Test", function(a) {
