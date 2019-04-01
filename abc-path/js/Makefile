@@ -1,7 +1,10 @@
-all:
+all: abc-path.js
 
 edit:
 	gvim -o abc-path.js abc-path-test.js ../Games-ABC_Path-Generator/lib/Games/ABC_Path/Generator.pm
 
 test:
 	firefox abc-path-test.html
+
+abc-path.js: abc-path.ts
+	./node_modules/.bin/tsc --traceResolution --module amd $<
