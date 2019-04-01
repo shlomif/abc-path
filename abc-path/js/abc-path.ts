@@ -13,114 +13,113 @@ function _shlomif_repeat(arr, times) {
 }
 
 namespace ABC_Path {
-
-class Constants {
-    LEN() {
-        return 5;
-    }
-    LEN_LIM() {
-        return this.LEN() - 1;
-    }
-    BOARD_SIZE() {
-        return this.LEN() * this.LEN();
-    }
-
-    Y() {
-        return 0;
-    }
-
-    X() {
-        return 1;
-    }
-
-    letters() {
-        return [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-        ];
-    }
-
-    NUM_CLUES() {
-        return 2 + this.LEN() + this.LEN();
-    }
-
-    ABCP_MAX_LETTER() {
-        return this.letters().length - 1;
-    }
-};
-};
-
-namespace ABC_Path {
-namespace Solver {
-class Base extends ABC_Path.Constants {
-    _xy_to_int(xy) {
-        return xy[this.Y()] * this.LEN() + xy[this.X()];
-    }
-    _to_xy(myint) {
-        return [Math.floor(myint / this.LEN()), myint % this.LEN()];
-    }
-    _perl_range(start, end) {
-        var ret = [];
-
-        for (var i = start; i <= end; i++) {
-            ret.push(i);
+    class Constants {
+        LEN() {
+            return 5;
+        }
+        LEN_LIM() {
+            return this.LEN() - 1;
+        }
+        BOARD_SIZE() {
+            return this.LEN() * this.LEN();
         }
 
-        return ret;
-    }
-    _y_indexes() {
-        return this._perl_range(0, this.LEN_LIM());
-    }
-    _x_indexes() {
-        return this._y_indexes();
-    }
-    _x_in_range(x) {
-        return x >= 0 && x < this.LEN();
-    }
-    _y_in_range(y) {
-        return this._x_in_range(y);
-    }
-    _replaceSubstring(s, start, end, replacement) {
-        return s.substring(0, start) + replacement + s.substring(end);
-    }
-};
-class Move extends ABC_Path.Solver.Base {
-    bump() {
-        var ret = new this.constructor(this);
-        ret.setDepth(this.getDepth() + 1);
-        return ret;
-    }
-    setDepth(d) {
-        return (this.depth = d);
-    }
-    getDepth() {
-        return this.depth;
+        Y() {
+            return 0;
+        }
+
+        X() {
+            return 1;
+        }
+
+        letters() {
+            return [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+            ];
+        }
+
+        NUM_CLUES() {
+            return 2 + this.LEN() + this.LEN();
+        }
+
+        ABCP_MAX_LETTER() {
+            return this.letters().length - 1;
+        }
     }
 }
-}
+
+namespace ABC_Path {
+    namespace Solver {
+        class Base extends ABC_Path.Constants {
+            _xy_to_int(xy) {
+                return xy[this.Y()] * this.LEN() + xy[this.X()];
+            }
+            _to_xy(myint) {
+                return [Math.floor(myint / this.LEN()), myint % this.LEN()];
+            }
+            _perl_range(start, end) {
+                var ret = [];
+
+                for (var i = start; i <= end; i++) {
+                    ret.push(i);
+                }
+
+                return ret;
+            }
+            _y_indexes() {
+                return this._perl_range(0, this.LEN_LIM());
+            }
+            _x_indexes() {
+                return this._y_indexes();
+            }
+            _x_in_range(x) {
+                return x >= 0 && x < this.LEN();
+            }
+            _y_in_range(y) {
+                return this._x_in_range(y);
+            }
+            _replaceSubstring(s, start, end, replacement) {
+                return s.substring(0, start) + replacement + s.substring(end);
+            }
+        }
+        class Move extends ABC_Path.Solver.Base {
+            bump() {
+                var ret = new this.constructor(this);
+                ret.setDepth(this.getDepth() + 1);
+                return ret;
+            }
+            setDepth(d) {
+                return (this.depth = d);
+            }
+            getDepth() {
+                return this.depth;
+            }
+        }
+    }
 }
 ABC_Path.Solver.Move.LastRemainingCellForLetter = class extends ABC_Path.Solver
     .Move {};
