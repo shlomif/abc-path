@@ -70,9 +70,6 @@ namespace ABC_Path {
             return this.letters().length - 1;
         }
     }
-}
-
-namespace ABC_Path {
     namespace Solver {
         class Base extends ABC_Path.Constants {
             _xy_to_int(xy) {
