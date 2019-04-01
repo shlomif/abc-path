@@ -6,102 +6,15 @@
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
 // Taken from http://stackoverflow.com/questions/202605/repeat-string-javascript
-if (!String.prototype.repeat) {
-    String.prototype.repeat = function(count) {
-        if (count < 1) return "";
-        var result = "",
-            pattern = this.valueOf();
-        while (count > 0) {
-            if (count & 1) result += pattern;
-            (count >>= 1), (pattern += pattern);
-        }
-        return result;
-    };
-}
-if (!Array.prototype.map) {
-    Array.prototype.map = function(fun /*, thisp */) {
-        "use strict";
-
-        if (this === void 0 || this === null) throw new TypeError();
-
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (typeof fun !== "function") throw new TypeError();
-
-        var res = new Array(len);
-        var thisp = arguments[1];
-        for (var i = 0; i < len; i++) {
-            if (i in t) res[i] = fun.call(thisp, t[i], i, t);
-        }
-
-        return res;
-    };
-}
-
-if (!Array.prototype.filter) {
-    Array.prototype.filter = function(fun /*, thisp */) {
-        "use strict";
-
-        if (this === void 0 || this === null) throw new TypeError();
-
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (typeof fun !== "function") throw new TypeError();
-
-        var res = [];
-        var thisp = arguments[1];
-        for (var i = 0; i < len; i++) {
-            if (i in t) {
-                var val = t[i]; // in case fun mutates this
-                if (fun.call(thisp, val, i, t)) res.push(val);
-            }
-        }
-
-        return res;
-    };
-}
-
 function _shlomif_repeat(arr, times) {
     "use strict";
 
     return times == 0 ? [] : arr.concat(_shlomif_repeat(arr, times - 1));
 }
 
-// Production steps of ECMA-262, Edition 5, 15.4.4.18
-if (!Array.prototype.forEach) {
-    Array.prototype.forEach = function(callbackfn, thisArg) {
-        var T,
-            O = Object(this),
-            len = O.length >>> 0,
-            k = 0;
+namespace ABC_Path {
 
-        if (!callbackfn || !callbackfn.call) {
-            throw new TypeError();
-        }
-
-        if (thisArg) {
-            T = thisArg;
-        }
-
-        while (k < len) {
-            var Pk = String(k),
-                kPresent = O.hasOwnProperty(Pk),
-                kValue;
-
-            if (kPresent) {
-                kValue = O[Pk];
-
-                callbackfn.call(T, kValue, k, O);
-            }
-
-            k++;
-        }
-    };
-}
-
-class ABC_Path {}
-
-ABC_Path.Constants = class {
+class Constants {
     LEN() {
         return 5;
     }
@@ -158,8 +71,11 @@ ABC_Path.Constants = class {
         return this.letters().length - 1;
     }
 };
-ABC_Path.Solver = class {};
-ABC_Path.Solver.Base = class extends ABC_Path.Constants {
+};
+
+namespace ABC_Path {
+namespace Solver {
+class Base extends ABC_Path.Constants {
     _xy_to_int(xy) {
         return xy[this.Y()] * this.LEN() + xy[this.X()];
     }
@@ -191,7 +107,7 @@ ABC_Path.Solver.Base = class extends ABC_Path.Constants {
         return s.substring(0, start) + replacement + s.substring(end);
     }
 };
-ABC_Path.Solver.Move = class extends ABC_Path.Solver.Base {
+class Move extends ABC_Path.Solver.Base {
     bump() {
         var ret = new this.constructor(this);
         ret.setDepth(this.getDepth() + 1);
@@ -203,7 +119,9 @@ ABC_Path.Solver.Move = class extends ABC_Path.Solver.Base {
     getDepth() {
         return this.depth;
     }
-};
+}
+}
+}
 ABC_Path.Solver.Move.LastRemainingCellForLetter = class extends ABC_Path.Solver
     .Move {};
 ABC_Path.Solver.Move.LastRemainingLetterForCell = class extends ABC_Path.Solver
