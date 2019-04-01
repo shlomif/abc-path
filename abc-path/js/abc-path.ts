@@ -1,5 +1,6 @@
 "use strict";
-import { Solver } from './abc-path-solver';
+import { Base , Board, string_repeat } from './abc-path-solver';
+import { MSRand } from './ms-rand';
 /*
  * ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
@@ -8,9 +9,10 @@ import { Solver } from './abc-path-solver';
  * */
 namespace ABC_Path {
     namespace Generator {
-    class FinalLayoutObj extends Solver.Base {
+    class FinalLayoutObj extends Base {
+        public s;
         constructor(r) {
-            super(r);
+            super();
             this.s = r.s;
         }
         getS() {
@@ -32,9 +34,11 @@ namespace ABC_Path {
             ];
         }
     };
-    ABC_Path.Generator.RiddleObj = class extends ABC_Path.Solver.Base {
+    class RiddleObj extends Base {
+        public clues;
+        public A_pos;
         constructor(r) {
-            super(r);
+            super();
             this.clues = r.clues;
             this.A_pos = r.A_pos;
         }
@@ -59,9 +63,13 @@ namespace ABC_Path {
             };
         }
     };
-    ABC_Path.Generator.Generator = class extends ABC_Path.Solver.Base {
+    class Generator extends Base {
+        public seed: number;
+        public rand;
+        private _get_next_cells_lookup;
+        private _clues_positions;
         constructor(r) {
-            super(r);
+            super();
             this.seed = r.seed;
             this.rand = new MSRand({ seed: this.seed });
             this._get_next_cells_lookup = (() => {
@@ -181,7 +189,7 @@ namespace ABC_Path {
             var dfs_stack = [];
             that._add_next_state(
                 dfs_stack,
-                "\0".repeat(that.BOARD_SIZE()),
+                string_repeat("\0", that.BOARD_SIZE()),
                 that.rand.max_rand(that.BOARD_SIZE()),
             );
 
@@ -192,7 +200,7 @@ namespace ABC_Path {
                 var last_cells = dfs_top[1];
 
                 if (dfs_stack.length == that.BOARD_SIZE()) {
-                    return new ABC_Path.Generator.FinalLayoutObj({ s: l });
+                    return new FinalLayoutObj({ s: l });
                 }
 
                 var next_idx = last_cells.shift();
@@ -217,9 +225,11 @@ namespace ABC_Path {
             var A_pos = layout.get_A_pos();
 
             var init_state = {
+                pos_pairs: [],
+                chosen_clue: -1,
                 pos_taken: 0,
                 clues: that._perl_range(1, that.NUM_CLUES()).map(function() {
-                    return { num_remaining: 5 };
+                    return { num_remaining: 5, cells:[], };
                 }),
             };
 
@@ -255,7 +265,7 @@ namespace ABC_Path {
             DFS: while (dfs_stack.length > 0) {
                 var last_state = dfs_stack[dfs_stack.length - 1];
 
-                if (!("chosen_clue" in last_state)) {
+                if (last_state.chosen_clue < 0) {
                     var clues = that
                         ._perl_range(0, that.NUM_CLUES() - 1)
                         .map(function(idx) {
@@ -285,13 +295,13 @@ namespace ABC_Path {
                                 return layout.get_cell_contents(idx);
                             });
                         };
-                        var riddle = new ABC_Path.Generator.RiddleObj({
+                        var riddle = new RiddleObj({
                             solution: layout,
                             clues: last_state.clues.map(handle_clue),
                             A_pos: that._to_xy(A_pos),
                         });
 
-                        var solver = new ABC_Path.Solver.Board({});
+                        var solver = new Board();
                         solver.input_from_clues(
                             riddle.get_clues_for_input_to_board(),
                         );
@@ -351,16 +361,15 @@ namespace ABC_Path {
                     continue DFS;
                 }
 
-                var new_state = {};
-                new_state.pos_taken = last_state.pos_taken;
-                new_state.clues = last_state.clues.map(function(clue) {
-                    var copy = {};
-                    copy.num_remaining = clue.num_remaining;
-                    if (clue.cells) {
-                        copy.cells = clue.cells;
-                    }
+                var new_state = {
+                    chosen_clue: -1,
+                    pos_pairs:[],
+                pos_taken : last_state.pos_taken,
+                clues : last_state.clues.map(function(clue) {
+                    var copy = {...clue};
                     return copy;
-                });
+                })
+                };
 
                 next_pair.forEach(function(pos) {
                     mark(new_state, pos);
