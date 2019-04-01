@@ -71,7 +71,7 @@ namespace ABC_Path {
         }
     }
     namespace Solver {
-        class Base extends ABC_Path.Constants {
+        class Base extends Constants {
             _xy_to_int(xy) {
                 return xy[this.Y()] * this.LEN() + xy[this.X()];
             }
@@ -103,7 +103,7 @@ namespace ABC_Path {
                 return s.substring(0, start) + replacement + s.substring(end);
             }
         }
-        class Move extends ABC_Path.Solver.Base {
+        class Move extends Base {
             bump() {
                 var ret = new this.constructor(this);
                 ret.setDepth(this.getDepth() + 1);
