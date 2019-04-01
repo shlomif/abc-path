@@ -1,4 +1,5 @@
 "use strict";
+import { LastRemainingCellForLetter } from './abc-path-move';
 /*
  * ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
@@ -102,28 +103,6 @@ namespace ABC_Path {
             _replaceSubstring(s, start, end, replacement) {
                 return s.substring(0, start) + replacement + s.substring(end);
             }
-        }
-        namespace Move {
-            class MoveBase extends Base {
-                public depth: number;
-                bump() {
-                    var ret = { ...this };
-                    ret.setDepth(this.getDepth() + 1);
-                    return ret;
-                }
-                setDepth(d) {
-                    return (this.depth = d);
-                }
-                getDepth() {
-                    return this.depth;
-                }
-            }
-            export class LastRemainingCellForLetter extends MoveBase {}
-            class LastRemainingLetterForCell extends MoveBase {}
-            class LettersNotInVicinity extends MoveBase {}
-            class TryingLetterForCell extends MoveBase {}
-            class ResultsInAnError extends MoveBase {}
-            class ResultsInASuccess extends MoveBase {}
         }
         class Board extends Base {
             // import Move = ABC_Path.Solver.Move;
