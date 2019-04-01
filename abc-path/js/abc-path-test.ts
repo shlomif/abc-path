@@ -1,19 +1,20 @@
 "use strict";
 import { MSRand } from "./ms-rand";
 import { FinalLayoutObj , Generator } from "./abc-path";
+import { Base, Board, Constants, shlomif_repeat } from "./abc-path-solver";
 /*
  * Tests for the ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
  * Released under the MIT/X11 License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
-export function test_abc_path(QUnit, ABC_Path) {
+export function test_abc_path(QUnit) {
     QUnit.module("Constants");
 
     QUnit.test("Constants Test", function(a) {
         a.expect(9);
 
-        var myconst = new ABC_Path.Constants({});
+        var myconst = new Constants();
 
         // TEST
         a.ok(myconst, "myconst was initialized.");
@@ -78,7 +79,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Base _xy_to_int", function(a) {
         a.expect(5);
 
-        var mybase = new ABC_Path.Base({});
+        var mybase = new Base();
 
         // TEST
         a.ok(mybase, "myconst was initialized.");
@@ -104,7 +105,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Base _to_xy", function(a) {
         a.expect(3);
 
-        var mybase = new ABC_Path.Base({});
+        var mybase = new Base();
 
         // TEST
         a.deepEqual(mybase._to_xy(0), [0, 0], "_to_xy(0) -> [0,0]");
@@ -119,7 +120,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Base _replaceSubstring", function(a) {
         a.expect(2);
 
-        var mybase = new ABC_Path.Base({});
+        var mybase = new Base();
         // TEST
         a.equal(
             mybase._replaceSubstring("0123456789", 0, 1, "foo"),
@@ -137,7 +138,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Base _y_indexes", function(a) {
         a.expect(4);
 
-        var mybase = new ABC_Path.Base({});
+        var mybase = new Base();
 
         // TEST
         a.deepEqual(mybase._perl_range(0, 2), [0, 1, 2], "_perl_range");
@@ -166,7 +167,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Base _x_in_range", function(a) {
         a.expect(4);
 
-        var mybase = new ABC_Path.Base({});
+        var mybase = new Base();
 
         // TEST
         a.ok(mybase._x_in_range(0), "0 is in range");
@@ -186,7 +187,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board iter_changed", function(a) {
         a.expect(5);
 
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         // TEST
         a.equal(
@@ -217,7 +218,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board _add_move", function(a) {
         a.expect(4);
 
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         myboard._add_move("Token");
 
@@ -250,7 +251,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board _calc_offset", function(a) {
         a.expect(2);
 
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         // TEST
         a.equal(
@@ -270,7 +271,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board _xy_loop", function(a) {
         a.expect(1);
 
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         var result = [];
 
@@ -316,7 +317,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board get_successes_text_tables", function(a) {
         a.expect(2);
         // Games::ABC_Path::Generator layout No. 1.
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         myboard.input_from_clues({
             clue_letter: "A",
@@ -355,7 +356,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board Brain Bashers 2010-12-21", function(a) {
         a.expect(2);
         // Brain Bashers 2010-12-21
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         myboard.input_from_clues({
             clue_letter: "A",
@@ -394,7 +395,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("Solver.Board Brain Bashers 2010-12-22", function(a) {
         a.expect(2);
         // Brain Bashers 2010-12-22
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
 
         myboard.input_from_clues({
             clue_letter: "A",
@@ -474,7 +475,7 @@ export function test_abc_path(QUnit, ABC_Path) {
     QUnit.test("FinalLayoutObj", function(a) {
         a.expect(3);
 
-        var myboard = new ABC_Path.Board({});
+        var myboard = new Board();
         var layout_string = myboard
             ._perl_range(1, 25)
             .map(function(x) {
@@ -497,7 +498,7 @@ export function test_abc_path(QUnit, ABC_Path) {
 
     QUnit.test("_get_next_cells", function(a) {
         a.expect(2);
-        var pos_array = ABC_Path.shlomif_repeat(["\0"], 5 * 5);
+        var pos_array = shlomif_repeat(["\0"], 5 * 5);
 
         pos_array[0 * 5 + 0] = String.fromCharCode(1);
         pos_array[1 * 5 + 1] = String.fromCharCode(2);
@@ -530,7 +531,7 @@ export function test_abc_path(QUnit, ABC_Path) {
 
     QUnit.test("_get_num_connected", function(a) {
         a.expect(1);
-        var pos_array = ABC_Path.shlomif_repeat(["\0"], 5 * 5);
+        var pos_array = shlomif_repeat(["\0"], 5 * 5);
 
         pos_array[0 * 5 + 0] = String.fromCharCode(1);
         pos_array[1 * 5 + 0] = String.fromCharCode(2);
