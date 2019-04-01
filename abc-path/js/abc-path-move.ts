@@ -1,5 +1,12 @@
 class MoveBase {
+    public letter;
+    public coords;
     public depth: number;
+    constructor(r) {
+        this.letter = r.letter;
+        this.coords = r.coords;
+        this.depth = 0;
+    }
     bump() {
         var ret = { ...this };
         ret.setDepth(this.getDepth() + 1);
