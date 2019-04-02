@@ -7,6 +7,7 @@
     "jquery": "^3.3.1",
     "prettier": "^1.16.4",
     "qunit": "^2.9.2",
+    "qunit-cli": "^0.2.0",
     "requirejs": "^2.3.6",
     "typescript": "^3.4.1"
   },
