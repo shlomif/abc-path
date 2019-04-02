@@ -1,4 +1,5 @@
 /abc-path/js/dest/abc-path/*.js
 /abc-path/js/dest/abc-path/abc-path-test.xhtml
+/abc-path/js/dest/abc-path/qunit.css
 /abc-path/js/lib/for-node/js/*.js
 /abc-path/js/node_modules/
