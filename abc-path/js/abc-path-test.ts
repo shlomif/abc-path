@@ -5,10 +5,10 @@ import { Base, Board, Constants, shlomif_repeat } from "./abc-path-solver";
 /*
  * Tests for the ABC Path Solver and Generator.
  * Copyright by Shlomi Fish, 2011.
- * Released under the MIT/X11 License
+ * Released under the Expat License
  * ( http://en.wikipedia.org/wiki/MIT_License ).
  * */
-export function test_abc_path(QUnit) {
+export function test_abc_path(QUnit: QUnit) {
     QUnit.module("Constants");
 
     QUnit.test("Constants Test", function(a) {
