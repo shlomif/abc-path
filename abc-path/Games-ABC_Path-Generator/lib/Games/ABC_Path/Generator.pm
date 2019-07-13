@@ -11,10 +11,10 @@ use parent 'Games::ABC_Path::Generator::Base';
 
 use Games::ABC_Path::Solver::Constants;
 use Games::ABC_Path::Solver::Board '0.1.0';
-use Games::ABC_Path::MicrosoftRand;
-use Games::ABC_Path::Generator::RiddleObj;
-use Games::ABC_Path::Generator::FinalLayoutObj;
-use Games::ABC_Path::Generator::Coord;
+use Games::ABC_Path::MicrosoftRand             ();
+use Games::ABC_Path::Generator::RiddleObj      ();
+use Games::ABC_Path::Generator::FinalLayoutObj ();
+use Games::ABC_Path::Generator::Coord          ();
 
 =head1 NAME
 
@@ -248,7 +248,7 @@ sub calc_riddle
         my $coord = Games::ABC_Path::Generator::Coord->_from_int($pos);
 
         foreach my $clue (
-            ( ( $coord->y == $coord->x ) ? 0 : () ),
+            ( ( $coord->y == $coord->x )             ? 0 : () ),
             ( ( $coord->y == ( 5 - 1 ) - $coord->x ) ? 1 : () ),
             ( 2 + $coord->y ),
             ( ( 2 + 5 ) + $coord->x ),

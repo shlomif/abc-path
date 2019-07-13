@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Generator
 
+0.4.2   2019-07-13
+    - Some small cleanups / optimisations.
+
 0.4.1   2018-07-20
     - Fix the link to the bugtracker.
         - Thanks to ANDK.

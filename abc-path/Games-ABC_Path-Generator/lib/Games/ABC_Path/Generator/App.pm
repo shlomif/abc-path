@@ -101,10 +101,7 @@ sub run
         }
         elsif ( $mode eq 'riddle' )
         {
-            my $riddle = $gen->calc_riddle();
-
-            my $layout_string = $riddle->get_final_layout_as_string( {} );
-
+            my $riddle        = $gen->calc_riddle();
             my $riddle_string = $riddle->get_riddle_v1_string;
 
             print sprintf( "ABC Path Solver Layout Version 1:\n%s",
