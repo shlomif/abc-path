@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/qunit": "^2.9.0",
     "jquery": "^3.4.1",
+    "lodash": "^4.17.14",
     "prettier": "^1.18.2",
     "qunit": "^2.9.2",
     "qunit-cli": "^0.2.0",
