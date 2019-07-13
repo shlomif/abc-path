@@ -1,5 +1,5 @@
 "use strict";
-import { Base, Board, string_repeat } from "./abc-path-solver";
+import { Base, Board, shlomif_repeat, string_repeat } from "./abc-path-solver";
 import { MSRand } from "./ms-rand";
 /*
  * ABC Path Solver and Generator.
@@ -60,6 +60,34 @@ export class RiddleObj extends Base {
             columns: l_clues.slice(2 + 5, 2 + 5 + 5),
         };
     }
+    get_riddle_v1_string(): string
+    {
+    let $self = this;
+
+    let $s: string[] = shlomif_repeat(shlomif_repeat([' '], 7).concat(["\n"]), 7);
+
+    $s[($self.A_pos.y + 1 ) * 8 + $self.A_pos.x + 1] = 'A';
+
+    const $clues = $self.clues();
+    for (let $clue_idx=0; $clue_idx < $self.NUM_CLUES(); ++$clue_idx) {
+        let pos =
+              ( $clue_idx == 0 ) ? [ [ 0, 0 ], [ 6, 6 ] ]
+            : ( $clue_idx == 1 ) ? [ [ 0, 6 ], [ 6, 0 ] ]
+            : ( $clue_idx < ( 2 + 5 ) )
+            ? [ [ 1 + $clue_idx - (2), 0 ], [ 1 + $clue_idx - (2), 6 ] ]
+            : [ [ 0, 1 + $clue_idx - ( 2 + 5 ) ],
+                [ 6, 1 + $clue_idx - ( 2 + 5 ) ]
+            ];
+
+        for(let $i = 0 ; $i <= 1 ; ++$i)
+        {
+            $s[ pos[$i][0] * 8 + pos[$i][1]] =
+                $self.letters[ $clues[$clue_idx][$i] - 1 ];
+        }
+    }
+
+    return $s.join("");
+}
 }
 export class Generator extends Base {
     public seed: number;
