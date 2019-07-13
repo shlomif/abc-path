@@ -629,7 +629,7 @@ export function test_abc_path(QUnit: QUnit) {
     });
 
     QUnit.test("calc_riddle", function(a) {
-        a.expect(1);
+        a.expect(2);
         var gen = new Generator({ seed: 1 });
         var riddle = gen.calc_riddle();
 
@@ -658,6 +658,19 @@ export function test_abc_path(QUnit: QUnit) {
                 ],
             },
             "clues for layout No. 1 are OK.",
+        );
+        // TEST
+        a.deepEqual(
+            riddle.get_riddle_v1_string(),
+            `YGBJNUT
+S     R
+D     W
+F     V
+O A   K
+M     I
+HEXCQPL
+`,
+            "get_riddle_v1_string",
         );
     });
 

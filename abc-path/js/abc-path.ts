@@ -66,9 +66,9 @@ export class RiddleObj extends Base {
 
     let $s: string[] = shlomif_repeat(shlomif_repeat([' '], 7).concat(["\n"]), 7);
 
-    $s[($self.A_pos.y + 1 ) * 8 + $self.A_pos.x + 1] = 'A';
+    $s[($self.A_pos[$self.Y()] + 1 ) * 8 + $self.A_pos[$self.X()] + 1] = 'A';
 
-    const $clues = $self.clues();
+    const $clues = $self.clues;
     for (let $clue_idx=0; $clue_idx < $self.NUM_CLUES(); ++$clue_idx) {
         let pos =
               ( $clue_idx == 0 ) ? [ [ 0, 0 ], [ 6, 6 ] ]
@@ -82,7 +82,7 @@ export class RiddleObj extends Base {
         for(let $i = 0 ; $i <= 1 ; ++$i)
         {
             $s[ pos[$i][0] * 8 + pos[$i][1]] =
-                $self.letters[ $clues[$clue_idx][$i] - 1 ];
+                $self.letters()[ $clues[$clue_idx][$i] - 1 ];
         }
     }
 
