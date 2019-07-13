@@ -6,15 +6,15 @@
   "dependencies": {
     "@types/qunit": "^2.9.0",
     "jquery": "^3.4.1",
-    "prettier": "^1.16.4",
+    "prettier": "^1.18.2",
     "qunit": "^2.9.2",
     "qunit-cli": "^0.2.0",
     "requirejs": "^2.3.6",
-    "typescript": "^3.4.1"
+    "typescript": "^3.5.3"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-react": "^7.14.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
