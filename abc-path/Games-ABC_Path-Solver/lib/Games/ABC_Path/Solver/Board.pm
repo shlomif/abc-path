@@ -439,7 +439,7 @@ sub _infer_letters
         }
 
         foreach my $neighbour_letter (
-            ( ( $letter > 0 ) ? ( $letter - 1 ) : () ),
+            ( ( $letter > 0 )                ? ( $letter - 1 ) : () ),
             ( ( $letter < $ABCP_MAX_LETTER ) ? ( $letter + 1 ) : () ),
             )
         {
