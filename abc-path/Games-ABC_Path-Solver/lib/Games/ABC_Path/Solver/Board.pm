@@ -199,7 +199,7 @@ sub _init
 
     $self->_layout( \$layout_string );
     $self->_successful_layouts( [] );
-    $self->_moves(              [] );
+    $self->_moves( [] );
     $self->_iter_changed(0);
 
     return;
