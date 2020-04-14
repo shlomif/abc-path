@@ -4,8 +4,8 @@
   "description": "",
   "main": "abc-path-test.js",
   "dependencies": {
-    "@types/qunit": "^2.9.0",
-    "jquery": "^3.4.1",
+    "@types/qunit": "^2.9.1",
+    "jquery": "^3.5.0",
     "lodash": "^4.17.15",
     "minimist": "^1.2.5",
     "prettier": "^1.19.1",
