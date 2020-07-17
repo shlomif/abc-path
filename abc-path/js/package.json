@@ -5,18 +5,18 @@
   "main": "abc-path-test.js",
   "dependencies": {
     "@types/qunit": "^2.9.1",
-    "jquery": "^3.5.0",
-    "lodash": "^4.17.15",
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.19",
     "minimist": "^1.2.5",
     "prettier": "^1.19.1",
-    "qunit": "^2.9.3",
+    "qunit": "^2.10.1",
     "qunit-cli": "^0.2.0",
     "requirejs": "^2.3.6",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint-plugin-react": "^7.20.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
