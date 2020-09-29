@@ -1,5 +1,5 @@
 [PerlTidy]
-argv = -ci=4 -bl -cti=0
+argv = -ci=4 -bl -cti=0 --character-encoding=none
 select = {t,lib,scripts}/**/*.{pl,pm,t} {t,lib,scripts}/*.{pl,pm,t}
 
 [PerlCritic]
