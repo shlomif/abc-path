@@ -28,42 +28,7 @@ L<http://en.wikipedia.org/wiki/FreeCell_%28Windows%29> ).
 =cut
 
 use integer;
-
-use Class::XSAccessor {
-    constructor => 'new',
-    accessors   => [qw(seed)],
-};
-
-sub rand
-{
-    my $self = shift;
-    $self->seed( ( $self->seed() * 214013 + 2531011 ) & (0x7FFF_FFFF) );
-    return ( ( $self->seed >> 16 ) & 0x7fff );
-}
-
-sub max_rand
-{
-    my ( $self, $max ) = @_;
-
-    return ( $self->rand() % $max );
-}
-
-sub shuffle
-{
-    my ( $self, $deck ) = @_;
-
-    if (@$deck)
-    {
-        my $i = @$deck;
-        while ( --$i )
-        {
-            my $j = $self->max_rand( $i + 1 );
-            @$deck[ $i, $j ] = @$deck[ $j, $i ];
-        }
-    }
-
-    return $deck;
-}
+use parent 'Math::RNG::Microsoft';
 
 =head1 SUBROUTINES/METHODS
 
@@ -99,7 +64,7 @@ it. This is using the fisher-yates shuffle.
 
 =head1 AUTHOR
 
-Shlomi Fish, L<http://www.shlomifish.org/> .
+Shlomi Fish, L<https://www.shlomifish.org/> .
 
 =cut
 

@@ -110,7 +110,8 @@ sub get_letter_at_pos
 
     return $letters[
         $self->get_cell_contents(
-            $self->_xy_to_int( [ $pos->{'y'}, $pos->{'x'} ], ) ) - 1,
+            $self->_xy_to_int( [ $pos->{'y'}, $pos->{'x'} ], )
+        ) - 1,
     ];
 }
 

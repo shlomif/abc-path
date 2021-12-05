@@ -160,8 +160,7 @@ DFS:
         if ( @dfs_stack == $BOARD_SIZE )
         {
             return Games::ABC_Path::Generator::FinalLayoutObj->new(
-                { layout_string => $l, },
-            );
+                { layout_string => $l, }, );
         }
 
 # print "Depth = " . scalar(@dfs_stack) . "\n";
@@ -272,8 +271,7 @@ DFS:
             my @clues = (
                 sort {
                     ( $a->[1]->{num_remaining} <=> $b->[1]->{num_remaining} )
-                        or
-                        ( $a->[0] <=> $b->[0] )
+                        or ( $a->[0] <=> $b->[0] )
                     }
                     grep { !exists( $_->[1]->{cells} ) }
                     map  { [ $_, $last_state->{clues}->[$_] ] }
