@@ -1,5 +1,10 @@
 Revision history for Games-ABC_Path-Generator
 
+0.6.0   2021-12-05
+    - Add scripts/tag-release.pl
+    - Convert to use https://metacpan.org/pod/Math::RNG::Microsoft
+    - perltidy fixes
+
 0.4.3   2020-10-15
     - dist.ini / weaver.ini / .tidyallrc / etc. cleanup
         - Move to @SHLOMIF
