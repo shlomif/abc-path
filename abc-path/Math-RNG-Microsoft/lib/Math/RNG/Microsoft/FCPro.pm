@@ -1,6 +1,6 @@
 package Math::RNG::Microsoft::FCPro;
 
-use 5.006;
+use 5.014;
 use strict;
 use warnings;
 use integer;
@@ -9,7 +9,8 @@ use bigint;
 =head1 NAME
 
 Math::RNG::Microsoft::FCPro - a pseudo-random number generator compatible
-with Visual C.
+with Visual C with Freecell Pro extended seeds.
+
 
 =head1 SYNOPSIS
 
@@ -21,7 +22,7 @@ with Visual C.
 
 =head1 DESCRIPTION
 
-This is a random number generator used by L<Games::ABC_Path::Generator>, which
+This is a random number generator used by L<Freecell::Deal::MS> which
 emulates the one found in Microsoft's Visual C++. It was utilised here, out
 of familiarity and accessibility, because it is commonly used to generate
 Freecell layouts in the Freecell world (see
