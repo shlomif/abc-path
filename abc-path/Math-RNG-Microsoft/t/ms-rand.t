@@ -5,9 +5,9 @@ use warnings;
 
 use Test::More tests => 5;
 
-use Test::Differences;
+use Test::Differences qw/ eq_or_diff /;
 
-use Math::RNG::Microsoft;
+use Math::RNG::Microsoft ();
 
 {
     my $r = Math::RNG::Microsoft->new( seed => 1 );
