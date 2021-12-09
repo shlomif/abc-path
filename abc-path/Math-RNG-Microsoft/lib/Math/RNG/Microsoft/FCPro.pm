@@ -33,6 +33,8 @@ compatibility with the Windows C Run-time-library is needed.
 
 =cut
 
+my $MAX_SEED = ( ( 1 << ( 31 + 2 ) ) - 1 );    # 33 bits
+
 sub new
 {
     my $class = shift;
@@ -68,19 +70,44 @@ sub _seedx
     return $self->{_seedx};
 }
 
+my $X = hex("0x100000000");
+
 sub _init
 {
     my ( $self, %args ) = @_;
 
-    $self->_seedx( $self->_seed( $args{seed} ) );
+    my $seed = $self->_seed( $args{seed} );
+    $self->_seedx( ( $seed < $X ) ? $seed : ( $seed - $X ) );
     return;
 }
 
 sub rand
 {
+    my ( $self, ) = @_;
+
+    if ( $self->_seed < $X )
+    {
+        my $ret = $self->_rando();
+        return ( ( $self->_seed < 0x80000000 ) ? $ret : ( $ret | 0x8000 ) );
+    }
+    else
+    {
+        return $self->_randp() + 1;
+    }
+}
+
+sub _rando
+{
     my $self = shift;
-    $self->_seed( ( $self->_seed() * 214013 + 2531011 ) & (0x7FFF_FFFF) );
-    return ( ( $self->_seed >> 16 ) & 0x7fff );
+    $self->_seedx( ( $self->_seedx() * 214013 + 2531011 ) & $MAX_SEED );
+    return ( ( $self->_seedx >> 16 ) & 0x7fff );
+}
+
+sub _randp
+{
+    my $self = shift;
+    $self->_seedx( ( $self->_seedx() * 214013 + 2531011 ) & $MAX_SEED );
+    return ( ( $self->_seedx >> 16 ) & 0xffff );
 }
 
 sub max_rand
