@@ -6,7 +6,7 @@ all: $(D)/abc-path.js lib/for-node/js/abc-path.js $(Dfiles)
 edit:
 	gvim -o abc-path.js abc-path-test.js ../Games-ABC_Path-Generator/lib/Games/ABC_Path/Generator.pm
 
-test:
+test: all
 	NODE_PATH="`pwd`"/lib/for-node/js ./node_modules/.bin/qunit-cli test-code.js
 	# firefox abc-path-test.html
 
