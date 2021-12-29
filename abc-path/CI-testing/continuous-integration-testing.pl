@@ -56,38 +56,9 @@ if ( $ACTION eq 'install_deps' )
 }
 elsif ( $ACTION eq 'test' )
 {
-    if ( $TEMP_DEBUG and $IS_WIN )
-    {
-        foreach my $d ( 'Perl/modules/HTML-Latemp-News', )
-        {
-            use Path::Tiny qw/ cwd path /;
-            my $cwd = cwd();
-            chdir($d);
-            do_system( { cmd => [ "dzil", "build", ] } );
-            my $build = "HTML-Latemp-News-0.2.1";
-            chdir($build);
-            my $fn     = "lib/HTML/Latemp/News.pm";
-            my $backup = "c:/News.pm-aristt.orig.orig";
-            path($fn)->copy($backup);
-            eval { do_system( { cmd => [ "tidyall", "-a", ] } ); };
-            do_system(
-                {
-                    cmd => [ "diff", "-u", $backup, $fn, ],
-                }
-            );
-            chdir($cwd);
-        }
-        exit(1);
-    }
-
 DZIL_DIRS:
     foreach my $d (@dzil_dirs)
     {
-        # tidyall test is failing on Windows
-        if ( $IS_WIN and ( $d =~ /Latemp-News\z/ ) )
-        {
-            next DZIL_DIRS;
-        }
         do_system( { cmd => ["cd $d && (dzil smoke --release --author)"] } );
     }
 }
