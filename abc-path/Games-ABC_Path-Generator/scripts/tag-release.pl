@@ -14,11 +14,9 @@ if ( !defined($version) )
     die "Version is undefined!";
 }
 
-my @cmd = (
-    "git", "tag", "-m",
-    "Tagging Games-ABC_Path-Generator as $version",
-    "Games-ABC_Path-Generator-$version",
-);
+my $DIST = "Games-ABC_Path-Generator";
+my @cmd =
+    ( "git", "tag", "-m", "Tagging $DIST as $version", "${DIST}-$version", );
 
 print join( " ", map { /\s/ ? qq{"$_"} : $_ } @cmd ), "\n";
 exec(@cmd);
