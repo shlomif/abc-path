@@ -35,7 +35,7 @@ Run the application based on the arguments in the constructor.
 use parent 'Games::ABC_Path::Solver::Base';
 
 use Getopt::Long qw/ GetOptionsFromArray /;
-use Pod::Usage qw/ pod2usage /;
+use Pod::Usage   qw/ pod2usage /;
 
 use Games::ABC_Path::Solver::Board ();
 
