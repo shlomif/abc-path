@@ -61,6 +61,11 @@ DZIL_DIRS:
     {
         do_system( { cmd => ["cd $d && (dzil smoke --release --author)"] } );
     }
+
+    foreach my $d ( 'abc-path/js', )
+    {
+        do_system( { cmd => ["cd $d && (make test)"] } );
+    }
 }
 else
 {
