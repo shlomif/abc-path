@@ -5,6 +5,9 @@ TS_SOURCES := abc-path.ts abc-path-test.ts
 
 all: $(D)/abc-path.js lib/for-node/js/abc-path.js $(Dfiles)
 
+benchmark: all
+	NODE_PATH="`pwd`"/lib/for-node/js time node lib/for-node/js/benchmark.js
+
 edit:
 	gvim -o $(TS_SOURCES) ../Games-ABC_Path-Generator/lib/Games/ABC_Path/Generator.pm
 
