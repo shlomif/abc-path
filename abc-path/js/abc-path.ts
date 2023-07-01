@@ -133,7 +133,7 @@ export class Generator extends Base {
             };
 
             var _gen_clue_int_positions = function(cb) {
-                return _gen_clue_positions(cb).map(function(xy) {
+                return _gen_clue_positions(cb).map(function(xy: number[]) {
                     return that._xy_to_int(xy);
                 });
             };

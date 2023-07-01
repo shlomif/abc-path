@@ -76,7 +76,7 @@ export class Constants {
     }
 }
 export class Base extends Constants {
-    _xy_to_int(xy): number {
+    _xy_to_int(xy: number[]): number {
         return xy[this.Y()] * this.LEN() + xy[this.X()];
     }
     _to_xy(myint) {
