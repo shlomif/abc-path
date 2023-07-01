@@ -1,7 +1,7 @@
 D := dest/abc-path
 Dfiles := $(D)/abc-path-test.xhtml $(D)/qunit.css $(D)/qunit.js $(D)/require.js $(D)/jquery-latest.js
 TSC := ./node_modules/.bin/tsc
-TS_SOURCES := abc-path.ts abc-path-test.ts
+TS_SOURCES := abc-path-move.ts abc-path-solver.ts abc-path-test.ts abc-path.ts benchmark.ts ms-rand.ts
 
 all: $(D)/abc-path.js lib/for-node/js/abc-path.js $(Dfiles)
 

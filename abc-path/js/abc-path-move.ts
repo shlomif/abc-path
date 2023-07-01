@@ -8,14 +8,14 @@ class MoveBase {
         this.depth = 0;
     }
     bump() {
-        var ret = Object.create(this);
+        const ret = Object.create(this);
         ret.setDepth(this.getDepth() + 1);
         return ret;
     }
-    setDepth(d) {
+    setDepth(d: number): number {
         return (this.depth = d);
     }
-    getDepth() {
+    getDepth(): number {
         return this.depth;
     }
 }

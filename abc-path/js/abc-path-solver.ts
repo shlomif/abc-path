@@ -19,21 +19,21 @@ export function string_repeat(arr, times) {
 }
 
 export class Constants {
-    LEN() {
+    LEN(): number {
         return 5;
     }
-    LEN_LIM() {
+    LEN_LIM(): number {
         return this.LEN() - 1;
     }
-    BOARD_SIZE() {
+    BOARD_SIZE(): number {
         return this.LEN() * this.LEN();
     }
 
-    Y() {
+    Y(): number {
         return 0;
     }
 
-    X() {
+    X(): number {
         return 1;
     }
 
@@ -67,22 +67,22 @@ export class Constants {
         ];
     }
 
-    NUM_CLUES() {
+    NUM_CLUES(): number {
         return 2 + this.LEN() + this.LEN();
     }
 
-    ABCP_MAX_LETTER() {
+    ABCP_MAX_LETTER(): number {
         return this.letters().length - 1;
     }
 }
 export class Base extends Constants {
-    _xy_to_int(xy) {
+    _xy_to_int(xy): number {
         return xy[this.Y()] * this.LEN() + xy[this.X()];
     }
     _to_xy(myint) {
         return [Math.floor(myint / this.LEN()), myint % this.LEN()];
     }
-    _perl_range(start, end) {
+    _perl_range(start: number, end: number) {
         var ret = [];
 
         for (var i = start; i <= end; i++) {
