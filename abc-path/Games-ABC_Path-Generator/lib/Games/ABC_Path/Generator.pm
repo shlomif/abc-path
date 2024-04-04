@@ -272,9 +272,9 @@ DFS:
                 sort {
                     ( $a->[1]->{num_remaining} <=> $b->[1]->{num_remaining} )
                         or ( $a->[0] <=> $b->[0] )
-                    }
-                    grep { !exists( $_->[1]->{cells} ) }
-                    map  { [ $_, $last_state->{clues}->[$_] ] }
+                }
+                grep { !exists( $_->[1]->{cells} ) }
+                map  { [ $_, $last_state->{clues}->[$_] ] }
                     ( 0 .. $NUM_CLUES - 1 )
             );
 
