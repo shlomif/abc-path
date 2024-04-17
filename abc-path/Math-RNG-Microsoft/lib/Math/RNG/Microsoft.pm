@@ -42,41 +42,51 @@ sub rand
 {
     my $self = shift;
     $self->seed( ( $self->seed() * 214013 + 2531011 ) & (0x7FFF_FFFF) );
-    return ( ( $self->seed >> 16 ) & 0x7fff );
+    my @ret = ( ( $self->seed >> 16 ) & 0x7fff );
+    return $ret[0];
 }
 
 sub _custard_randomise
 {
-    my ( $self, $bigint, $max ) = @_;
+    my ( $self, $biginti, $max ) = @_;
 
-    return ( $bigint % $max );
+    return ( $biginti % $max );
+}
+
+sub _private_max_randomi
+{
+    my ( $obj, $max ) = @_;
+
+    my $biginti = scalar( $obj->rand() );
+    my $resulti = scalar( $obj->_custard_randomise( $biginti, $max ) );
+
+    return $resulti;
 }
 
 sub max_rand
 {
-    my ( $obj, $max ) = @_;
+    my ( $obj, $biginti ) = @_;
 
-    my $biginti = $obj->rand();
-    my $resulti = $obj->_custard_randomise( $biginti, $max );
+    my $resulti = $obj->_private_max_randomi( $biginti, );
 
     return $resulti;
 }
 
 sub shuffle
 {
-    my ( $self, $deck ) = @_;
+    my ( $self, $deckeee ) = @_;
 
-    if (@$deck)
+    if (@$deckeee)
     {
-        my $i = @$deck;
+        my $i = scalar(@$deckeee);
         while ( --$i )
         {
-            my $j = $self->max_rand( $i + 1 );
-            @$deck[ $i, $j ] = @$deck[ $j, $i ];
+            my $j = scalar( $self->_private_max_randomi( $i + 1 ) );
+            @$deckeee[ $i, $j ] = @$deckeee[ $j, $i ];
         }
     }
 
-    return $deck;
+    return $deckeee;
 }
 
 =head1 SUBROUTINES/METHODS
