@@ -45,11 +45,21 @@ sub rand
     return ( ( $self->seed >> 16 ) & 0x7fff );
 }
 
+sub _custard_randomise
+{
+    my ( $self, $bigint, $max ) = @_;
+
+    return ( $bigint % $max );
+}
+
 sub max_rand
 {
-    my ( $self, $max ) = @_;
+    my ( $obj, $max ) = @_;
 
-    return ( $self->rand() % $max );
+    my $biginti = $obj->rand();
+    my $resulti = $obj->_custard_randomise( $biginti, $max );
+
+    return $resulti;
 }
 
 sub shuffle
