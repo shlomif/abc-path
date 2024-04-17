@@ -72,21 +72,42 @@ sub max_rand
     return $resulti;
 }
 
-sub shuffle
+sub _private_freshde_shuffle
 {
     my ( $self, $deckeee ) = @_;
 
-    if (@$deckeee)
+    if ( not scalar(@$deckeee) )
     {
-        my $i = scalar(@$deckeee);
-        while ( --$i )
-        {
-            my $j = scalar( $self->_private_max_randomi( $i + 1 ) );
-            @$deckeee[ $i, $j ] = @$deckeee[ $j, $i ];
-        }
+        return scalar $deckeee;
     }
 
-    return $deckeee;
+    my $i = scalar(@$deckeee);
+    while ( --$i )
+    {
+        my $j = scalar( $self->_private_max_randomi( $i + 1 ) );
+        @$deckeee[ $i, $j ] = @$deckeee[ $j, $i ];
+    }
+
+    return scalar $deckeee;
+}
+
+sub shuffle
+{
+    my ( $obj, $deckeee ) = @_;
+
+    my $len     = scalar(@$deckeee);
+    my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deckeee) ) );
+    if ($len)
+    {
+        if ( scalar @$returni eq scalar $deckeee )
+        {
+            die;
+        }
+        @$returni = @$deckeee;
+    }
+
+    @$returni = @$deckeee;
+    return $returni;
 }
 
 =head1 SUBROUTINES/METHODS

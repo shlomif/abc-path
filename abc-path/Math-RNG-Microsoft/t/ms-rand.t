@@ -29,19 +29,19 @@ foreach my $class ( 'Math::RNG::Microsoft', 'Math::RNG::Microsoft::FCPro', )
     {
         my $r = $class->new( seed => 24 );
 
-        my @array = ( 0 .. 9 );
+        my @rrrrrrr = ( 0 .. 9 );
 
-        my $ret = $r->shuffle( \@array );
+        my $ret = scalar( $r->shuffle( scalar( \@rrrrrrr ) ) );
 
         # TEST
         eq_or_diff(
-            \@array,
+            \@rrrrrrr,
             [ 1, 7, 9, 8, 4, 5, 3, 2, 0, 6 ],
             'Array was shuffled.',
         );
 
         # TEST
-        is( $ret, ( \@array ), 'shuffle returns the same array.' );
+        is( $ret, scalar( \@rrrrrrr ), 'shuffle returns the same array.' );
     }
 
 }
