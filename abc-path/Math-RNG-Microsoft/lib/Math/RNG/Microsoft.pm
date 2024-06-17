@@ -50,28 +50,28 @@ sub rand
 
 sub _custard_randomise
 {
-    my ( $self, $biginti, $max ) = @_;
+    my ( $self, $bigint, $max ) = @_;
 
-    return ( $biginti % $max );
+    return ( $bigint % $max );
 }
 
-sub _private_max_randomi
+sub _private_max_random
 {
     my ( $obj, $max ) = @_;
 
-    my $biginti = scalar( $obj->rand() );
-    my $resulti = scalar( $obj->_custard_randomise( $biginti, $max ) );
+    my $bigint = scalar( $obj->rand() );
+    my $result = scalar( $obj->_custard_randomise( $bigint, $max ) );
 
-    return $resulti;
+    return $result;
 }
 
 sub max_rand
 {
-    my ( $obj, $biginti ) = @_;
+    my ( $obj, $max ) = @_;
 
-    my $resulti = $obj->_private_max_randomi( $biginti, );
+    my $result = $obj->_private_max_random( $max, );
 
-    return $resulti;
+    return $result;
 }
 
 =head1 SUBROUTINES/METHODS

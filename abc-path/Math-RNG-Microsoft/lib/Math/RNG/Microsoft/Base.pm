@@ -90,13 +90,6 @@ Returns a random integer from 0 up to 0x7fff - 1.
 
     my $n = $randomizer->rand()
 
-=head2 $randomizer->max_rand($max)
-
-Returns a random integer in the range 0 to ($max-1).
-
-    my $n = $randomizer->max_rand($max);
-    # $n is now between 0 and $max - 1.
-
 =head2 $randomizer->seed($seed)
 
 Can be used to re-assign the seed of the randomizer (though not recommended).
