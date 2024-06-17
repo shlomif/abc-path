@@ -72,6 +72,10 @@ it. This is using the fisher-yates shuffle.
 Copies the array reference of the first argument to a new array, shuffles it
 and returns it. This is using the fisher-yates shuffle.
 
+@array remains unchanged.
+
+(Added in version 0.4.0 .)
+
 =cut
 
 1;    # End of Math::RNG::Microsoft

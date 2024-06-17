@@ -103,6 +103,15 @@ Can be used to re-assign the seed of the randomizer (though not recommended).
 Shuffles the array reference of the first argument, B<destroys it> and returns
 it. This is using the fisher-yates shuffle.
 
+=head2 my $new_array_ref = $randomizer->fresh_shuffle(\@array)
+
+Copies the array reference of the first argument to a new array, shuffles it
+and returns it. This is using the fisher-yates shuffle.
+
+@array remains unchanged.
+
+(Added in version 0.4.0 .)
+
 =cut
 
 1;    # End of Math::RNG::Microsoft
