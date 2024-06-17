@@ -34,6 +34,8 @@ compatibility with the Windows C Run-time-library is needed.
 
 =cut
 
+use parent 'Math::RNG::Microsoft::Base';
+
 my $MAX_SEED = ( ( 1 << ( 31 + 2 ) ) - 1 );    # 33 bits
 
 sub new
@@ -116,23 +118,6 @@ sub max_rand
     my ( $self, $max ) = @_;
 
     return ( $self->rand() % $max );
-}
-
-sub shuffle
-{
-    my ( $self, $deck ) = @_;
-
-    if (@$deck)
-    {
-        my $i = @$deck;
-        while ( --$i )
-        {
-            my $j = $self->max_rand( $i + 1 );
-            @$deck[ $i, $j ] = @$deck[ $j, $i ];
-        }
-    }
-
-    return $deck;
 }
 
 =head1 SUBROUTINES/METHODS

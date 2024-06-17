@@ -1,4 +1,4 @@
-package Math::RNG::Microsoft;
+package Math::RNG::Microsoft::Base;
 
 use 5.006;
 use strict;
@@ -33,45 +33,47 @@ compatibility with the Windows C Run-time-library is needed.
 
 use integer;
 
-use parent 'Math::RNG::Microsoft::Base';
-
 use Class::XSAccessor {
     constructor => 'new',
     accessors   => [qw(seed)],
 };
 
-sub rand
+sub _private_freshde_shuffle
 {
-    my $self = shift;
-    $self->seed( ( $self->seed() * 214013 + 2531011 ) & (0x7FFF_FFFF) );
-    my @ret = ( ( $self->seed >> 16 ) & 0x7fff );
-    return $ret[0];
+    my ( $self, $deck ) = @_;
+
+    if ( not scalar(@$deck) )
+    {
+        return scalar $deck;
+    }
+    my @d = @$deck;
+
+    my $i = scalar(@d);
+    while ( --$i )
+    {
+        my $j = scalar( $self->max_rand( $i + 1 ) );
+        @d[ $i, $j ] = @d[ $j, $i ];
+    }
+
+    return scalar( \@d );
 }
 
-sub _custard_randomise
+sub shuffle
 {
-    my ( $self, $biginti, $max ) = @_;
+    my ( $obj, $deck ) = @_;
 
-    return ( $biginti % $max );
-}
+    my $len     = scalar(@$deck);
+    my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deck) ) );
+    if ($len)
+    {
+        if ( $returni eq $deck )
+        {
+            die;
+        }
+        @$deck = @$returni;
+    }
 
-sub _private_max_randomi
-{
-    my ( $obj, $max ) = @_;
-
-    my $biginti = scalar( $obj->rand() );
-    my $resulti = scalar( $obj->_custard_randomise( $biginti, $max ) );
-
-    return $resulti;
-}
-
-sub max_rand
-{
-    my ( $obj, $biginti ) = @_;
-
-    my $resulti = $obj->_private_max_randomi( $biginti, );
-
-    return $resulti;
+    return $deck;
 }
 
 =head1 SUBROUTINES/METHODS
