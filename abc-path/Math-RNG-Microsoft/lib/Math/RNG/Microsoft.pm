@@ -74,39 +74,39 @@ sub max_rand
 
 sub _private_freshde_shuffle
 {
-    my ( $self, $deckeee ) = @_;
+    my ( $self, $deck ) = @_;
 
-    if ( not scalar(@$deckeee) )
+    if ( not scalar(@$deck) )
     {
-        return scalar $deckeee;
+        return scalar $deck;
     }
 
-    my $i = scalar(@$deckeee);
+    my $i = scalar(@$deck);
     while ( --$i )
     {
         my $j = scalar( $self->_private_max_randomi( $i + 1 ) );
-        @$deckeee[ $i, $j ] = @$deckeee[ $j, $i ];
+        @$deck[ $i, $j ] = @$deck[ $j, $i ];
     }
 
-    return scalar $deckeee;
+    return scalar $deck;
 }
 
 sub shuffle
 {
-    my ( $obj, $deckeee ) = @_;
+    my ( $obj, $deck ) = @_;
 
-    my $len     = scalar(@$deckeee);
-    my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deckeee) ) );
+    my $len     = scalar(@$deck);
+    my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deck) ) );
     if ($len)
     {
-        if ( scalar @$returni eq scalar $deckeee )
+        if ( scalar @$returni eq scalar $deck )
         {
             die;
         }
-        @$returni = @$deckeee;
+        @$returni = @$deck;
     }
 
-    @$returni = @$deckeee;
+    @$returni = @$deck;
     return $returni;
 }
 
