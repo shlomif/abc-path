@@ -80,15 +80,16 @@ sub _private_freshde_shuffle
     {
         return scalar $deck;
     }
+    my @d = @$deck;
 
-    my $i = scalar(@$deck);
+    my $i = scalar(@d);
     while ( --$i )
     {
         my $j = scalar( $self->_private_max_randomi( $i + 1 ) );
-        @$deck[ $i, $j ] = @$deck[ $j, $i ];
+        @d[ $i, $j ] = @d[ $j, $i ];
     }
 
-    return scalar $deck;
+    return scalar( \@d );
 }
 
 sub shuffle
@@ -99,15 +100,14 @@ sub shuffle
     my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deck) ) );
     if ($len)
     {
-        if ( $returni ne $deck )
+        if ( $returni eq $deck )
         {
             die;
         }
-        @$returni = @$deck;
+        @$deck = @$returni;
     }
 
-    @$returni = @$deck;
-    return $returni;
+    return $deck;
 }
 
 =head1 SUBROUTINES/METHODS
