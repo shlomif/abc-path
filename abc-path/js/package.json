@@ -8,15 +8,14 @@
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
-    "prettier": "^3.2.5",
-    "qunit": "^2.20.1",
+    "prettier": "^3.3.2",
+    "qunit": "^2.21.0",
     "qunit-cli": "^0.2.0",
     "requirejs": "^2.3.6",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1"
+    "eslint": "^9.5.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
