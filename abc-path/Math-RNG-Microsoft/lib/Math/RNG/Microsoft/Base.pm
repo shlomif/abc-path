@@ -38,13 +38,13 @@ use Class::XSAccessor {
     accessors   => [qw(seed)],
 };
 
-sub _private_freshde_shuffle
+sub fresh_shuffle
 {
     my ( $self, $deck ) = @_;
 
     if ( not scalar(@$deck) )
     {
-        return scalar $deck;
+        return [];
     }
     my @d = @$deck;
 
@@ -62,15 +62,15 @@ sub shuffle
 {
     my ( $obj, $deck ) = @_;
 
-    my $len     = scalar(@$deck);
-    my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deck) ) );
+    my $len    = scalar(@$deck);
+    my $return = scalar( $obj->fresh_shuffle( scalar($deck) ) );
     if ($len)
     {
-        if ( $returni eq $deck )
+        if ( $return eq $deck )
         {
             die;
         }
-        @$deck = @$returni;
+        @$deck = @$return;
     }
 
     return $deck;
@@ -98,6 +98,11 @@ Can be used to re-assign the seed of the randomizer (though not recommended).
 
 Shuffles the array reference of the first argument, B<destroys it> and returns
 it. This is using the fisher-yates shuffle.
+
+=head2 my $new_array_ref = $randomizer->fresh_shuffle(\@array)
+
+Copies the array reference of the first argument to a new array, shuffles it
+and returns it. This is using the fisher-yates shuffle.
 
 =cut
 
