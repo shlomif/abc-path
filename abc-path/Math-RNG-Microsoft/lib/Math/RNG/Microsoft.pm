@@ -44,8 +44,7 @@ sub rand
 {
     my $self = shift;
     $self->seed( ( $self->seed() * 214013 + 2531011 ) & (0x7FFF_FFFF) );
-    my @ret = ( ( $self->seed >> 16 ) & 0x7fff );
-    return $ret[0];
+    return scalar( ( $self->seed >> 16 ) & 0x7fff );
 }
 
 sub _custom_bound
