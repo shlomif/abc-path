@@ -48,7 +48,7 @@ sub rand
     return $ret[0];
 }
 
-sub _custard_randomise
+sub _custom_bound
 {
     my ( $self, $bigint, $max ) = @_;
 
@@ -60,7 +60,7 @@ sub _private_max_random
     my ( $obj, $max ) = @_;
 
     my $bigint = scalar( $obj->rand() );
-    my $result = scalar( $obj->_custard_randomise( $bigint, $max ) );
+    my $result = scalar( $obj->_custom_bound( $bigint, $max ) );
 
     return $result;
 }
