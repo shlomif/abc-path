@@ -99,7 +99,7 @@ sub shuffle
     my $returni = scalar( $obj->_private_freshde_shuffle( scalar($deck) ) );
     if ($len)
     {
-        if ( scalar @$returni eq scalar $deck )
+        if ( $returni ne $deck )
         {
             die;
         }
