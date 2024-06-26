@@ -91,13 +91,16 @@ export class RiddleObj extends Base {
 }
 export class Generator extends Base {
     public seed: number;
-    public rand;
+    public max_rand;
+    public rander;
     private _get_next_cells_lookup;
     public _clues_positions;
     constructor(r) {
         super();
+        const that = this;
         this.seed = r.seed;
-        this.rand = new MSRand({ seed: this.seed });
+        this.rander = new MSRand({ seed: this.seed });
+        this.max_rand = (m) => {return that.rander.max_rand(m);};
         this._get_next_cells_lookup = (() => {
             var that = this;
             return this._perl_range(0, this.BOARD_SIZE() - 1).map(function(
@@ -168,7 +171,16 @@ export class Generator extends Base {
         })();
     }
     _shuffle(deck) {
-        return this.rand.shuffle(deck);
+        if (deck.length) {
+            var i = deck.length;
+            while (--i) {
+                var j = this.max_rand(i + 1);
+                var tmp = deck[i];
+                deck[i] = deck[j];
+                deck[j] = tmp;
+            }
+        }
+        return deck;
     }
     _get_next_cells(l, init_idx) {
         return this._get_next_cells_lookup[init_idx].filter(function(x) {
@@ -216,7 +228,7 @@ export class Generator extends Base {
         that._add_next_state(
             dfs_stack,
             string_repeat("\0", that.BOARD_SIZE()),
-            that.rand.max_rand(that.BOARD_SIZE()),
+            that.max_rand(that.BOARD_SIZE()),
         );
 
         while (dfs_stack.length > 0) {

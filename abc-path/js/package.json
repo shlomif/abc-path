@@ -7,6 +7,7 @@
     "@types/qunit": "^2.19.10",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
+    "mersenne-twister": "^1.1.0",
     "minimist": "^1.2.8",
     "prettier": "^3.3.2",
     "qunit": "^2.21.0",
