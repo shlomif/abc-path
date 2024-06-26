@@ -1,7 +1,10 @@
 "use strict";
+import * as MersenneTwister from "mersenne-twister" ;
 import { Generator } from "./abc-path";
 for (let i=1; i <= 100; ++i) {
-    const gen = new Generator({ seed: i });
+    const r = new MersenneTwister(i);
+    const max_rand = (m) => {return r.random_int() % m;};
+    const gen = new Generator({ max_rand: max_rand, });
     const riddle = gen.calc_riddle();
 
     console.log("ABC Path Solver Layout Version 1:");

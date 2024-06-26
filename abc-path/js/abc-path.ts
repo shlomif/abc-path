@@ -98,9 +98,13 @@ export class Generator extends Base {
     constructor(r) {
         super();
         const that = this;
-        this.seed = r.seed;
-        this.rander = new MSRand({ seed: this.seed });
-        this.max_rand = (m) => {return that.rander.max_rand(m);};
+        if (r.max_rand) {
+            that.max_rand = r.max_rand;
+        } else {
+            this.seed = r.seed;
+            this.rander = new MSRand({ seed: this.seed });
+            this.max_rand = (m) => {return that.rander.max_rand(m);};
+        }
         this._get_next_cells_lookup = (() => {
             var that = this;
             return this._perl_range(0, this.BOARD_SIZE() - 1).map(function(
