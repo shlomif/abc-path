@@ -19,3 +19,4 @@ for (let i = 1; i <= 100; ++i) {
     console.log("ABC Path Solver Layout Version 1:");
     console.log(riddle.get_riddle_v1_string());
 }
+console.log("Finished Generating Deals. Exiting.");
