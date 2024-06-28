@@ -5,6 +5,8 @@ use strict;
 
 use 5.008;
 
+=encoding utf8
+
 =head1 NAME
 
 Games::ABC_Path::Solver::Board - handles an ABC Path board.
@@ -30,6 +32,16 @@ Games::ABC_Path::Solver::Board - handles an ABC Path board.
     {
         print +(' => ' x $move->get_depth()), $move->get_text(), "\n";
     }
+
+=head1 How to play? The Rules of the Game
+
+The 5*5 grid must be filled with a contiguous path of the first 25 (= 5 * 5)
+letters of the Latin alphabet (“A” to “Y”), in order. Moves in the path can be
+diagonal, but they cannot wrap through the edges of the grid.
+
+The position of the letter “A” is given. In addition, for every horizontal
+row, vertical column, and the two diagonals, there are two letters that should
+appear in them (but in any order, and with possible gaps).
 
 =head1 FUNCTIONS
 
@@ -952,16 +964,6 @@ and another letter. On one of the squares one can put a letter instead of a
 space, to indicate it must be there.
 
 The last row is another row of vertical hints and perpendicular hints.
-
-=head3 How to play? The Rules of the Game
-
-The 5*5 grid must be filled with a contiguous path of the first 25 (= 5 * 5)
-letters of the Latin alphabet ("A" to "Y"). Moves in the path can be diagonal,
-but do not wrap through the edges of the grid.
-
-The position of the letter "A" is given. In addition, for every horizontal
-row, vertical column, and the two diagonals, there are two letters that should
-appear in them (but in any order, and with possible gaps).
 
 =cut
 

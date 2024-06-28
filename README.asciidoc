@@ -1,7 +1,17 @@
-These aim to be a solver and a generator for
-http://www.brainbashers.com/abcpath.asp[ABC Path]. See:
+These aim to be solvers and a generators for
+the http://www.brainbashers.com/abcpath.asp[ABC Path] riddle game. See:
 
-* http://www.shlomifish.org/open-source/projects/japanese-puzzle-games/abc-path/[Homepage]
-* http://metacpan.org/release/Games-ABC_Path-Solver[Solver on MetaCPAN]
-* http://metacpan.org/release/Games-ABC_Path-Generator[Generator on MetaCPAN]
-* http://www.youtube.com/watch?v=HlGHAPAXbXQ[Screencast on YouTube]
+* http://www.shlomifish.org/open-source/projects/japanese-puzzle-games/abc-path/[Project Homepage]
+* http://metacpan.org/release/Games-ABC_Path-Solver[Solver on MetaCPAN] (written in Perl 5)
+* http://metacpan.org/release/Games-ABC_Path-Generator[Generator on MetaCPAN] (written in Perl 5)
+* http://www.youtube.com/watch?v=HlGHAPAXbXQ[Screencast on YouTube] - a recorded video demo.
+
+= How to play? The Rules of the Game
+
+The 5*5 grid must be filled with a contiguous path of the first 25 (= 5 * 5)
+letters of the Latin alphabet (“A” to “Y”), in order. Moves in the path can be
+diagonal, but they cannot wrap through the edges of the grid.
+
+The position of the letter “A” is given. In addition, for every horizontal
+row, vertical column, and the two diagonals, there are two letters that should
+appear in them (but in any order, and with possible gaps).
