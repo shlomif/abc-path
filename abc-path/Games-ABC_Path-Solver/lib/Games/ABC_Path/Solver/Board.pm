@@ -2,8 +2,8 @@ package Games::ABC_Path::Solver::Board;
 
 use warnings;
 use strict;
-
-use 5.008;
+use 5.014;
+use autodie;
 
 =encoding utf8
 

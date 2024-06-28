@@ -1,5 +1,10 @@
 Revision history for Games-ABC_Path-Solver
 
+0.8.0   2024-06-28
+    - Add a section describing the rules of ABC-Path riddles.
+    - Minimal supported perl5 version is now 5.014.
+        - https://github.com/shlomif/supporting-older-perl5-releases
+
 0.6.2   2020-10-15
     - dist.ini / weaver.ini / .tidyallrc / etc. cleanup
         - Move to @SHLOMIF
