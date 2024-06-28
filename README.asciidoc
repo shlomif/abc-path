@@ -1,0 +1,7 @@
+These aim to be a solver and a generator for
+http://www.brainbashers.com/abcpath.asp[ABC Path]. See:
+
+* http://www.shlomifish.org/open-source/projects/japanese-puzzle-games/abc-path/[Homepage]
+* http://metacpan.org/release/Games-ABC_Path-Solver[Solver on MetaCPAN]
+* http://metacpan.org/release/Games-ABC_Path-Generator[Generator on MetaCPAN]
+* http://www.youtube.com/watch?v=HlGHAPAXbXQ[Screencast on YouTube]
