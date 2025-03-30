@@ -1,5 +1,8 @@
 Revision history for Games-ABC_Path-Generator
 
+0.6.1   Unknown
+    - Fix "use Pack.pm '0.1.0'"
+
 0.6.0   2021-12-05
     - Add scripts/tag-release.pl
     - Convert to use https://metacpan.org/pod/Math::RNG::Microsoft

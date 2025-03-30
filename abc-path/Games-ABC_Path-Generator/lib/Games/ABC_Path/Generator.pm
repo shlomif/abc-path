@@ -1,6 +1,6 @@
 package Games::ABC_Path::Generator;
 
-use 5.006;
+use 5.014;
 
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use integer;
 use parent 'Games::ABC_Path::Generator::Base';
 
 use Games::ABC_Path::Solver::Constants;
-use Games::ABC_Path::Solver::Board '0.1.0';
+use Games::ABC_Path::Solver::Board 0.1.0;
 use Games::ABC_Path::MicrosoftRand             ();
 use Games::ABC_Path::Generator::RiddleObj      ();
 use Games::ABC_Path::Generator::FinalLayoutObj ();
@@ -85,8 +85,8 @@ sub _shuffle
                         ) ? ( __PACKAGE__->_xy_to_int( [ $y, $x ] ) ) : ()
                     )
                 } (
-                    [ -1, -1 ], [ -1, 0 ],  [ -1, 1 ], [ 0, -1 ],
-                    [ 0,  1 ],  [ 1,  -1 ], [ 1,  0 ], [ 1, 1 ]
+                    [ -1, -1 ], [ -1,  0 ], [ -1, 1 ], [ 0, -1 ],
+                    [  0,  1 ], [  1, -1 ], [  1, 0 ], [ 1,  1 ]
                 )
             ]
         } ( 0 .. $BOARD_SIZE - 1 )
