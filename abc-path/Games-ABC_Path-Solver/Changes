@@ -1,5 +1,9 @@
 Revision history for Games-ABC_Path-Solver
 
+0.8.1   2025-03-31
+    - Fix perltidy tests.
+    - Explicit imports
+
 0.8.0   2024-06-28
     - Add a section describing the rules of ABC-Path riddles.
     - Minimal supported perl5 version is now 5.014.
