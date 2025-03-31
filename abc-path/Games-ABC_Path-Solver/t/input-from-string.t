@@ -4,9 +4,9 @@ use strict;
 use warnings;
 
 use Test::More tests => 3;
-use Test::Differences;
+use Test::Differences qw( eq_or_diff );
 
-use Games::ABC_Path::Solver::Board;
+use Games::ABC_Path::Solver::Board ();
 
 {
     my $input_string = <<'EOF';
@@ -34,7 +34,7 @@ EOF
     # TEST
     eq_or_diff(
         $solver->get_successes_text_tables(),
-        [ <<'EOF' ],
+        [<<'EOF'],
 | X = 1 | X = 2 | X = 3 | X = 4 | X = 5 |
 |   K   |   J   |   I   |   B   |   A   |
 |   L   |   H   |   G   |   C   |   E   |

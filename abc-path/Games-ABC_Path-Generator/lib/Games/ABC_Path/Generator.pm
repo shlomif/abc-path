@@ -10,7 +10,7 @@ use integer;
 use parent 'Games::ABC_Path::Generator::Base';
 
 use Games::ABC_Path::Solver::Constants;
-use Games::ABC_Path::Solver::Board 0.1.0;
+use Games::ABC_Path::Solver::Board v0.1.0;
 use Games::ABC_Path::MicrosoftRand             ();
 use Games::ABC_Path::Generator::RiddleObj      ();
 use Games::ABC_Path::Generator::FinalLayoutObj ();
