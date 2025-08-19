@@ -23,12 +23,12 @@ export class MSRand {
     max_rand(mymax) {
         return this.rand() % mymax;
     }
-    shuffle(deck) {
+    shuffle(deck: any[]) {
         if (deck.length) {
-            var i = deck.length;
+            let i = deck.length;
             while (--i) {
-                var j = this.max_rand(i + 1);
-                var tmp = deck[i];
+                const j = this.max_rand(i + 1);
+                const tmp = deck[i];
                 deck[i] = deck[j];
                 deck[j] = tmp;
             }
